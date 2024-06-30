@@ -1,33 +1,15 @@
-SUBDIRS := \
-	AdvancedTechniques \
-	ArrayAndString \
-	Backtracking \
-	DynamicProgramming \
-	GameTheories \
-	Geometrics \
-	Graphs \
-	Greedy \
-	Mathematics \
-	RangeQueries \
-	SlidingWindow \
-	SortingAndSearching \
-	Tree
-
-TARGETS := $(patsubst %,%/ProblemA/main,$(SUBDIRS))
+# Find all directories containing main.cpp files
+SRC_DIRS := $(shell find . -type f -name main.cpp -exec dirname {} \;)
+TARGETS := $(foreach dir,$(SRC_DIRS),$(dir)/main)
 
 all: $(TARGETS)
 
-$(TARGETS):
-	@echo "Compiling $@"
-	$(MAKE) -C $(dir $@) main
-
-%/ProblemA/main: %/ProblemA/main.cpp
+$(TARGETS): %/main: %/main.cpp
+	@echo "Compiling $<"
 	g++ $< -o $@ -lDSA
 
 clean:
-	@for dir in $(SUBDIRS); do \
-		echo "Cleaning $$dir/ProblemA"; \
-		rm -f $$dir/ProblemA/main; \
-	done
+	@echo "Cleaning up..."
+	@find . -type f -name main -exec rm -f {} \;
 
-.PHONY: all clean $(SUBDIRS)
+.PHONY: all clean
