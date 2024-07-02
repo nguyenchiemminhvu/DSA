@@ -3,7 +3,7 @@
 
 int main()
 {
-    Array<int, 5U> arr;
+    Array<int, 5U> arr = {5, 4, 3, 2, 1};
     for (int i = 0; i < 5; i++)
     {
         arr[i] = i + 1;
