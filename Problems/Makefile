@@ -6,7 +6,7 @@ all: $(TARGETS)
 
 $(TARGETS): %/main: %/main.cpp
 	@echo "Compiling $<"
-	g++ $< -o $@ -lDSA
+	g++ -std=c++11 $< -o $@ -lDSA
 
 clean:
 	@echo "Cleaning up..."
