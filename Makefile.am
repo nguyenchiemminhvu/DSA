@@ -1,27 +1,5 @@
 lib_LIBRARIES = libDSA.a
-libDSA_a_SOURCES = \
-    Algorithms/BitManipulation/BitManipulationAlgo.cpp \
-    Algorithms/DynamicProgramming/DynamicProgrammingAlgo.cpp \
-    Algorithms/Geometric/GeometricAlgo.cpp \
-    Algorithms/Numeric/NumericAlgo.cpp \
-    Algorithms/Searching/SearchingAlgo.cpp \
-    Algorithms/Sorting/SortingAlgo.cpp \
-    DataStructures/Array/Array.cpp \
-    DataStructures/DisjointSet/UnionFind.cpp \
-    DataStructures/Graph/GraphTraversal.cpp \
-    DataStructures/Graph/MinSpanningTree.cpp \
-    DataStructures/Graph/ShortestPath.cpp \
-    DataStructures/HashTable/HashTable.cpp \
-    DataStructures/Heap/Heap.cpp \
-    DataStructures/LinkedList/DoubleLinkedList.cpp \
-    DataStructures/LinkedList/SingleLinkedList.cpp \
-    DataStructures/Queue/Queue.cpp \
-    DataStructures/Stack/Stack.cpp \
-    DataStructures/String/String.cpp \
-    DataStructures/Tree/BinaryIndexedTree.cpp \
-    DataStructures/Tree/BinarySearchTree.cpp \
-    DataStructures/Tree/Trie.cpp
-
+libDSA_a_SOURCES = 
 libDSA_a_CXXFLAGS = -I$(top_srcdir)/Algorithms \
                     -I$(top_srcdir)/DataStructures \
                     -Wall
