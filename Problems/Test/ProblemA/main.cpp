@@ -1,5 +1,6 @@
 #include <iostream>
 #include "DSA/Array.h"
+#include "DSA/Vector.h"
 
 int main()
 {
@@ -14,6 +15,9 @@ int main()
     {
         std::cout << *it++ << std::endl;
     }
+
+    Vector<int> v;
+    Vector<int>::iterator vit;
 
     return 0;
 }
