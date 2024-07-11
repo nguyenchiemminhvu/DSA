@@ -22,6 +22,7 @@ set(TEST_SOURCES
     main.cpp
     TestArray.cpp
     TestVector.cpp
+    TestString.cpp
 )
 
 # Add the executable for tests

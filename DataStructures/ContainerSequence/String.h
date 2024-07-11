@@ -13,7 +13,7 @@ class Vector<char>
 {
 public:
     using iterator = char*;
-    using const_iterator = const char*;
+    using const_iterator = char*;
 
     Vector()
         : m_data(nullptr)
@@ -53,7 +53,7 @@ public:
         m_size = another.size();
     }
 
-    Vector(const char* str)
+    Vector(char* str)
         : m_data(nullptr)
         , m_size(0U)
         , m_capacity(0U)
@@ -65,7 +65,7 @@ public:
         m_size = str_len;
     }
 
-    Vector(const char* str, std::size_t n)
+    Vector(char* str, std::size_t n)
         : m_data(nullptr)
         , m_size(0U)
         , m_capacity(0U)
@@ -91,7 +91,7 @@ public:
         return *this;
     }
 
-    Vector& operator=(const char* str)
+    Vector& operator=(char* str)
     {
         this->clear();
 
@@ -185,7 +185,7 @@ public:
         m_size = new_size;
     }
 
-    void insert(std::size_t index, const char* str)
+    void insert(std::size_t index, char* str)
     {
         std::size_t str_len = strlen(str);
         this->insert(index, str, str + str_len);
@@ -212,7 +212,7 @@ public:
         return m_data + index;
     }
 
-    iterator insert(iterator pos, const char* str)
+    iterator insert(iterator pos, char* str)
     {
         Vector<char> temp(str);
         std::size_t index = pos - m_data;
@@ -250,7 +250,7 @@ public:
         m_capacity = 0U;
     }
 
-    T& front()
+    char& front()
     {
         if (m_size == 0)
         {
@@ -260,7 +260,7 @@ public:
         return *(m_data);
     }
 
-    T& back()
+    char& back()
     {
         if (m_size == 0)
         {
@@ -316,7 +316,17 @@ public:
         return m_data;
     }
 
+    const_iterator begin() const noexcept
+    {
+        return m_data;
+    }
+
     iterator end() noexcept
+    {
+        return m_data + m_size;
+    }
+
+    const_iterator end() const noexcept
     {
         return m_data + m_size;
     }
@@ -326,7 +336,7 @@ public:
         return m_data;
     }
 
-    const char* c_str() const
+    char* c_str() const
     {
         return m_data;
     }
