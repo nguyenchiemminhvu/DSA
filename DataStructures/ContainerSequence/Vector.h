@@ -40,6 +40,33 @@ public:
         m_size = L.size();
     }
 
+    Vector(const Vector<T>& another)
+        : m_data(nullptr)
+        , m_size(0U)
+        , m_capacity(0U)
+    {
+        this->expand(another.capacity());
+        std::copy(another.begin(), another.end(), m_data);
+
+        m_size = another.size();
+    }
+
+    Vector(iterator left, iterator right)
+        : m_data(nullptr)
+        , m_size(0U)
+        , m_capacity(0U)
+    {
+        std::size_t dist = (right - left);
+        this->expand(dist == 0 ? 1 : dist * 2);
+
+        for (iterator it = left; it <= right; it++)
+        {
+            m_data[it - left] = *it;
+        }
+
+        m_size = dist;
+    }
+
     void push_back(const T& element)
     {
         if (m_size == m_capacity)
@@ -72,10 +99,43 @@ public:
         m_size++;
     }
 
+    void insert(std::size_t index, iterator left, iterator right)
+    {
+        if (index > m_size)
+        {
+            throw std::out_of_range("Index out of range");
+        }
+
+        std::size_t new_size = m_size + (right - left);
+        if (new_size >= m_capacity)
+        {
+            this->expand(new_size * 2);
+        }
+
+        for (std::size_t i = m_size; i > index; i--)
+        {
+            m_data[i] = m_data[i - 1];
+        }
+
+        for (iterator it = left; it <= right; it++)
+        {
+            m_data[index + (it - left)] = *it;
+        }
+
+        m_size = new_size;
+    }
+
     iterator insert(iterator pos, const T& element)
     {
         std::size_t index = pos - m_data;
         this->insert(index, element);
+        return m_data + index;
+    }
+
+    iterator insert(iterator pos, iterator left, iterator right)
+    {
+        std::size_t index = (pos - m_data);
+        this->insert(index, left, right);
         return m_data + index;
     }
 
@@ -158,6 +218,7 @@ private:
     void expand(std::size_t new_cap)
     {
         T* new_data = new T[new_cap];
+        std::fill(new_data, new_data + new_cap, 0);
         for (std::size_t i = 0U; i < m_size; i++)
         {
             new_data[i] = m_data[i];
