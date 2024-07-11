@@ -13,10 +13,169 @@ public:
     using iterator = T*;
     using const_iterator = const T*;
 
-    Vector() = default;
+    Vector()
+        : m_data(nullptr)
+        , m_size(0U)
+        , m_capacity(0U)
+    {
+
+    }
+
+    ~Vector()
+    {
+        if (m_data != nullptr)
+        {
+            delete[] m_data;
+        }
+    }
+
+    Vector(std::initializer_list<T> L)
+        : m_data(nullptr)
+        , m_size(0U)
+        , m_capacity(0U)
+    {
+        this->expand(L.size() * 2U);
+        std::copy(L.begin(), L.end(), m_data);
+
+        m_size = L.size();
+    }
+
+    void push_back(const T& element)
+    {
+        if (m_size == m_capacity)
+        {
+            this->expand(m_capacity == 0U ? 1U : m_capacity * 2U);
+        }
+
+        m_data[m_size] = element;
+        m_size++;
+    }
+
+    void insert(std::size_t index, const T& element)
+    {
+        if (index > m_size)
+        {
+            throw std::out_of_range("Index out of range");
+        }
+
+        if (m_size == m_capacity)
+        {
+            this->expand(m_capacity == 0U ? 1U : m_capacity * 2U);
+        }
+
+        for (std::size_t i = m_size; i > index; i--)
+        {
+            m_data[i] = m_data[i - 1U];
+        }
+
+        m_data[index] = element;
+        m_size++;
+    }
+
+    iterator insert(iterator pos, const T& element)
+    {
+        std::size_t index = pos - m_data;
+        this->insert(index, element);
+        return m_data + index;
+    }
+
+    void erase(std::size_t index)
+    {
+        if (index >= m_size)
+        {
+            throw std::out_of_range("Index out of range");
+        }
+
+        for (std::size_t i = index; i < m_size - 1U; i++)
+        {
+            m_data[i] = m_data[i + 1];
+        }
+
+        m_size--;
+    }
+
+    iterator erase(iterator pos)
+    {
+        std::size_t index = pos - m_data;
+        this->erase(index);
+        return m_data + index;
+    }
+
+    void clear()
+    {
+        delete[] m_data;
+        m_data = nullptr;
+        m_size = 0U;
+        m_capacity = 0U;
+    }
+
+    T& operator[](std::size_t index)
+    {
+        if (index >= m_size)
+        {
+            throw std::out_of_range("Index out of range");
+        }
+
+        return m_data[index];
+    }
+
+    const T& operator[](std::size_t index) const
+    {
+        if (index >= m_size)
+        {
+            throw std::out_of_range("Index out of range");
+        }
+
+        return m_data[index];
+    }
+
+    constexpr std::size_t size() const noexcept
+    {
+        return m_size;
+    }
+
+    bool empty() const
+    {
+        return m_size == 0U;
+    }
+
+    constexpr std::size_t capacity() const noexcept
+    {
+        return m_capacity;
+    }
+
+    iterator begin() noexcept
+    {
+        return m_data;
+    }
+
+    iterator end() noexcept
+    {
+        return m_data + m_size;
+    }
+
+private:
+    void expand(std::size_t new_cap)
+    {
+        T* new_data = new T[new_cap];
+        for (std::size_t i = 0U; i < m_size; i++)
+        {
+            new_data[i] = m_data[i];
+        }
+
+        if (m_data != nullptr)
+        {
+            delete[] m_data;
+        }
+
+        m_data = new_data;
+        m_capacity = new_cap;
+    }
 
 private:
     T* m_data;
+    std::size_t m_size;
+    std::size_t m_capacity;
 };
 
 #endif // VECTOR_H
