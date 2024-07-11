@@ -18,6 +18,8 @@ int main()
         vit++;
     }
 
+    std::cout << v.front() << " " << v.back() << std::endl;
+
     String s = "NguyenVu";
     s.insert(6, " Chiem Minh ");
     s += "0934359954";

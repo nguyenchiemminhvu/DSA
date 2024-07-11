@@ -250,6 +250,26 @@ public:
         m_capacity = 0U;
     }
 
+    T& front()
+    {
+        if (m_size == 0)
+        {
+            throw std::out_of_range("Index out of range");
+        }
+
+        return *(m_data);
+    }
+
+    T& back()
+    {
+        if (m_size == 0)
+        {
+            throw std::out_of_range("Index out of range");
+        }
+
+        return *(m_data + m_size - 1);
+    }
+
     char& operator[](std::size_t index)
     {
         if (index >= m_size)
@@ -299,6 +319,11 @@ public:
     iterator end() noexcept
     {
         return m_data + m_size;
+    }
+
+    char* data() const
+    {
+        return m_data;
     }
 
     const char* c_str() const
