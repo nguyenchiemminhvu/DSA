@@ -11,6 +11,7 @@ using String = Vector<char>;
 template <>
 class Vector<char>
 {
+public:
     using iterator = char*;
     using const_iterator = const char*;
 
@@ -75,6 +76,48 @@ class Vector<char>
         m_size = n;
     }
 
+    Vector& operator=(const Vector<char>& another)
+    {
+        if (this == &another)
+        {
+            return *this;
+        }
+
+        this->clear();
+        this->expand(another.capacity());
+        std::copy(another.begin(), another.end(), m_data);
+
+        m_size = another.size();
+        return *this;
+    }
+
+    Vector& operator=(const char* str)
+    {
+        this->clear();
+
+        std::size_t str_len = strlen(str);
+        this->expand(str_len == 0 ? 1 : str_len * 2);
+        std::copy(str, str + str_len, m_data);
+
+        m_size = str_len;
+        return *this;
+    }
+
+    void swap(Vector& another)
+    {
+        std::size_t tempSize = this->m_size;
+        this->m_size = another.m_size;
+        another.m_size = tempSize;
+
+        std::size_t tempCap = this->m_capacity;
+        this->m_capacity = another.m_capacity;
+        another.m_capacity = tempCap;
+
+        char* tempData = this->m_data;
+        this->m_data = another.m_data;
+        another.m_data = tempData;
+    }
+
     void push_back(const char& element)
     {
         if (m_size == m_capacity)
@@ -84,6 +127,14 @@ class Vector<char>
 
         m_data[m_size] = element;
         m_size++;
+    }
+
+    void pop_back()
+    {
+        if (m_size > 0)
+        {
+            m_size--;
+        }
     }
 
     void insert(std::size_t index, const char& element)
@@ -114,23 +165,30 @@ class Vector<char>
             throw std::out_of_range("Index out of range");
         }
 
-        std::size_t new_size = m_size + (right - left);
-        if (new_size >= m_capacity)
+        std::size_t num_elements = right - left;
+        std::size_t new_size = m_size + num_elements;
+        if (new_size > m_capacity)
         {
             this->expand(new_size * 2);
         }
 
-        for (std::size_t i = m_size; i > index; i--)
+        for (std::size_t i = m_size + num_elements - 1; i >= index + num_elements; --i)
         {
-            m_data[i] = m_data[i - 1];
+            m_data[i] = m_data[i - num_elements];
         }
 
-        for (iterator it = left; it <= right; it++)
+        for (iterator it = left; it != right; ++it)
         {
             m_data[index + (it - left)] = *it;
         }
 
         m_size = new_size;
+    }
+
+    void insert(std::size_t index, const char* str)
+    {
+        std::size_t str_len = strlen(str);
+        this->insert(index, str, str + str_len);
     }
 
     iterator insert(iterator pos, const char& element)
@@ -144,6 +202,21 @@ class Vector<char>
     {
         std::size_t index = (pos - m_data);
         this->insert(index, left, right);
+        return m_data + index;
+    }
+
+    iterator insert(iterator pos, const Vector<char>& another)
+    {
+        std::size_t index = pos - m_data;
+        this->insert(index, another.begin(), another.end());
+        return m_data + index;
+    }
+
+    iterator insert(iterator pos, const char* str)
+    {
+        Vector<char> temp(str);
+        std::size_t index = pos - m_data;
+        this->insert(index, temp.begin(), temp.end());
         return m_data + index;
     }
 
@@ -197,12 +270,6 @@ class Vector<char>
         return m_data[index];
     }
 
-    String& operator+(const String& nextStr)
-    {
-        this->insert(this->end(), nextStr.begin(), nextStr.end());
-        return *this;
-    }
-
     String& operator+=(const String& nextStr)
     {
         this->insert(this->end(), nextStr.begin(), nextStr.end());
@@ -232,6 +299,11 @@ class Vector<char>
     iterator end() noexcept
     {
         return m_data + m_size;
+    }
+
+    const char* c_str() const
+    {
+        return m_data;
     }
 
 private:

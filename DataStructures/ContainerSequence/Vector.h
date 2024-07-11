@@ -67,6 +67,36 @@ public:
         m_size = dist;
     }
 
+    Vector& operator=(const Vector& another)
+    {
+        if (this == &another)
+        {
+            return *this;
+        }
+
+        this->clear();
+        this->expand(another.capacity());
+        std::copy(another.begin(), another.end(), m_data);
+
+        m_size = another.size();
+        return *this;
+    }
+
+    void swap(Vector& another)
+    {
+        std::size_t tempSize = this->m_size;
+        this->m_size = another.m_size;
+        another.m_size = tempSize;
+
+        std::size_t tempCap = this->m_capacity;
+        this->m_capacity = another.m_capacity;
+        another.m_capacity = tempCap;
+
+        T* tempData = this->m_data;
+        this->m_data = another.m_data;
+        another.m_data = tempData;
+    }
+
     void push_back(const T& element)
     {
         if (m_size == m_capacity)
@@ -76,6 +106,14 @@ public:
 
         m_data[m_size] = element;
         m_size++;
+    }
+
+    void pop_back()
+    {
+        if (m_size > 0)
+        {
+            m_size--;
+        }
     }
 
     void insert(std::size_t index, const T& element)
@@ -106,18 +144,19 @@ public:
             throw std::out_of_range("Index out of range");
         }
 
-        std::size_t new_size = m_size + (right - left);
-        if (new_size >= m_capacity)
+        std::size_t num_elements = right - left;
+        std::size_t new_size = m_size + num_elements;
+        if (new_size > m_capacity)
         {
             this->expand(new_size * 2);
         }
 
-        for (std::size_t i = m_size; i > index; i--)
+        for (std::size_t i = m_size + num_elements - 1; i >= index + num_elements; --i)
         {
-            m_data[i] = m_data[i - 1];
+            m_data[i] = m_data[i - num_elements];
         }
 
-        for (iterator it = left; it <= right; it++)
+        for (iterator it = left; it != right; ++it)
         {
             m_data[index + (it - left)] = *it;
         }
