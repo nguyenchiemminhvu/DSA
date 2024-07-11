@@ -21,6 +21,7 @@ include_directories(/usr/local/include/DSA)
 set(TEST_SOURCES
     main.cpp
     TestArray.cpp
+    TestVector.cpp
 )
 
 # Add the executable for tests
