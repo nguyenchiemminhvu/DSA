@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "DSA/Array.h"
+#include "ContainerSequence/Array.h"
 
 class TestArraySuite : public ::testing::Test
 {

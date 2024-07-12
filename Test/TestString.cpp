@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "DSA/String.h"
+#include "ContainerSequence/String.h"
 
 class TestStringSuite : public ::testing::Test
 {

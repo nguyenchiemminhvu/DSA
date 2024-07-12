@@ -12,7 +12,12 @@ set(gtest_disable_pthreads on)
 add_subdirectory(googletest)
 
 # Include directories
-include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
+include_directories(
+    ${gtest_SOURCE_DIR}
+    ${gtest_SOURCE_DIR}/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../Algorithms/
+    ${CMAKE_CURRENT_SOURCE_DIR}/../DataStructures/
+)
 
 # Add the header files for Algorithms and DataStructures
 include_directories(/usr/local/include/DSA)

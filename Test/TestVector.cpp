@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "DSA/Vector.h"
+#include "ContainerSequence/Vector.h"
 
 class TestVectorSuite : public ::testing::Test
 {
@@ -105,16 +105,88 @@ TEST_F(TestVectorSuite, CompareEqualOperator)
 TEST_F(TestVectorSuite, MethodSwap)
 {
     Vector<int> testObj;
+    EXPECT_TRUE(testObj.data() == nullptr);
+    EXPECT_EQ(testObj.size(), 0U);
+    EXPECT_EQ(testObj.capacity(), 0U);
+
+    Vector<int> another = {1, 2, 3, 4, 5};
+    testObj.swap(another);
+    EXPECT_TRUE(another.data() == nullptr);
+    EXPECT_EQ(another.size(), 0U);
+    EXPECT_EQ(another.capacity(), 0U);
+    EXPECT_TRUE(testObj.data() != nullptr);
+    EXPECT_EQ(testObj.size(), 5U);
+    EXPECT_EQ(testObj.capacity(), 10U);
+
+    testObj.swap(another);
+    EXPECT_TRUE(testObj.data() == nullptr);
+    EXPECT_EQ(testObj.size(), 0U);
+    EXPECT_EQ(testObj.capacity(), 0U);
+    EXPECT_TRUE(another.data() != nullptr);
+    EXPECT_EQ(another.size(), 5U);
+    EXPECT_EQ(another.capacity(), 10U);
 }
 
 TEST_F(TestVectorSuite, MethodPushBack)
 {
     Vector<int> testObj;
+    EXPECT_TRUE(testObj.data() == nullptr);
+    EXPECT_EQ(testObj.size(), 0U);
+    EXPECT_EQ(testObj.capacity(), 0U);
+
+    testObj.push_back(1);
+    EXPECT_TRUE(testObj.data() != nullptr);
+    EXPECT_EQ(testObj.size(), 1U);
+    EXPECT_EQ(testObj.capacity(), 1U);
+
+    testObj.push_back(1);
+    EXPECT_EQ(testObj.size(), 2U);
+    EXPECT_EQ(testObj.capacity(), 2U);
+
+    testObj.push_back(1);
+    EXPECT_EQ(testObj.size(), 3U);
+    EXPECT_EQ(testObj.capacity(), 4U);
+
+    testObj.push_back(1);
+    EXPECT_EQ(testObj.size(), 4U);
+    EXPECT_EQ(testObj.capacity(), 4U);
+
+    testObj.push_back(1);
+    EXPECT_EQ(testObj.size(), 5U);
+    EXPECT_EQ(testObj.capacity(), 8U);
+    
+    testObj.push_back(1);
+    EXPECT_EQ(testObj.size(), 6U);
+    EXPECT_EQ(testObj.capacity(), 8U);
+
+    testObj.push_back(1);
+    EXPECT_EQ(testObj.size(), 7U);
+    EXPECT_EQ(testObj.capacity(), 8U);
+
+    testObj.push_back(1);
+    EXPECT_EQ(testObj.size(), 8U);
+    EXPECT_EQ(testObj.capacity(), 8U);
 }
 
 TEST_F(TestVectorSuite, MethodPopBack)
 {
-    Vector<int> testObj;
+    Vector<int> testObj = {1, 2, 3, 4, 5};
+    EXPECT_TRUE(testObj.data() != nullptr);
+    EXPECT_EQ(testObj.size(), 5U);
+    EXPECT_EQ(testObj.capacity(), 10U);
+
+    testObj.pop_back();
+    EXPECT_EQ(testObj.size(), 4U);
+    EXPECT_EQ(testObj.capacity(), 10U);
+
+    while (!testObj.empty())
+    {
+        testObj.pop_back();
+    }
+
+    EXPECT_TRUE(testObj.data() == nullptr);
+    EXPECT_EQ(testObj.size(), 0U);
+    EXPECT_EQ(testObj.capacity(), 0U);
 }
 
 TEST_F(TestVectorSuite, MethodInsertElementAtIndex)

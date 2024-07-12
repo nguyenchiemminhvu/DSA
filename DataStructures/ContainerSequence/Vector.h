@@ -152,9 +152,13 @@ public:
 
     void pop_back()
     {
-        if (m_size > 0)
+        if (m_size > 0U)
         {
             m_size--;
+            if (m_size == 0U)
+            {
+                this->clear();
+            }
         }
     }
 
@@ -244,7 +248,11 @@ public:
 
     void clear()
     {
-        delete[] m_data;
+        if (m_data != nullptr)
+        {
+            delete[] m_data;
+        }
+
         m_data = nullptr;
         m_size = 0U;
         m_capacity = 0U;
