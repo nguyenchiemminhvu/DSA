@@ -17,6 +17,9 @@ include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
 # Add the header files for Algorithms and DataStructures
 include_directories(/usr/local/include/DSA)
 
+# Add compile options
+add_compile_options(-std=c++17 -fpermissive)
+
 # List of test files
 set(TEST_SOURCES
     main.cpp

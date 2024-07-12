@@ -40,17 +40,6 @@ public:
         m_size = L.size();
     }
 
-    Vector(const Vector<T>& another)
-        : m_data(nullptr)
-        , m_size(0U)
-        , m_capacity(0U)
-    {
-        this->expand(another.capacity());
-        std::copy(another.begin(), another.end(), m_data);
-
-        m_size = another.size();
-    }
-
     Vector(iterator left, iterator right)
         : m_data(nullptr)
         , m_size(0U)
@@ -65,6 +54,36 @@ public:
         }
 
         m_size = dist;
+    }
+
+    Vector(const_iterator left, const_iterator right)
+        : m_data(nullptr)
+        , m_size(0U)
+        , m_capacity(0U)
+    {
+        std::size_t dist = (right - left);
+        this->expand(dist == 0 ? 1 : dist * 2);
+
+        for (iterator it = left; it <= right; it++)
+        {
+            m_data[it - left] = *it;
+        }
+
+        m_size = dist;
+    }
+
+    Vector(const Vector<T>& another)
+        : m_data(nullptr)
+        , m_size(0U)
+        , m_capacity(0U)
+    {
+        if (another.m_data != nullptr)
+        {
+            this->expand(another.capacity());
+            std::copy(another.begin(), another.end(), m_data);
+        }
+
+        m_size = another.size();
     }
 
     Vector& operator=(const Vector& another)

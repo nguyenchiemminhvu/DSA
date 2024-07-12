@@ -19,16 +19,32 @@ protected:
 TEST_F(TestVectorSuite, ConstructorDefault)
 {
     Vector<int> testObj;
+    EXPECT_TRUE(testObj.data() == nullptr);
+    EXPECT_EQ(testObj.size(), 0U);
+    EXPECT_EQ(testObj.capacity(), 0U);
 }
 
 TEST_F(TestVectorSuite, ConstructorList)
 {
-    Vector<int> testObj;
+    Vector<int> testObj = {1, 2, 3, 4, 5};
+    EXPECT_TRUE(testObj.data() != nullptr);
+    EXPECT_EQ(testObj.size(), 5U);
+    EXPECT_EQ(testObj.capacity(), 10U);
 }
 
 TEST_F(TestVectorSuite, ConstructorAnotherVector)
 {
-    Vector<int> testObj;
+    Vector<int> anotherV1;
+    Vector<int> testObj1(anotherV1);
+    EXPECT_TRUE(testObj1.data() == nullptr);
+    EXPECT_EQ(testObj1.size(), 0U);
+    EXPECT_EQ(testObj1.capacity(), 0U);
+
+    Vector<int> anotherV2 = {1, 2, 3, 4 ,5};
+    Vector<int> testObj2(anotherV2);
+    EXPECT_TRUE(testObj2.data() != nullptr);
+    EXPECT_EQ(testObj2.size(), 5U);
+    EXPECT_EQ(testObj2.capacity(), 10U);
 }
 
 TEST_F(TestVectorSuite, ConstructorIterator)
