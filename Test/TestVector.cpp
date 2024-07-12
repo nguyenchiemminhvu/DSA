@@ -192,64 +192,112 @@ TEST_F(TestVectorSuite, MethodPopBack)
 TEST_F(TestVectorSuite, MethodInsertElementAtIndex)
 {
     Vector<int> testObj;
+    EXPECT_THROW(testObj.insert(10U, 0), std::out_of_range);
+
+    EXPECT_NO_THROW(testObj.insert(0U, 1));
+    EXPECT_EQ(testObj[0], 1);
+    EXPECT_EQ(testObj.capacity(), 1U);
+
+    EXPECT_NO_THROW(testObj.insert(0U, 2));
+    EXPECT_EQ(testObj[0], 2);
+
+    EXPECT_NO_THROW(testObj.insert(2U, 3));
+    EXPECT_EQ(testObj.back(), 3);
+
+    EXPECT_NO_THROW(testObj.insert(2U, 4));
+    EXPECT_EQ(testObj[2U], 4);
 }
 
 TEST_F(TestVectorSuite, MethodInsertIteratorAtIndex)
 {
     Vector<int> testObj;
-}
 
-TEST_F(TestVectorSuite, MethodInsertElemetAtIterator)
-{
-    Vector<int> testObj;
-}
-
-TEST_F(TestVectorSuite, MethodInsertIteratorAtIterator)
-{
-    Vector<int> testObj;
+    Vector<int> another = {1, 2, 3, 4, 5};
+    EXPECT_NO_THROW(testObj.insert(0U, another.begin(), another.end()));
+    EXPECT_EQ(testObj, another);
 }
 
 TEST_F(TestVectorSuite, MethodEraseAtIndex)
 {
     Vector<int> testObj;
-}
+    EXPECT_THROW(testObj.erase(0U), std::out_of_range);
 
-TEST_F(TestVectorSuite, MethodEraseAtIterator)
-{
-    Vector<int> testObj;
+    testObj = {1, 2, 3, 4, 5};
+    EXPECT_NO_THROW(testObj.erase(testObj.size() - 1));
+
+    EXPECT_EQ(testObj.back(), 4);
 }
 
 TEST_F(TestVectorSuite, MethodClear)
 {
-    Vector<int> testObj;
+    Vector<int> testObj = {1, 2, 3, 4 ,5};
+    testObj.clear();
+    EXPECT_TRUE(testObj.empty());
+    EXPECT_NO_FATAL_FAILURE(testObj.clear());
 }
 
 TEST_F(TestVectorSuite, MethodAccessFront)
 {
     Vector<int> testObj;
+    EXPECT_THROW(testObj.front(), std::out_of_range);
+    
+    testObj.push_back(1);
+    EXPECT_NO_THROW(testObj.front());
+    EXPECT_EQ(testObj.front(), 1);
 }
 
 TEST_F(TestVectorSuite, MethodAccessBack)
 {
     Vector<int> testObj;
+    EXPECT_THROW(testObj.back(), std::out_of_range);
+
+    testObj.push_back(1);
+    testObj.push_back(2);
+    EXPECT_EQ(testObj.back(), 2);
 }
 
 TEST_F(TestVectorSuite, AccessOperator)
 {
     Vector<int> testObj;
+
+    EXPECT_THROW(testObj[0], std::out_of_range);
+
+    testObj = {1, 2, 3, 4, 5};
+    for (std::size_t i = 0U; i < testObj.size(); i++)
+    {
+        EXPECT_EQ(testObj[i], static_cast<int>(i + 1));
+    }
 }
 
 TEST_F(TestVectorSuite, MethodSize)
 {
     Vector<int> testObj;
+    EXPECT_EQ(testObj.size(), 0U);
+
+    testObj = {1, 2, 3, 4, 5};
+    EXPECT_EQ(testObj.size(), 5U);
+
+    testObj.clear();
+    EXPECT_EQ(testObj.size(), 0U);
 }
 
 TEST_F(TestVectorSuite, MethodCapacity)
 {
     Vector<int> testObj;
+    EXPECT_EQ(testObj.capacity(), 0U);
+
+    testObj = {1, 2, 3, 4, 5};
+    EXPECT_EQ(testObj.capacity(), 10U);
+
+    testObj.clear();
+    EXPECT_EQ(testObj.capacity(), 0U);
 }
 
 TEST_F(TestVectorSuite, MethodExpand)
 {
     Vector<int> testObj;
+    EXPECT_EQ(testObj.capacity(), 0U);
+
+    testObj = {1, 2, 3, 4, 5};
+    EXPECT_EQ(testObj.capacity(), 10U);
 }

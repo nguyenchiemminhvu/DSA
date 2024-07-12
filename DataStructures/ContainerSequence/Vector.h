@@ -210,20 +210,6 @@ public:
         m_size = new_size;
     }
 
-    iterator insert(iterator pos, const T& element)
-    {
-        std::size_t index = pos - m_data;
-        this->insert(index, element);
-        return m_data + index;
-    }
-
-    iterator insert(iterator pos, iterator left, iterator right)
-    {
-        std::size_t index = (pos - m_data);
-        this->insert(index, left, right);
-        return m_data + index;
-    }
-
     void erase(std::size_t index)
     {
         if (index >= m_size)
@@ -237,13 +223,6 @@ public:
         }
 
         m_size--;
-    }
-
-    iterator erase(iterator pos)
-    {
-        std::size_t index = pos - m_data;
-        this->erase(index);
-        return m_data + index;
     }
 
     void clear()
