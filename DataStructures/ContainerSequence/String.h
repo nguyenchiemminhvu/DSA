@@ -76,7 +76,7 @@ public:
         m_size = n;
     }
 
-    Vector& operator=(const Vector<char>& another)
+    Vector<char>& operator=(const Vector<char>& another)
     {
         if (this == &another)
         {
@@ -91,7 +91,7 @@ public:
         return *this;
     }
 
-    Vector& operator=(char* str)
+    Vector<char>& operator=(char* str)
     {
         this->clear();
 
@@ -103,7 +103,7 @@ public:
         return *this;
     }
 
-    void swap(Vector& another)
+    void swap(Vector<char>& another)
     {
         std::size_t tempSize = this->m_size;
         this->m_size = another.m_size;
@@ -290,7 +290,7 @@ public:
         return m_data[index];
     }
 
-    String& operator+=(const String& nextStr)
+    Vector<char>& operator+=(const Vector<char>& nextStr)
     {
         this->insert(this->end(), nextStr.begin(), nextStr.end());
         return *this;
