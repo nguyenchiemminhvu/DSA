@@ -86,7 +86,7 @@ public:
         m_size = another.size();
     }
 
-    Vector& operator=(const Vector& another)
+    Vector<T>& operator=(const Vector<T>& another)
     {
         if (this == &another)
         {
@@ -94,14 +94,21 @@ public:
         }
 
         this->clear();
-        this->expand(another.capacity());
-        std::copy(another.begin(), another.end(), m_data);
-
-        m_size = another.size();
+        if (another.m_data != nullptr)
+        {
+            this->expand(another.capacity());
+            std::copy(another.begin(), another.end(), m_data);
+            m_size = another.size();
+        }
         return *this;
     }
 
-    void swap(Vector& another)
+    bool operator==(const Vector<T>& another)
+    {
+        return false;
+    }
+
+    void swap(Vector<T>& another)
     {
         std::size_t tempSize = this->m_size;
         this->m_size = another.m_size;

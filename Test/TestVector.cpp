@@ -32,6 +32,20 @@ TEST_F(TestVectorSuite, ConstructorList)
     EXPECT_EQ(testObj.capacity(), 10U);
 }
 
+TEST_F(TestVectorSuite, ConstructorIterator)
+{
+    int buffer[5] = {1, 2, 3, 4, 5};
+    Vector<int> testObj(buffer, buffer + 5);
+    EXPECT_TRUE(testObj.data() != nullptr);
+    EXPECT_EQ(testObj.size(), 5U);
+    EXPECT_EQ(testObj.capacity(), 10U);
+
+    for (std::size_t i = 0U; i < testObj.size(); i++)
+    {
+        EXPECT_EQ(testObj[i], buffer[i]);
+    }
+}
+
 TEST_F(TestVectorSuite, ConstructorAnotherVector)
 {
     Vector<int> anotherV1;
@@ -47,14 +61,13 @@ TEST_F(TestVectorSuite, ConstructorAnotherVector)
     EXPECT_EQ(testObj2.capacity(), 10U);
 }
 
-TEST_F(TestVectorSuite, ConstructorIterator)
-{
-    Vector<int> testObj;
-}
-
 TEST_F(TestVectorSuite, AssignmentOperator)
 {
-    Vector<int> testObj;
+    Vector<int> another = {1, 2, 3, 4 ,5};
+    Vector<int> testObj = another;
+    EXPECT_TRUE(testObj.data() != nullptr);
+    EXPECT_EQ(testObj.size(), 5U);
+    EXPECT_EQ(testObj.capacity(), 10U);
 }
 
 TEST_F(TestVectorSuite, MethodSwap)
