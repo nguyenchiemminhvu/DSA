@@ -191,35 +191,6 @@ public:
         this->insert(index, str, str + str_len);
     }
 
-    iterator insert(iterator pos, const char& element)
-    {
-        std::size_t index = pos - m_data;
-        this->insert(index, element);
-        return m_data + index;
-    }
-
-    iterator insert(iterator pos, iterator left, iterator right)
-    {
-        std::size_t index = (pos - m_data);
-        this->insert(index, left, right);
-        return m_data + index;
-    }
-
-    iterator insert(iterator pos, const Vector<char>& another)
-    {
-        std::size_t index = pos - m_data;
-        this->insert(index, another.begin(), another.end());
-        return m_data + index;
-    }
-
-    iterator insert(iterator pos, char* str)
-    {
-        Vector<char> temp(str);
-        std::size_t index = pos - m_data;
-        this->insert(index, temp.begin(), temp.end());
-        return m_data + index;
-    }
-
     void erase(std::size_t index)
     {
         if (index >= m_size)
@@ -233,13 +204,6 @@ public:
         }
 
         m_size--;
-    }
-
-    iterator erase(iterator pos)
-    {
-        std::size_t index = pos - m_data;
-        this->erase(index);
-        return m_data + index;
     }
 
     void clear()
@@ -292,7 +256,7 @@ public:
 
     Vector<char>& operator+=(const Vector<char>& nextStr)
     {
-        this->insert(this->end(), nextStr.begin(), nextStr.end());
+        this->insert(this->m_size, nextStr.begin(), nextStr.end());
         return *this;
     }
 
