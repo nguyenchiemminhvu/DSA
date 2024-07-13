@@ -31,6 +31,8 @@ set(TEST_SOURCES
     TestArray.cpp
     TestVector.cpp
     TestString.cpp
+    TestList.cpp
+    TestDeque.cpp
 )
 
 # Add the executable for tests
