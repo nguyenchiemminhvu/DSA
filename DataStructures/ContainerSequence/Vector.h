@@ -223,6 +223,10 @@ public:
         }
 
         m_size--;
+        if (m_size == 0U)
+        {
+            this->clear();
+        }
     }
 
     void clear()

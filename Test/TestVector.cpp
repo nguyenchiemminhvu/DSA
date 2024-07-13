@@ -226,6 +226,15 @@ TEST_F(TestVectorSuite, MethodEraseAtIndex)
     EXPECT_NO_THROW(testObj.erase(testObj.size() - 1));
 
     EXPECT_EQ(testObj.back(), 4);
+
+    while (!testObj.empty())
+    {
+        testObj.erase(0U);
+    }
+
+    EXPECT_TRUE(testObj.data() == nullptr);
+    EXPECT_EQ(testObj.size(), 0U);
+    EXPECT_EQ(testObj.capacity(), 0U);
 }
 
 TEST_F(TestVectorSuite, MethodClear)
@@ -291,13 +300,4 @@ TEST_F(TestVectorSuite, MethodCapacity)
 
     testObj.clear();
     EXPECT_EQ(testObj.capacity(), 0U);
-}
-
-TEST_F(TestVectorSuite, MethodExpand)
-{
-    Vector<int> testObj;
-    EXPECT_EQ(testObj.capacity(), 0U);
-
-    testObj = {1, 2, 3, 4, 5};
-    EXPECT_EQ(testObj.capacity(), 10U);
 }

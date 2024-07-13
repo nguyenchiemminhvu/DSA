@@ -152,9 +152,13 @@ public:
 
     void pop_back()
     {
-        if (m_size > 0)
+        if (m_size > 0U)
         {
             m_size--;
+            if (m_size == 0U)
+            {
+                this->clear();
+            }
         }
     }
 
@@ -225,6 +229,10 @@ public:
         }
 
         m_size--;
+        if (m_size == 0U)
+        {
+            this->clear();
+        }
     }
 
     void clear()
