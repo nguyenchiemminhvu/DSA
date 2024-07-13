@@ -103,6 +103,27 @@ public:
         return *this;
     }
 
+    bool operator==(const Vector<char>& another)
+    {
+        bool equal = true;
+        if (m_size != another.m_size)
+        {
+            equal = false;
+        }
+        else
+        {
+            for (std::size_t i = 0U; i < m_size; i++)
+            {
+                if (m_data[i] != another[i])
+                {
+                    equal = false;
+                    break;
+                }
+            }
+        }
+        return equal;
+    }
+
     void swap(Vector<char>& another)
     {
         std::size_t tempSize = this->m_size;

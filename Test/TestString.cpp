@@ -19,34 +19,80 @@ protected:
 TEST_F(TestStringSuite, ConstructorDefault)
 {
     String testObj;
+    EXPECT_TRUE(testObj.data() == nullptr);
+    EXPECT_EQ(testObj.size(), 0U);
+    EXPECT_EQ(testObj.capacity(), 0U);
 }
 
 TEST_F(TestStringSuite, ConstructorList)
 {
-    String testObj;
+    String testObj = {'a', 'b', 'c'};
+    EXPECT_TRUE(testObj.data() != nullptr);
+    EXPECT_EQ(testObj.size(), 3U);
+    EXPECT_EQ(testObj.capacity(), 6U);
+    EXPECT_EQ(testObj[0], 'a');
+    EXPECT_EQ(testObj[1], 'b');
+    EXPECT_EQ(testObj[2], 'c');
 }
 
 TEST_F(TestStringSuite, ConstructorAnotherString)
 {
-    String testObj;
+    String another = {'a', 'b', 'c'};
+    String testObj(another);
+    EXPECT_TRUE(testObj.data() != nullptr);
+    EXPECT_EQ(testObj.size(), 3U);
+    EXPECT_EQ(testObj.capacity(), 6U);
+    EXPECT_EQ(testObj[0], 'a');
+    EXPECT_EQ(testObj[1], 'b');
+    EXPECT_EQ(testObj[2], 'c');
 }
 
 TEST_F(TestStringSuite, ConstructorCStyleString)
 {
-    String testObj;
+    String testObj("abc");
+    EXPECT_TRUE(testObj.data() != nullptr);
+    EXPECT_EQ(testObj.size(), 3U);
+    EXPECT_EQ(testObj.capacity(), 6U);
+    EXPECT_EQ(testObj[0], 'a');
+    EXPECT_EQ(testObj[1], 'b');
+    EXPECT_EQ(testObj[2], 'c');
 }
 
 TEST_F(TestStringSuite, ConstructorCStyleStringWithSize)
 {
-    String testObj;
+    String testObj("abcdef", 3U);
+    EXPECT_TRUE(testObj.data() != nullptr);
+    EXPECT_EQ(testObj.size(), 3U);
+    EXPECT_EQ(testObj.capacity(), 6U);
+    EXPECT_EQ(testObj[0], 'a');
+    EXPECT_EQ(testObj[1], 'b');
+    EXPECT_EQ(testObj[2], 'c');
 }
 
 TEST_F(TestStringSuite, AssignmentOperatorAnotherString)
 {
-    String testObj;
+    String another("abc");
+    String testObj = another;
+    EXPECT_TRUE(testObj.data() != nullptr);
+    EXPECT_EQ(testObj.size(), 3U);
+    EXPECT_EQ(testObj.capacity(), 6U);
+    EXPECT_EQ(testObj[0], 'a');
+    EXPECT_EQ(testObj[1], 'b');
+    EXPECT_EQ(testObj[2], 'c');
 }
 
 TEST_F(TestStringSuite, AssignmentOperatorCStyleString)
+{
+    String testObj = "abc";
+    EXPECT_TRUE(testObj.data() != nullptr);
+    EXPECT_EQ(testObj.size(), 3U);
+    EXPECT_EQ(testObj.capacity(), 6U);
+    EXPECT_EQ(testObj[0], 'a');
+    EXPECT_EQ(testObj[1], 'b');
+    EXPECT_EQ(testObj[2], 'c');
+}
+
+TEST_F(TestStringSuite, CompareEqualOperator)
 {
     String testObj;
 }
