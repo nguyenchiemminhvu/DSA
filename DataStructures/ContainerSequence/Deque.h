@@ -39,7 +39,7 @@ public:
         }
     }
 
-    Deque(const Deque& another)
+    Deque(const Deque<T>& another)
         : m_data(nullptr)
         , m_size(0U)
         , m_capacity(0U)
@@ -81,7 +81,7 @@ public:
             throw std::out_of_range("Index out of range");
         }
 
-        return m_data[index];
+        return m_data[(m_front_idx + index) % m_capacity];
     }
 
     void push_back(const T& value)
