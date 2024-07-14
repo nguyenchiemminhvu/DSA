@@ -33,6 +33,9 @@ set(TEST_SOURCES
     TestString.cpp
     TestList.cpp
     TestDeque.cpp
+    TestStack.cpp
+    TestQueue.cpp
+    TestPriorityQueue.cpp
 )
 
 # Add the executable for tests
