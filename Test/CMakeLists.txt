@@ -23,7 +23,7 @@ include_directories(
 include_directories(/usr/local/include/DSA)
 
 # Add compile options
-add_compile_options(-std=c++17 -fpermissive)
+add_compile_options(-std=c++17 -fpermissive -fprofile-arcs -ftest-coverage)
 
 # List of test files
 set(TEST_SOURCES
@@ -42,10 +42,18 @@ set(TEST_SOURCES
 add_executable(DSA_Test ${TEST_SOURCES})
 
 # Link GoogleTest to the test executable
-target_link_libraries(DSA_Test gtest gtest_main)
+target_link_libraries(DSA_Test gtest gtest_main gcov)
 
 # Enable testing
 enable_testing()
 
 # Add test cases
 add_test(NAME DSA_Test COMMAND DSA_Test)
+
+# Custom taret: generate coverage
+add_custom_target(coverage
+    COMMAND ${CMAKE_COMMAND} -E env TEST_EXECUTABLE=$<TARGET_FILE:DSA_Test> bash ${CMAKE_SOURCE_DIR}/generate_coverage.sh
+    DEPENDS DSA_Test
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+    COMMENT "Running tests and generating coverage report"
+)
