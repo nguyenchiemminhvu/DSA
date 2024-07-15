@@ -28,7 +28,7 @@ public:
         }
     }
 
-    void swap(const Queue& another)
+    void swap(Queue<T>& another)
     {
         std::swap(m_data, another.m_data);
         std::swap(m_size, another.m_size);
@@ -65,16 +65,6 @@ public:
         }
 
         return m_data[m_front_idx];
-    }
-
-    T& back()
-    {
-        if (empty())
-        {
-            throw std::out_of_range("Access empty queue");
-        }
-
-        return m_data[m_back_idx];
     }
 
     std::size_t size() const

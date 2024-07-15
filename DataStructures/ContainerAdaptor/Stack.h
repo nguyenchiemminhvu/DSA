@@ -28,7 +28,7 @@ public:
         }
     }
 
-    void swap(const Stack& another)
+    void swap(Stack<T>& another)
     {
         std::swap(m_data, another.m_data);
         std::swap(m_size, another.m_size);
