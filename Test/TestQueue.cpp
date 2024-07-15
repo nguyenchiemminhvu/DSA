@@ -20,3 +20,28 @@ TEST_F(TestQueueSuite, ConstructorDefault)
 {
     Queue<int> testObj;
 }
+
+TEST_F(TestQueueSuite, MethodSwap)
+{
+    Queue<int> testObj;
+}
+
+TEST_F(TestQueueSuite, MethodPush)
+{
+    Queue<int> testObj;
+}
+
+TEST_F(TestQueueSuite, MethodPop)
+{
+    Queue<int> testObj;
+}
+
+TEST_F(TestQueueSuite, MethodFront)
+{
+    Queue<int> testObj;
+}
+
+TEST_F(TestQueueSuite, MethodBack)
+{
+    Queue<int> testObj;
+}

@@ -197,7 +197,7 @@ private:
     {
         if (m_size == m_capacity)
         {
-            std::size_t new_cap = m_capacity == 0U ? 1U : m_capacity * 2;
+            std::size_t new_cap = m_capacity == 0U ? 1U : m_capacity * 2U;
             T* new_data = new T[new_cap];
             
             for (std::size_t i = 0U; i < m_size; i++)
@@ -209,7 +209,7 @@ private:
             m_data = new_data;
             m_capacity = new_cap;
             m_front_idx = 0U;
-            m_back_idx = m_size - 1;
+            m_back_idx = m_size > 0U ? m_size - 1U : 0U;
         }
     }
 
