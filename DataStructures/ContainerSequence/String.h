@@ -5,6 +5,7 @@
 #include <iostream>
 #include <cstring>
 #include <algorithm>
+#include <algorithm>
 
 using String = Vector<char>;
 

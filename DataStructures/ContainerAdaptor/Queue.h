@@ -89,7 +89,10 @@ private:
                 new_data[i] = m_data[(m_front_idx + i) % m_capacity];
             }
 
-            delete[] m_data;
+            if (m_data != nullptr)
+            {
+                delete[] m_data;
+            }
             m_data = new_data;
             m_capacity = new_cap;
             m_front_idx = 0U;

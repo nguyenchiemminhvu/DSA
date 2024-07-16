@@ -5,6 +5,7 @@
 #include <iterator>
 #include <stdexcept>
 #include <initializer_list>
+#include <algorithm>
 
 template <typename T>
 class Deque

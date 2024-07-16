@@ -6,6 +6,7 @@
 #include <stdexcept>
 #include <initializer_list>
 #include <functional>
+#include <algorithm>
 
 /**
  * Default is min heap
@@ -152,7 +153,7 @@ private:
         {
             std::size_t new_cap = m_capacity == 0U ? 1U : m_capacity * 2U;
             T* new_data = new T[new_cap];
-            if (m_size > 0U)
+            if (m_data != nullptr)
             {
                 std::copy(m_data, m_data + m_size, new_data);
                 delete[] m_data;
