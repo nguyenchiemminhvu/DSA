@@ -19,11 +19,8 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/../DataStructures/
 )
 
-# Add the header files for Algorithms and DataStructures
-include_directories(/usr/local/include/DSA)
-
 # Add compile options
-add_compile_options(-std=c++17 -fpermissive -fprofile-arcs -ftest-coverage)
+add_compile_options(-std=c++17 -fpermissive -g -fprofile-arcs -ftest-coverage)
 
 # List of test files
 set(TEST_SOURCES
@@ -42,7 +39,7 @@ set(TEST_SOURCES
 add_executable(DSA_Test ${TEST_SOURCES})
 
 # Link GoogleTest to the test executable
-target_link_libraries(DSA_Test gtest gtest_main gcov)
+target_link_libraries(DSA_Test gtest gtest_main gcov gmock)
 
 # Enable testing
 enable_testing()
