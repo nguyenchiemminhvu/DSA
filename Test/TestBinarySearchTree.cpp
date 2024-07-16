@@ -60,3 +60,8 @@ TEST_F(TestBSTSuite, MethodClear)
 {
     BinarySearchTree<int> testObj;
 }
+
+TEST_F(TestBSTSuite, MethodTraversal)
+{
+    BinarySearchTree<int> testObj;
+}

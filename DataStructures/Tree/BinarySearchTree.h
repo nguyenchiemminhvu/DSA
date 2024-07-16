@@ -79,6 +79,11 @@ public:
 
     }
 
+    std::vector<T> traversal()
+    {
+        return {};
+    }
+
     std::size_t size() const
     {
         return m_size;
