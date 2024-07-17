@@ -153,7 +153,7 @@ public:
 
     bool is_valid()
     {
-        return check_BST_validation(m_root);
+        return check_bst_validity(m_root);
     }
 
 private:
@@ -325,33 +325,11 @@ private:
                 delete cur;
                 return temp;
             }
-            else
-            {
-                m_size -= cur->count;
 
-                Node* parent = cur;
-                Node* find_successor = parent->right;
-                while (find_successor->left != nullptr)
-                {
-                    parent = find_successor;
-                    find_successor = find_successor->left;
-                }
-
-                cur->data = find_successor->data;
-                cur->count = find_successor->count;
-
-                if (parent->left == find_successor)
-                {
-                    parent->left = find_successor->right;
-                }
-                else
-                {
-                    parent->right = find_successor->right;
-                }
-
-                delete find_successor;
-                return cur;
-            }
+            Node* min_of_right_node = get_min_node(cur->right);
+            std::swap(cur->data, min_of_right_node->data);
+            std::swap(cur->count, min_of_right_node->count);
+            cur->right = recursive_erase(cur->right, key);
         }
 
         return cur;
@@ -379,7 +357,7 @@ private:
         }
     }
 
-    bool check_BST_validation(Node* cur, Node* minNode = nullptr, Node* maxNode = nullptr)
+    bool check_bst_validity(Node* cur, Node* minNode = nullptr, Node* maxNode = nullptr)
     {
         if (cur == nullptr)
         {
@@ -392,8 +370,23 @@ private:
             return false;
         }
 
-        return check_BST_validation(cur->left, minNode, cur)
-            && check_BST_validation(cur->right, cur, maxNode);
+        return check_bst_validity(cur->left, minNode, cur)
+            && check_bst_validity(cur->right, cur, maxNode);
+    }
+
+    Node* get_min_node(Node* cur)
+    {
+        if (cur == nullptr)
+        {
+            return nullptr;
+        }
+
+        while (cur->left != nullptr)
+        {
+            cur = cur->left;
+        }
+
+        return cur;
     }
 
 private:
