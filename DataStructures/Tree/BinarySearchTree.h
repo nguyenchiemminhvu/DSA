@@ -127,11 +127,6 @@ public:
         std::swap(m_size, another.m_size);
     }
 
-    const Node* get_node(const T& key)
-    {
-        return get_node_util(m_root, key);
-    }
-
     void insert(const T& key)
     {
         m_root = recursive_insert(m_root, key);
@@ -140,7 +135,12 @@ public:
 
     bool contain(const T& key)
     {
-        return recursive_find(m_root, key);
+        return recursive_contain(m_root, key);
+    }
+
+    const Node* get_node(const T& key)
+    {
+        return recursive_find_node(m_root, key);
     }
 
     void erase(const T& key)
@@ -273,29 +273,6 @@ private:
             && recursive_equal_compare(this_node->right, that_node->right);
     }
 
-    void recursive_traversal(Node* cur, std::vector<std::pair<T, std::size_t>>& elements)
-    {
-        if (cur != nullptr)
-        {
-            recursive_traversal(cur->left, elements);
-            elements.push_back({cur->data, cur->count});
-            recursive_traversal(cur->right, elements);
-        }
-    }
-
-    void recursive_deallocate(Node* cur)
-    {
-        if (cur == nullptr)
-        {
-            return;
-        }
-
-        recursive_deallocate(cur->left);
-        recursive_deallocate(cur->right);
-
-        delete cur;
-    }
-
     Node* recursive_insert(Node* cur, const T& key)
     {
         if (cur == nullptr)
@@ -320,7 +297,7 @@ private:
         return cur;
     }
 
-    bool recursive_find(Node* cur, const T& key)
+    bool recursive_contain(Node* cur, const T& key)
     {
         if (cur == nullptr)
         {
@@ -334,11 +311,33 @@ private:
 
         if (key < cur->data)
         {
-            return recursive_find(cur->left, key);
+            return recursive_contain(cur->left, key);
         }
         else
         {
-            return recursive_find(cur->right, key);
+            return recursive_contain(cur->right, key);
+        }
+    }
+
+    const Node* recursive_find_node(Node* cur, const T& key)
+    {
+        if (cur == nullptr)
+        {
+            return nullptr;
+        }
+
+        if (key == cur->data)
+        {
+            return cur;
+        }
+
+        if (key < cur->data)
+        {
+            return recursive_find_node(cur->left, key);
+        }
+        else
+        {
+            return recursive_find_node(cur->right, key);
         }
     }
 
@@ -383,29 +382,28 @@ private:
         return cur;
     }
 
-    const Node* get_node_util(Node* cur, const T& key)
+    void recursive_traversal(Node* cur, std::vector<std::pair<T, std::size_t>>& elements)
     {
-        if (cur == nullptr)
+        if (cur != nullptr)
         {
-            return nullptr;
-        }
-
-        if (key == cur->data)
-        {
-            return cur;
-        }
-
-        if (key < cur->data)
-        {
-            return get_node_util(cur->left, key);
-        }
-        else
-        {
-            return get_node_util(cur->right, key);
+            recursive_traversal(cur->left, elements);
+            elements.push_back({cur->data, cur->count});
+            recursive_traversal(cur->right, elements);
         }
     }
 
+    void recursive_deallocate(Node* cur)
+    {
+        if (cur == nullptr)
+        {
+            return;
+        }
 
+        recursive_deallocate(cur->left);
+        recursive_deallocate(cur->right);
+
+        delete cur;
+    }
 
     bool check_bst_validity(Node* cur, Node* minNode = nullptr, Node* maxNode = nullptr)
     {
