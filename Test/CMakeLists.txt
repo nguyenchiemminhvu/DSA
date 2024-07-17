@@ -34,6 +34,7 @@ set(TEST_SOURCES
     TestQueue.cpp
     TestPriorityQueue.cpp
     TestBinarySearchTree.cpp
+    TestAVLTree.cpp
 )
 
 # Add the executable for tests
