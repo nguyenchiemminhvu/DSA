@@ -38,13 +38,13 @@ public:
     BinarySearchTree(const std::initializer_list<T>& L)
         : BinarySearchTree()
     {
-        std::vector<T> sorted(L.begin(), L.end());
-        std::sort(sorted.begin(), sorted.end());
-        m_root = recursive_build_tree(sorted, 0U, sorted.size() - 1U);
-        m_size = sorted.size();
+        for (const T& key : L)
+        {
+            insert(key);
+        }
     }
 
-    BinarySearchTree(const BinarySearchTree& another)
+    BinarySearchTree(const BinarySearchTree<T>& another)
         : BinarySearchTree()
     {
         if (!another.empty())
@@ -54,17 +54,48 @@ public:
         }
     }
 
+    BinarySearchTree<T>& operator=(const std::initializer_list<T>& L)
+    {
+        if (m_root != nullptr)
+        {
+            clear();
+        }
+
+        for (const T& key : L)
+        {
+            insert(key);
+        }
+
+        return *this;
+    }
+
+    BinarySearchTree<T>& operator=(const BinarySearchTree<T>& another)
+    {
+        if (m_root != nullptr)
+        {
+            clear();
+        }
+
+        if (!another.empty())
+        {
+            m_root = recursive_clone_tree(m_root, another.m_root);
+            m_size = another.m_size;   
+        }
+
+        return *this;   
+    }
+
     ~BinarySearchTree()
     {
         clear();
     }
 
-    bool operator==(const BinarySearchTree& another)
+    bool operator==(const BinarySearchTree<T>& another)
     {
         return recursive_equal_compare(m_root, another.m_root);
     }
 
-    void swap(BinarySearchTree& another)
+    void swap(BinarySearchTree<T>& another)
     {
         std::swap(m_root, another.m_root);
         std::swap(m_size, another.m_size);
@@ -88,12 +119,7 @@ public:
 
     void erase(const T& key)
     {
-        if (empty())
-        {
-            throw std::out_of_range("Access empty BST");
-        }
-
-        m_size--;
+        m_root = recursive_erase(m_root, key);
     }
 
     void clear()
@@ -266,6 +292,69 @@ private:
         {
             return recursive_find(cur->right, key);
         }
+    }
+
+    Node* recursive_erase(Node* cur, const T& key)
+    {
+        if (cur == nullptr)
+        {
+            return nullptr;
+        }
+
+        if (key < cur->data)
+        {
+            cur->left = recursive_erase(cur->left, key);
+        }
+        else if (key > cur->data)
+        {
+            cur->right = recursive_erase(cur->right, key);
+        }
+        else
+        {
+            if (cur->left == nullptr)
+            {
+                m_size -= cur->count;
+                Node* temp = cur->right;
+                delete cur;
+                return temp;
+            }
+            else if (cur->right == nullptr)
+            {
+                m_size -= cur->count;
+                Node* temp = cur->left;
+                delete cur;
+                return temp;
+            }
+            else
+            {
+                m_size -= cur->count;
+
+                Node* parent = cur;
+                Node* find_successor = parent->right;
+                while (find_successor->left != nullptr)
+                {
+                    parent = find_successor;
+                    find_successor = find_successor->left;
+                }
+
+                cur->data = find_successor->data;
+                cur->count = find_successor->count;
+
+                if (parent->left == find_successor)
+                {
+                    parent->left = find_successor->right;
+                }
+                else
+                {
+                    parent->right = find_successor->right;
+                }
+
+                delete find_successor;
+                return cur;
+            }
+        }
+
+        return cur;
     }
 
     const Node* get_node_util(Node* cur, const T& key)
