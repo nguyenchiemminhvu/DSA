@@ -131,7 +131,7 @@ public:
 
     void insert(const T& key)
     {
-
+        m_root = recursive_insert(m_root, key);
     }
 
     bool contain(const T& key)
@@ -146,7 +146,7 @@ public:
 
     void erase(const T& key)
     {
-
+        m_root = recursive_erase(m_root, key);
     }
 
     void clear()
@@ -216,19 +216,62 @@ public:
     }
 
 private:
-    Node* recursive_build_tree(const std::vector<T>& sorted, std::size_t left, std::size_t right)
-    {
-        return nullptr;
-    }
-
     Node* recursive_clone_tree(Node* this_node, Node* that_node)
     {
-        return nullptr;
+        if (that_node == nullptr)
+        {
+            if (this_node != nullptr)
+            {
+                recursive_deallocate(this_node);
+                this_node = nullptr;
+            }
+
+            return this_node;
+        }
+
+        if (this_node == nullptr)
+        {
+            this_node = new Node(that_node->data);
+            this_node->count = that_node->count;
+        }
+        else
+        {
+            this_node->data = that_node->data;
+            this_node->count = that_node->count;
+        }
+
+        this_node->left = recursive_clone_tree(this_node->left, that_node->left);
+        this_node->right = recursive_clone_tree(this_node->right, that_node->right);
+
+        return this_node;
     }
 
     bool recursive_equal_compare(Node* this_node, Node* that_node)
     {
-        return false;
+        if (this_node == nullptr && that_node == nullptr)
+        {
+            return true;
+        }
+
+        if ((this_node == nullptr && that_node != nullptr)
+        ||  (this_node != nullptr && that_node == nullptr))
+        {
+            return false;
+        }
+
+        if ((this_node->data != that_node->data)
+        ||  (this_node->count != that_node->count))
+        {
+            return false;
+        }
+
+        return recursive_equal_compare(this_node->left, that_node->left)
+            && recursive_equal_compare(this_node->right, that_node->right);
+    }
+
+    Node* recursive_insert(Node* cur, const T& key)
+    {
+        return nullptr;
     }
 
     bool recursive_contain(Node* cur, const T& key)
@@ -275,6 +318,11 @@ private:
         }
     }
 
+    Node* recursive_erase(Node* cur, const T& key)
+    {
+        return nullptr;
+    }
+
     void recursive_traversal(Node* cur, std::vector<std::pair<T, std::size_t>>& elements)
     {
         if (cur != nullptr)
@@ -313,6 +361,37 @@ private:
 
         return check_bst_validity(cur->left, minNode, cur)
             && check_bst_validity(cur->right, cur, maxNode);
+    }
+
+    Node* rotate_right(Node* cur)
+    {
+        return nullptr;
+    }
+
+    Node* rotate_left(Node* cur)
+    {
+        return nullptr;
+    }
+
+    std::size_t get_height(Node* cur)
+    {
+        if (cur == nullptr)
+        {
+            return 0U;
+        }
+
+        return cur->height;
+    }
+
+    int get_balance_factor(Node* cur)
+    {
+        if (cur == nullptr)
+        {
+            return 0;
+        }
+
+        return static_cast<int>(get_height(cur->left))
+             - static_cast<int>(get_height(cur->right));
     }
 
     Node* get_min_node(Node* cur)
