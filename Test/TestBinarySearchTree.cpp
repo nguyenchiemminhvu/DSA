@@ -107,6 +107,20 @@ TEST_F(TestBSTSuite, OperatorCompareEqual)
     EXPECT_TRUE(testObj == another);
 }
 
+TEST_F(TestBSTSuite, MethodIsSameSet)
+{
+    BinarySearchTree<int> testObj = {3, 3, 3, 1, 1, 2, 2, 2, 2};
+    BinarySearchTree<int> another = {1, 1, 2, 2, 2, 2, 3, 3, 3};
+
+    EXPECT_TRUE(testObj.is_same_set(another));
+
+    another = {1, 2, 2, 2, 2, 3, 3, 3};
+    EXPECT_FALSE(testObj.is_same_set(another));
+    
+    another = {1, 2, 3, 4, 5};
+    EXPECT_FALSE(testObj.is_same_set(another));
+}
+
 TEST_F(TestBSTSuite, MethodSwap)
 {
     BinarySearchTree<int> testObj;
@@ -163,6 +177,36 @@ TEST_F(TestBSTSuite, MethodGetNode)
     node = testObj.get_node(3);
     EXPECT_EQ(node->data, 3);
     EXPECT_EQ(node->count, 1U);
+}
+
+TEST_F(TestBSTSuite, MethodGetMinNode)
+{
+    BinarySearchTree<int> testObj;
+    EXPECT_TRUE(testObj.get_min_node() == nullptr);
+
+    testObj.insert(1);
+    EXPECT_EQ(testObj.get_min_node()->data, 1);
+
+    testObj.insert(2);
+    EXPECT_EQ(testObj.get_min_node()->data, 1);
+
+    testObj.insert(0);
+    EXPECT_EQ(testObj.get_min_node()->data, 0);
+}
+
+TEST_F(TestBSTSuite, MethodGetMaxNode)
+{
+    BinarySearchTree<int> testObj;
+    EXPECT_TRUE(testObj.get_max_node() == nullptr);
+
+    testObj.insert(1);
+    EXPECT_EQ(testObj.get_max_node()->data, 1);
+
+    testObj.insert(2);
+    EXPECT_EQ(testObj.get_max_node()->data, 2);
+
+    testObj.insert(0);
+    EXPECT_EQ(testObj.get_max_node()->data, 2);
 }
 
 TEST_F(TestBSTSuite, MethodInsert)

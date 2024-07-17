@@ -50,7 +50,7 @@ public:
         if (!another.empty())
         {
             m_root = recursive_clone_tree(m_root, another.m_root);
-            m_size = another.m_size;   
+            m_size = another.m_size;
         }
     }
 
@@ -79,10 +79,10 @@ public:
         if (!another.empty())
         {
             m_root = recursive_clone_tree(m_root, another.m_root);
-            m_size = another.m_size;   
+            m_size = another.m_size;
         }
 
-        return *this;   
+        return *this;
     }
 
     ~BinarySearchTree()
@@ -93,6 +93,32 @@ public:
     bool operator==(const BinarySearchTree<T>& another)
     {
         return recursive_equal_compare(m_root, another.m_root);
+    }
+
+    bool is_same_set(const BinarySearchTree<T>& another)
+    {
+        std::vector<std::pair<T, std::size_t>> this_elements = traversal();
+        std::vector<std::pair<T, std::size_t>> that_elements = another.traversal();
+
+        bool res = true;
+        if (this_elements.size() != that_elements.size())
+        {
+            res = false;
+        }
+        else
+        {
+            for (int i = 0; i < this_elements.size(); i++)
+            {
+                if ((this_elements[i].first != that_elements[i].first)
+                ||  (this_elements[i].second != that_elements[i].second))
+                {
+                    res = false;
+                    break;
+                }
+            }
+        }
+
+        return res;
     }
 
     void swap(BinarySearchTree<T>& another)
@@ -139,6 +165,16 @@ public:
     Node* get_root()
     {
         return m_root;
+    }
+
+    Node* get_min_node()
+    {
+        return get_min_node(m_root);
+    }
+
+    Node* get_max_node()
+    {
+        return get_max_node(m_root);
     }
 
     std::size_t size() const
@@ -283,7 +319,7 @@ private:
         {
             return true;
         }
-        
+
         if (key < cur->data)
         {
             return recursive_find(cur->left, key);
@@ -357,6 +393,8 @@ private:
         }
     }
 
+
+
     bool check_bst_validity(Node* cur, Node* minNode = nullptr, Node* maxNode = nullptr)
     {
         if (cur == nullptr)
@@ -384,6 +422,21 @@ private:
         while (cur->left != nullptr)
         {
             cur = cur->left;
+        }
+
+        return cur;
+    }
+
+    Node* get_max_node(Node* cur)
+    {
+        if (cur == nullptr)
+        {
+            return nullptr;
+        }
+
+        while (cur->right != nullptr)
+        {
+            cur = cur->right;
         }
 
         return cur;
