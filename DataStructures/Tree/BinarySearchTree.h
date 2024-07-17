@@ -199,6 +199,11 @@ public:
         return m_size == 0U;
     }
 
+    std::size_t height()
+    {
+        return get_height(m_root);
+    }
+
     bool is_valid()
     {
         return check_bst_validity(m_root);
@@ -470,6 +475,16 @@ private:
         }
 
         return cur;
+    }
+
+    std::size_t get_height(Node* cur)
+    {
+        if (cur == nullptr)
+        {
+            return 0U;
+        }
+
+        return 1 + std::max(get_height(cur->left), get_height(cur->right));
     }
 
 private:

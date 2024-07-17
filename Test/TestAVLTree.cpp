@@ -100,3 +100,9 @@ TEST_F(TestAVLSuite, MethodTraversal)
 {
     AVLTree<int> testObj;
 }
+
+TEST_F(TestAVLSuite, MethodHeight)
+{
+    AVLTree<int> testObj;
+    EXPECT_EQ(testObj.height(), 0U);
+}

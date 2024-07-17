@@ -200,6 +200,16 @@ public:
         return m_size == 0U;
     }
 
+    std::size_t height()
+    {
+        if (empty())
+        {
+            return 0U;
+        }
+
+        return m_root->height;
+    }
+
     bool is_valid()
     {
         return check_bst_validity(m_root);

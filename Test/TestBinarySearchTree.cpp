@@ -333,3 +333,30 @@ TEST_F(TestBSTSuite, MethodTraversal)
     EXPECT_EQ(elements[2].first, 3);
     EXPECT_EQ(elements[2].second, 2U);
 }
+
+TEST_F(TestBSTSuite, MethodHeight)
+{
+    BinarySearchTree<int> testObj;
+    EXPECT_EQ(testObj.height(), 0U);
+
+    testObj.insert(5);
+    EXPECT_EQ(testObj.height(), 1U);
+
+    testObj.insert(3);
+    EXPECT_EQ(testObj.height(), 2U);
+
+    testObj.insert(7);
+    EXPECT_EQ(testObj.height(), 2U);
+
+    testObj.insert(9);
+    EXPECT_EQ(testObj.height(), 3U);
+
+    testObj.insert(6);
+    EXPECT_EQ(testObj.height(), 3U);
+
+    testObj.insert(1);
+    EXPECT_EQ(testObj.height(), 3U);
+
+    testObj.insert(0);
+    EXPECT_EQ(testObj.height(), 4U);
+}
