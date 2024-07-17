@@ -209,6 +209,19 @@ TEST_F(TestBSTSuite, MethodGetMaxNode)
     EXPECT_EQ(testObj.get_max_node()->data, 2);
 }
 
+TEST_F(TestBSTSuite, MethodGetLowestCommonAncestor)
+{
+    BinarySearchTree<int> testObj = {5, 2, 7, 1, 4, 9};
+    EXPECT_TRUE(testObj.get_lowest_common_ancestor(1, 3) == nullptr);
+
+    EXPECT_EQ(testObj.get_lowest_common_ancestor(5, 5)->data, 5);
+    EXPECT_EQ(testObj.get_lowest_common_ancestor(2, 7)->data, 5);
+    EXPECT_EQ(testObj.get_lowest_common_ancestor(1, 7)->data, 5);
+    EXPECT_EQ(testObj.get_lowest_common_ancestor(1, 4)->data, 2);
+    EXPECT_EQ(testObj.get_lowest_common_ancestor(1, 9)->data, 5);
+    EXPECT_EQ(testObj.get_lowest_common_ancestor(7, 9)->data, 7);
+}
+
 TEST_F(TestBSTSuite, MethodInsert)
 {
     BinarySearchTree<int> testObj;

@@ -177,6 +177,18 @@ public:
         return get_max_node(m_root);
     }
 
+    Node* get_lowest_common_ancestor(const T& key1, const T& key2)
+    {
+        Node* common = nullptr;
+
+        if (contain(key1) && contain(key2))
+        {
+            common = get_lowest_common_ancestor(m_root, key1, key2);
+        }
+
+        return common;
+    }
+
     std::size_t size() const
     {
         return m_size;
@@ -437,6 +449,26 @@ private:
         while (cur->right != nullptr)
         {
             cur = cur->right;
+        }
+
+        return cur;
+    }
+
+    Node* get_lowest_common_ancestor(Node* cur, const T& key1, const T& key2)
+    {
+        if (cur == nullptr)
+        {
+            return nullptr;
+        }
+
+        if (key1 < cur->data && key2 < cur->data)
+        {
+            return get_lowest_common_ancestor(cur->left, key1, key2);
+        }
+
+        if (key1 > cur->data && key2 > cur->data)
+        {
+            return get_lowest_common_ancestor(cur->right, key1, key2);
         }
 
         return cur;
