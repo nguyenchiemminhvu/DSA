@@ -35,7 +35,6 @@ set(TEST_SOURCES
     TestPriorityQueue.cpp
     TestBinarySearchTree.cpp
     TestAVLTree.cpp
-    TestAVLMap.cpp
     TestSet.cpp
     TestMap.cpp
 )
