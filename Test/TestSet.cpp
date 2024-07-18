@@ -26,6 +26,11 @@ TEST_F(TestSetSuite, ConstructorInitializerList)
     Set<int> testObj;
 }
 
+TEST_F(TestSetSuite, ConstructorVector)
+{
+    Set<int> testObj;
+}
+
 TEST_F(TestSetSuite, ConstructorAnotherSet)
 {
     Set<int> testObj;
