@@ -808,13 +808,12 @@ private:
 
         if (this_node == nullptr)
         {
-            this_node = new Node(that_node->data);
-            this_node->count = that_node->count;
+            this_node = new Node(that_node->key, that_node->value);
         }
         else
         {
-            this_node->data = that_node->data;
-            this_node->count = that_node->count;
+            this_node->key = that_node->key;
+            this_node->value = that_node->value;
         }
 
         this_node->left = recursive_clone_tree(this_node->left, that_node->left);
@@ -908,12 +907,12 @@ private:
             return false;
         }
 
-        if (key == cur->data)
+        if (key == cur->key)
         {
             return true;
         }
 
-        if (key < cur->data)
+        if (key < cur->key)
         {
             return recursive_contain(cur->left, key);
         }
@@ -930,12 +929,12 @@ private:
             return nullptr;
         }
 
-        if (key == cur->data)
+        if (key == cur->key)
         {
             return cur;
         }
 
-        if (key < cur->data)
+        if (key < cur->key)
         {
             return recursive_find_node(cur->left, key);
         }
@@ -1059,6 +1058,11 @@ private:
     // use for node that has balance factor > 0
     Node* rotate_right(Node* cur)
     {
+        if (cur == nullptr)
+        {
+            return nullptr;
+        }
+
         Node* cur_left = cur->left;
         Node* cur_left_right = cur_left->right;
 
@@ -1074,6 +1078,11 @@ private:
     // use for node that has balance factor < 0
     Node* rotate_left(Node* cur)
     {
+        if (cur == nullptr)
+        {
+            return nullptr;
+        }
+
         Node* cur_right = cur->right;
         Node* cur_right_left = cur_right->left;
 
@@ -1081,7 +1090,7 @@ private:
         cur->right = cur_right_left;
 
         cur->height = std::max(get_height(cur->left), get_height(cur->right)) + 1U;
-        cur_right->height = std::max(get_height(cur_right->left), get_height(cur_right->height)) + 1U;
+        cur_right->height = std::max(get_height(cur_right->left), get_height(cur_right->right)) + 1U;
 
         return cur_right;
     }
