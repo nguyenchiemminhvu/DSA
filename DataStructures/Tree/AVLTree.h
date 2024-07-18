@@ -35,6 +35,7 @@ public:
     AVLTree()
         : m_root(nullptr)
         , m_size(0U)
+        , m_size_set(0U)
     {
 
     }
@@ -129,6 +130,7 @@ public:
     {
         std::swap(m_root, another.m_root);
         std::swap(m_size, another.m_size);
+        std::swap(m_size_set, another.m_size_set);
     }
 
     void insert(const T& key)
@@ -173,6 +175,7 @@ public:
         recursive_deallocate(m_root);
         m_root = nullptr;
         m_size = 0U;
+        m_size_set = 0U;
     }
 
     std::vector<std::pair<T, std::size_t>> traversal()
@@ -212,6 +215,11 @@ public:
     std::size_t size() const
     {
         return m_size;
+    }
+
+    std::size_t size_set() const
+    {
+        return m_size_set;
     }
 
     bool empty()
@@ -301,6 +309,7 @@ private:
         if (cur == nullptr)
         {
             m_size++;
+            m_size_set++;
             cur = new Node(key);
             return cur;
         }
@@ -417,6 +426,7 @@ private:
             if (cur->left == nullptr)
             {
                 m_size -= cur->count;
+                m_size_set--;
                 Node* temp = cur->right;
                 delete cur;
                 return temp;
@@ -424,6 +434,7 @@ private:
             else if (cur->right == nullptr)
             {
                 m_size -= cur->count;
+                m_size_set--;
                 Node* temp = cur->left;
                 delete cur;
                 return temp;
@@ -651,6 +662,7 @@ private:
 private:
     Node* m_root;
     std::size_t m_size;
+    std::size_t m_size_set;
 };
 
 #endif // AVL_TREE_H

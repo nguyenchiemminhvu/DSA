@@ -122,26 +122,31 @@ TEST_F(TestAVLSuite, MethodInsert)
     EXPECT_TRUE(testObj.empty());
     EXPECT_TRUE(testObj.is_valid());
     EXPECT_EQ(testObj.size(), 0U);
+    EXPECT_EQ(testObj.size_set(), 0U);
 
     testObj.insert(5);
     EXPECT_FALSE(testObj.empty());
     EXPECT_TRUE(testObj.is_valid());
     EXPECT_EQ(testObj.size(), 1U);
+    EXPECT_EQ(testObj.size_set(), 1U);
 
     testObj.insert(5);
     EXPECT_FALSE(testObj.empty());
     EXPECT_TRUE(testObj.is_valid());
     EXPECT_EQ(testObj.size(), 2U);
+    EXPECT_EQ(testObj.size_set(), 1U);
     
     testObj.insert(1);
     EXPECT_FALSE(testObj.empty());
     EXPECT_TRUE(testObj.is_valid());
     EXPECT_EQ(testObj.size(), 3U);
+    EXPECT_EQ(testObj.size_set(), 2U);
     
     testObj.insert(9);
     EXPECT_FALSE(testObj.empty());
     EXPECT_TRUE(testObj.is_valid());
     EXPECT_EQ(testObj.size(), 4U);
+    EXPECT_EQ(testObj.size_set(), 3U);
 }
 
 TEST_F(TestAVLSuite, MethodContain)
@@ -210,17 +215,20 @@ TEST_F(TestAVLSuite, MethodErase)
     EXPECT_TRUE(testObj.empty());
     EXPECT_TRUE(testObj.is_valid());
     EXPECT_EQ(testObj.size(), 0U);
+    EXPECT_EQ(testObj.size_set(), 0U);
 
     testObj.erase(5);
     EXPECT_TRUE(testObj.empty());
     EXPECT_TRUE(testObj.is_valid());
     EXPECT_EQ(testObj.size(), 0U);
+    EXPECT_EQ(testObj.size_set(), 0U);
 
     testObj.insert(5);
     testObj.erase(5);
     EXPECT_TRUE(testObj.empty());
     EXPECT_TRUE(testObj.is_valid());
     EXPECT_EQ(testObj.size(), 0U);
+    EXPECT_EQ(testObj.size_set(), 0U);
 
     testObj.insert(5);
     testObj.insert(3);
@@ -232,6 +240,9 @@ TEST_F(TestAVLSuite, MethodErase)
     testObj.insert(8);
     testObj.insert(4);
     testObj.insert(0);
+
+    EXPECT_EQ(testObj.size(), 10U);
+    EXPECT_EQ(testObj.size_set(), 10U);
 
     for (int i = 0; i < 10; i++)
     {
