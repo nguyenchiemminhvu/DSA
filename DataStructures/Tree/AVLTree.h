@@ -745,6 +745,27 @@ public:
         return recursive_find_node(m_root, key);
     }
 
+    TV& at(const TK& key)
+    {
+        Node* find_node = recursive_find_node(m_root, key);
+        if (find_node == nullptr)
+        {
+            throw std::out_of_range("Key is not found");
+        }
+        return find_node->value;
+    }
+
+    TV& operator[](const TK& key)
+    {
+        Node* find_node = recursive_find_node(m_root, key);
+        if (find_node == nullptr)
+        {
+            insert(key, TV());
+            find_node = recursive_find_node(m_root, key);
+        }
+        return find_node->value;
+    }
+
     void erase(const TK& key)
     {
         m_root = recursive_erase(m_root, key);
@@ -922,7 +943,7 @@ private:
         }
     }
 
-    const Node* recursive_find_node(Node* cur, const TK& key)
+    Node* recursive_find_node(Node* cur, const TK& key)
     {
         if (cur == nullptr)
         {

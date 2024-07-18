@@ -472,6 +472,57 @@ TEST_F(TestAVLMapSuite, MethodGetNode)
     EXPECT_TRUE(testObj.get_node(10) == nullptr);
 }
 
+TEST_F(TestAVLMapSuite, MethodAt)
+{
+    AVLMap<int, int> testObj;
+
+    for (int i = 0; i < 10; i++)
+    {
+        testObj.insert(i, 1);
+    }
+
+    EXPECT_TRUE(testObj.is_valid());
+
+    for (int i = 0; i < 10; i++)
+    {
+        int& temp = testObj.at(i);
+        temp = 2;
+    }
+
+    for (int i = 0; i < 10; i++)
+    {
+        EXPECT_EQ(testObj.get_node(i)->value, 2);
+    }
+
+    EXPECT_THROW(testObj.at(10), std::out_of_range);
+}
+
+TEST_F(TestAVLMapSuite, OperatorAccessViaKey)
+{
+    AVLMap<int, int> testObj;
+
+    for (int i = 0; i < 10; i++)
+    {
+        testObj.insert(i, 1);
+    }
+
+    EXPECT_TRUE(testObj.is_valid());
+
+    for (int i = 0; i < 10; i++)
+    {
+        int& temp = testObj[i];
+        temp = 2;
+    }
+
+    for (int i = 0; i < 10; i++)
+    {
+        EXPECT_EQ(testObj.get_node(i)->value, 2);
+    }
+
+    testObj[10] = 2;
+    EXPECT_EQ(testObj[10], 2);
+}
+
 TEST_F(TestAVLMapSuite, MethodErase)
 {
     AVLMap<int, int> testObj;
