@@ -377,11 +377,13 @@ private:
                 delete cur;
                 return temp;
             }
-
-            Node* min_of_right_node = get_min_node(cur->right);
-            std::swap(cur->data, min_of_right_node->data);
-            std::swap(cur->count, min_of_right_node->count);
-            cur->right = recursive_erase(cur->right, key);
+            else
+            {
+                Node* min_of_right_node = get_min_node(cur->right);
+                cur->data = min_of_right_node->data;
+                cur->count = min_of_right_node->count;
+                cur->right = recursive_erase(cur->right, min_of_right_node->data);
+            }
         }
 
         return cur;

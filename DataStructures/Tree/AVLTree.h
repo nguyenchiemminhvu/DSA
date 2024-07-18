@@ -271,7 +271,59 @@ private:
 
     Node* recursive_insert(Node* cur, const T& key)
     {
-        return nullptr;
+        if (cur == nullptr)
+        {
+            m_size++;
+            cur = new Node(key);
+            return cur;
+        }
+
+        if (key < cur->data)
+        {
+            cur->left = recursive_insert(cur->left, key);
+        }
+        else if (key > cur->data)
+        {
+            cur->right = recursive_insert(cur->right, key);
+        }
+        else
+        {
+            m_size++;
+            cur->count++;
+            return cur;
+        }
+
+        // backtrack balancing
+        cur->height = std::max(get_height(cur->left), get_height(cur->right)) + 1U;
+        int balance = get_balance_factor(cur);
+
+        // left left case
+        if (balance > 1 && key < cur->left->data)
+        {
+            return rotate_right(cur);
+        }
+
+        // left right case
+        if (balance > 1 && key > cur->left->data)
+        {
+            cur->left = rorate_left(cur->left); // make it left left case
+            return rorate_right(cur);
+        }
+
+        // right right case
+        if (balance < -1 && key > cur->right->data)
+        {
+            rotate_left(cur);
+        }
+
+        // right left case
+        if (balance < -1 && key < cur->right->data)
+        {
+            cur->right = rorate_right(cur->right); // make it right right case
+            return rotate_left(cur);
+        }
+
+        return cur;
     }
 
     bool recursive_contain(Node* cur, const T& key)
@@ -320,7 +372,82 @@ private:
 
     Node* recursive_erase(Node* cur, const T& key)
     {
-        return nullptr;
+        if (cur == nullptr)
+        {
+            return nullptr;
+        }
+
+        if (key < cur->data)
+        {
+            cur->left = recursive_erase(cur->left, key);
+        }
+        else if (key > cur->data)
+        {
+            cur->right = recursive_erase(cur->right, key);
+        }
+        else
+        {
+            if (cur->left == nullptr)
+            {
+                m_size -= cur->count;
+                Node* temp = cur->right;
+                delete cur;
+                return temp;
+            }
+            else if (cur->right == nullptr)
+            {
+                m_size -= cur->count;
+                Node* temp = cur->left;
+                delete cur;
+                return temp;
+            }
+            else
+            {
+                Node* min_of_right_node = get_min_node(cur->right);
+                cur->data = min_of_right_node->data;
+                cur->count = min_of_right_node->count;
+                cur->right = recursive_erase(cur->right, min_of_right_node->data);
+            }
+        }
+
+        // backtrack balancing
+        if (cur == nullptr)
+        {
+            return cur;
+        }
+
+        cur->height = std::max(get_height(cur->left), get_height(cur->right)) + 1U;
+        int balance = get_balance_factor(cur);
+        int balance_left = get_balance_factor(cur->left);
+        int balance_right = get_balance_factor(cur->right);
+
+        // left left case
+        if (balance > 1 && balance_left >= 0)
+        {
+            return rotate_right(cur);
+        }
+
+        // left right case
+        if (balance > 1 && balance_left < 0)
+        {
+            cur->left = rotate_left(cur->left); // make it left left case
+            return rotate_right(cur);
+        }
+
+        // right right case
+        if (balance < 1 && balance_right <= 0)
+        {
+            return rotate_left(cur);
+        }
+
+        // right left case
+        if (balance < 1 && balance_right > 0)
+        {
+            cur->right = rotate_right(cur->right); // make it right right case
+            return rotate_left(cur);
+        }
+
+        return cur;
     }
 
     void recursive_traversal(Node* cur, std::vector<std::pair<T, std::size_t>>& elements)
@@ -363,6 +490,7 @@ private:
             && check_bst_validity(cur->right, cur, maxNode);
     }
 
+    // use for node that has balance factor > 0
     Node* rotate_right(Node* cur)
     {
         Node* cur_left = cur->left;
@@ -377,6 +505,7 @@ private:
         return nullptr;
     }
 
+    // use for node that has balance factor < 0
     Node* rotate_left(Node* cur)
     {
         Node* cur_right = cur->right;
