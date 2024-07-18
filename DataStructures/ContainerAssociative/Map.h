@@ -82,11 +82,6 @@ public:
         return m_core.empty();
     }
 
-    std::vector<std::pair<TK, TV>> traversal()
-    {
-        return {};
-    }
-
 private:
     AVLMap<TK, TV> m_core;
 };
