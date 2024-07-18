@@ -365,11 +365,29 @@ private:
 
     Node* rotate_right(Node* cur)
     {
+        Node* cur_left = cur->left;
+        Node* cur_left_right = cur_left->right;
+
+        cur_left->right = cur;
+        cur->left = cur_left_right;
+
+        cur->height = std::max(get_height(cur->left), get_height(cur->right)) + 1U;
+        cur_left->height = std::max(get_height(cur_left->left), get_height(cur_left->right)) + 1U;
+
         return nullptr;
     }
 
     Node* rotate_left(Node* cur)
     {
+        Node* cur_right = cur->right;
+        Node* cur_right_left = cur_right->left;
+
+        cur_right->left = cur;
+        cur->right = cur_right_left;
+
+        cur->height = std::max(get_height(cur->left), get_height(cur->right)) + 1U;
+        cur_right->height = std::max(get_height(cur_right->left), get_height(cur_right->right)) + 1U;
+
         return nullptr;
     }
 
