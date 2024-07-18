@@ -6,6 +6,8 @@
 #include <stdexcept>
 #include <initializer_list>
 #include <vector>
+#include <string>
+#include <cmath>
 #include <algorithm>
 
 template <typename T>
@@ -99,7 +101,7 @@ public:
 
     bool is_same_set(const AVLTree<T>& another)
     {
-        std::vector<std::pair<T, std::size_t>> this_elements = traversal(m_root);
+        std::vector<std::pair<T, std::size_t>> this_elements = traversal();
         std::vector<std::pair<T, std::size_t>> that_elements = another.traversal();
 
         bool res = true;
@@ -147,6 +149,10 @@ public:
     void erase(const T& key)
     {
         m_root = recursive_erase(m_root, key);
+        if (empty())
+        {
+            clear();
+        }
     }
 
     void clear()
@@ -213,6 +219,14 @@ public:
     bool is_valid()
     {
         return check_bst_validity(m_root);
+    }
+
+    void printTree()
+    {
+        if (!empty())
+        {
+            recursive_print_tree(m_root, 0);
+        }
     }
 
 private:
@@ -306,20 +320,20 @@ private:
         // left right case
         if (balance > 1 && key > cur->left->data)
         {
-            cur->left = rorate_left(cur->left); // make it left left case
-            return rorate_right(cur);
+            cur->left = rotate_left(cur->left); // make it left left case
+            return rotate_right(cur);
         }
 
         // right right case
         if (balance < -1 && key > cur->right->data)
         {
-            rotate_left(cur);
+            return rotate_left(cur);
         }
 
         // right left case
         if (balance < -1 && key < cur->right->data)
         {
-            cur->right = rorate_right(cur->right); // make it right right case
+            cur->right = rotate_right(cur->right); // make it right right case
             return rotate_left(cur);
         }
 
@@ -407,15 +421,11 @@ private:
                 cur->data = min_of_right_node->data;
                 cur->count = min_of_right_node->count;
                 cur->right = recursive_erase(cur->right, min_of_right_node->data);
+                return cur;
             }
         }
 
         // backtrack balancing
-        if (cur == nullptr)
-        {
-            return cur;
-        }
-
         cur->height = std::max(get_height(cur->left), get_height(cur->right)) + 1U;
         int balance = get_balance_factor(cur);
         int balance_left = get_balance_factor(cur->left);
@@ -435,13 +445,13 @@ private:
         }
 
         // right right case
-        if (balance < 1 && balance_right <= 0)
+        if (balance < -1 && balance_right <= 0)
         {
             return rotate_left(cur);
         }
 
         // right left case
-        if (balance < 1 && balance_right > 0)
+        if (balance < -1 && balance_right > 0)
         {
             cur->right = rotate_right(cur->right); // make it right right case
             return rotate_left(cur);
@@ -493,6 +503,11 @@ private:
     // use for node that has balance factor > 0
     Node* rotate_right(Node* cur)
     {
+        if (cur == nullptr)
+        {
+            return nullptr;
+        }
+
         Node* cur_left = cur->left;
         Node* cur_left_right = cur_left->right;
 
@@ -502,12 +517,17 @@ private:
         cur->height = std::max(get_height(cur->left), get_height(cur->right)) + 1U;
         cur_left->height = std::max(get_height(cur_left->left), get_height(cur_left->right)) + 1U;
 
-        return nullptr;
+        return cur_left;
     }
 
     // use for node that has balance factor < 0
     Node* rotate_left(Node* cur)
     {
+        if (cur == nullptr)
+        {
+            return nullptr;
+        }
+
         Node* cur_right = cur->right;
         Node* cur_right_left = cur_right->left;
 
@@ -517,7 +537,7 @@ private:
         cur->height = std::max(get_height(cur->left), get_height(cur->right)) + 1U;
         cur_right->height = std::max(get_height(cur_right->left), get_height(cur_right->right)) + 1U;
 
-        return nullptr;
+        return cur_right;
     }
 
     std::size_t get_height(Node* cur)
@@ -589,6 +609,30 @@ private:
         }
 
         return cur;
+    }
+
+    void recursive_print_tree(Node* cur, int space)
+    {
+        // Base case
+        if (cur == nullptr)
+            return;
+    
+        // Increase distance between levels
+        static constexpr int COUNT = 10;
+        space += COUNT;
+    
+        // Process right child first
+        recursive_print_tree(cur->right, space);
+    
+        // Print current node after space
+        // count
+        std::cout << std::endl;
+        for (int i = COUNT; i < space; i++)
+            std::cout << " ";
+        std::cout << cur->data << "\n";
+    
+        // Process left child
+        recursive_print_tree(cur->left, space);
     }
 
 private:
