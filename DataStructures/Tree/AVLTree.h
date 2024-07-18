@@ -848,7 +848,57 @@ private:
 
     Node* recursive_insert(Node* cur, const TK& key, const TV& value)
     {
-        return nullptr;
+        if (cur == nullptr)
+        {
+            m_size++;
+            cur = new Node(key, value);
+            return cur;
+        }
+
+        if (key < cur->key)
+        {
+            cur->left = recursive_insert(cur->left, key, value);
+        }
+        else if (key > cur->key)
+        {
+            cur->right = recursive_insert(cur->right, key, value);
+        }
+        else
+        {
+            return cur;
+        }
+
+        // backtracking balancing
+        cur->height = std::max(get_height(cur->left), get_height(cur->right)) + 1U;
+        int balance = get_balance_factor(cur);
+
+        // left left case
+        if (balance > 1 && key < cur->left->key)
+        {
+            return rotate_right(cur);
+        }
+
+        // left right case
+        if (balance > 1 && key > cur->left->key)
+        {
+            cur->left = rotate_left(cur->left); // make it left left case
+            return rotate_right(cur);
+        }
+
+        // right right case
+        if (balance < -1 && key > cur->right->key)
+        {
+            return rotate_left(cur);
+        }
+
+        // right left case
+        if (balance < -1 && key < cur->right->key)
+        {
+            cur->right = rotate_right(cur->right); // make it right right case
+            return rotate_left(cur);
+        }
+
+        return cur;
     }
 
     bool recursive_contain(Node* cur, const TK& key)
@@ -897,7 +947,83 @@ private:
 
     Node* recursive_erase(Node* cur, const TK& key)
     {
-        return nullptr;
+        if (cur == nullptr)
+        {
+            return nullptr;
+        }
+
+        if (key < cur->key)
+        {
+            cur->left = recursive_erase(cur->left, key);
+        }
+        else if (key > cur->key)
+        {
+            cur->right = recursive_erase(cur->right, key);
+        }
+        else
+        {
+            if (cur->left == nullptr)
+            {
+                m_size--;
+                Node* temp = cur->right;
+                delete cur;
+                return temp;
+            }
+            else if (cur->right == nullptr)
+            {
+                m_size--;
+                Node* temp = cur->left;
+                delete cur;
+                return temp;
+            }
+            else
+            {
+                Node* min_of_right_node = get_min_node(cur->right);
+                cur->key = min_of_right_node->key;
+                cur->value = min_of_right_node->value;
+                cur->right = recursive_erase(cur->right, min_of_right_node->key);
+                return cur;
+            }
+        }
+
+        // backtracking balancing
+        if (cur == nullptr)
+        {
+            return cur;
+        }
+
+        cur->height = std::max(get_height(cur->left), get_height(cur->right)) + 1U;
+        int balance = get_balance_factor(cur);
+        int balance_left = get_balance_factor(cur->left);
+        int balance_right = get_balance_factor(cur->right);
+
+        // left left case
+        if (balance > 1 && balance_left >= 0)
+        {
+            return rotate_right(cur);
+        }
+
+        // left right case
+        if (balance > 1 && balance_left < 0)
+        {
+            cur->left = rotate_left(cur->left); // make it left left case
+            return rotate_right(cur);
+        }
+
+        // right right case
+        if (balance < -1 && balance_right <= 0)
+        {
+            return rotate_left(cur);
+        }
+
+        // right left case
+        if (balance < -1 && balance_right > 0)
+        {
+            cur->right = rotate_right(cur->right); // make it right right case
+            return rotate_left(cur);
+        }
+
+        return cur;
     }
 
     void recursive_deallocate(Node* cur)
@@ -933,13 +1059,31 @@ private:
     // use for node that has balance factor > 0
     Node* rotate_right(Node* cur)
     {
-        return nullptr;
+        Node* cur_left = cur->left;
+        Node* cur_left_right = cur_left->right;
+
+        cur_left->right = cur;
+        cur->left = cur_left_right;
+
+        cur->height = std::max(get_height(cur->left), get_height(cur->right)) + 1U;
+        cur_left->height = std::max(get_height(cur_left->left), get_height(cur_left->right)) + 1U;
+
+        return cur_left;
     }
 
     // use for node that has balance factor < 0
     Node* rotate_left(Node* cur)
     {
-        return nullptr;
+        Node* cur_right = cur->right;
+        Node* cur_right_left = cur_right->left;
+
+        cur_right->left = cur;
+        cur->right = cur_right_left;
+
+        cur->height = std::max(get_height(cur->left), get_height(cur->right)) + 1U;
+        cur_right->height = std::max(get_height(cur_right->left), get_height(cur_right->height)) + 1U;
+
+        return cur_right;
     }
 
     std::size_t get_height(Node* cur)
