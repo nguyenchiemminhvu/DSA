@@ -36,6 +36,7 @@ set(TEST_SOURCES
     TestBinarySearchTree.cpp
     TestAVLTree.cpp
     TestSet.cpp
+    TestMap.cpp
 )
 
 # Add the executable for tests
