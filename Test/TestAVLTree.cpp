@@ -165,6 +165,26 @@ TEST_F(TestAVLSuite, MethodContain)
     EXPECT_FALSE(testObj.contain(3));
 }
 
+TEST_F(TestAVLSuite, MethodCount)
+{
+    AVLTree<int> testObj;
+    EXPECT_EQ(testObj.count(5), 0U);
+
+    testObj.insert(5);
+    EXPECT_EQ(testObj.count(5), 1U);
+
+    testObj.insert(5);
+    EXPECT_EQ(testObj.count(5), 2U);
+
+    testObj.insert(1);
+    EXPECT_EQ(testObj.count(1), 1U);
+
+    testObj.insert(7);
+    EXPECT_EQ(testObj.count(7), 1U);
+
+    EXPECT_EQ(testObj.count(0), 0U);
+}
+
 TEST_F(TestAVLSuite, MethodGetNode)
 {
     AVLTree<int> testObj;
@@ -215,6 +235,7 @@ TEST_F(TestAVLSuite, MethodErase)
 
     for (int i = 0; i < 10; i++)
     {
+        EXPECT_EQ(testObj.size(), 10 - i);
         testObj.erase(i);
         EXPECT_TRUE(testObj.is_valid());
     }
@@ -225,30 +246,121 @@ TEST_F(TestAVLSuite, MethodErase)
 TEST_F(TestAVLSuite, MethodClear)
 {
     AVLTree<int> testObj;
+    EXPECT_TRUE(testObj.empty());
+    EXPECT_TRUE(testObj.is_valid());
+    EXPECT_EQ(testObj.size(), 0U);
+
+    testObj.insert(5);
+    testObj.insert(3);
+    testObj.insert(2);
+    testObj.insert(7);
+    testObj.insert(6);
+    testObj.insert(9);
+    testObj.insert(1);
+    testObj.insert(8);
+    testObj.insert(4);
+    testObj.insert(0);
+
+    testObj.clear();
+    EXPECT_TRUE(testObj.empty());
+    EXPECT_TRUE(testObj.is_valid());
+    EXPECT_EQ(testObj.size(), 0U);
 }
 
 TEST_F(TestAVLSuite, MethodTraversal)
 {
+    std::vector<std::pair<int, std::size_t>> elements;
+
     AVLTree<int> testObj;
+    elements = testObj.traversal();
+    EXPECT_EQ(elements.size(), 0U);
+
+    testObj.insert(5);
+    testObj.insert(3);
+    testObj.insert(2);
+    testObj.insert(7);
+    testObj.insert(6);
+    testObj.insert(9);
+    testObj.insert(1);
+    testObj.insert(8);
+    testObj.insert(4);
+    testObj.insert(0);
+    EXPECT_TRUE(testObj.is_valid());
+
+    elements = testObj.traversal();
+    EXPECT_EQ(elements.size(), 10U);
+    int cur_val = 0;
+    for (const std::pair<int, std::size_t>& p : elements)
+    {
+        EXPECT_EQ(p.first, cur_val++);
+        EXPECT_EQ(p.second, 1U);
+    }
+    
+    testObj.insert(1);
+    elements = testObj.traversal();
+    EXPECT_EQ(elements[1].second, 2U);
 }
 
 TEST_F(TestAVLSuite, MethodGetMinNode)
 {
     AVLTree<int> testObj;
+    EXPECT_TRUE(testObj.get_min_node() == nullptr);
+
+    testObj.insert(5);
+    EXPECT_EQ(testObj.get_min_node()->data, 5);
+
+    testObj.insert(7);
+    EXPECT_EQ(testObj.get_min_node()->data, 5);
+
+    testObj.insert(2);
+    EXPECT_EQ(testObj.get_min_node()->data, 2);
+
+    testObj.insert(3);
+    EXPECT_EQ(testObj.get_min_node()->data, 2);
+
+    testObj.insert(1);
+    EXPECT_EQ(testObj.get_min_node()->data, 1);
 }
 
 TEST_F(TestAVLSuite, MethodGetMaxNode)
 {
     AVLTree<int> testObj;
+    EXPECT_TRUE(testObj.get_max_node() == nullptr);
+
+    testObj.insert(5);
+    EXPECT_EQ(testObj.get_max_node()->data, 5);
+
+    testObj.insert(3);
+    EXPECT_EQ(testObj.get_max_node()->data, 5);
+
+    testObj.insert(7);
+    EXPECT_EQ(testObj.get_max_node()->data, 7);
+    
+    testObj.insert(6);
+    EXPECT_EQ(testObj.get_max_node()->data, 7);
+
+    testObj.insert(9);
+    EXPECT_EQ(testObj.get_max_node()->data, 9);
 }
 
 TEST_F(TestAVLSuite, MethodGetLowestCommonAncestor)
 {
     AVLTree<int> testObj;
-}
+    testObj.insert(5);
+    testObj.insert(3);
+    testObj.insert(2);
+    testObj.insert(7);
+    testObj.insert(6);
+    testObj.insert(9);
+    testObj.insert(1);
+    testObj.insert(8);
+    testObj.insert(4);
+    testObj.insert(0);
 
-TEST_F(TestAVLSuite, MethodHeight)
-{
-    AVLTree<int> testObj;
-    EXPECT_EQ(testObj.height(), 0U);
+    EXPECT_TRUE(testObj.get_lowest_common_ancestor(0, 9) != nullptr);
+    EXPECT_TRUE(testObj.get_lowest_common_ancestor(3, 7) != nullptr);
+    EXPECT_TRUE(testObj.get_lowest_common_ancestor(1, 6) != nullptr);
+    EXPECT_TRUE(testObj.get_lowest_common_ancestor(5, 5) != nullptr);
+
+    EXPECT_TRUE(testObj.get_lowest_common_ancestor(0, 10) == nullptr);
 }

@@ -141,6 +141,19 @@ public:
         return recursive_contain(m_root, key);
     }
 
+    std::size_t count(const T& key)
+    {
+        Node* find_node = recursive_find_node(m_root, key);
+        if (find_node == nullptr)
+        {
+            return 0U;
+        }
+        else
+        {
+            return find_node->count;
+        }
+    }
+
     const Node* get_node(const T& key)
     {
         return recursive_find_node(m_root, key);
@@ -213,7 +226,7 @@ public:
             return 0U;
         }
 
-        return m_root->height;
+        return get_height(m_root);
     }
 
     bool is_valid()
