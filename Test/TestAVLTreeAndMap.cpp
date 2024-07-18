@@ -2,7 +2,7 @@
 
 #include "Tree/AVLTree.h"
 
-class TestAVLSuite : public ::testing::Test
+class TestAVLTreeSuite : public ::testing::Test
 {
 protected:
     void SetUp() override
@@ -16,14 +16,14 @@ protected:
     }
 };
 
-TEST_F(TestAVLSuite, ConstructorDefault)
+TEST_F(TestAVLTreeSuite, ConstructorDefault)
 {
     AVLTree<int> testObj;
     EXPECT_TRUE(testObj.empty());
     EXPECT_TRUE(testObj.is_valid());
 }
 
-TEST_F(TestAVLSuite, ConstructorInitializerList)
+TEST_F(TestAVLTreeSuite, ConstructorInitializerList)
 {
     AVLTree<int> testObj = {3, 1, 2, 5, 4};
     EXPECT_FALSE(testObj.empty());
@@ -32,7 +32,7 @@ TEST_F(TestAVLSuite, ConstructorInitializerList)
     EXPECT_TRUE(testObj.is_valid());
 }
 
-TEST_F(TestAVLSuite, ConstructorAnotherTree)
+TEST_F(TestAVLTreeSuite, ConstructorAnotherTree)
 {
     AVLTree<int> another = {5, 2, 6, 1, 8};
     AVLTree<int> testObj(another);
@@ -41,7 +41,7 @@ TEST_F(TestAVLSuite, ConstructorAnotherTree)
     EXPECT_TRUE(testObj.is_valid());
 }
 
-TEST_F(TestAVLSuite, OperatorAssignmentList)
+TEST_F(TestAVLTreeSuite, OperatorAssignmentList)
 {
     AVLTree<int> testObj = {5, 2, 6, 1, 8};
     EXPECT_FALSE(testObj.empty());
@@ -49,7 +49,7 @@ TEST_F(TestAVLSuite, OperatorAssignmentList)
     EXPECT_TRUE(testObj.is_valid());
 }
 
-TEST_F(TestAVLSuite, OperatorAssignmentAnotherTree)
+TEST_F(TestAVLTreeSuite, OperatorAssignmentAnotherTree)
 {
     AVLTree<int> another = {5, 2, 6, 1, 8};
     AVLTree<int> testObj = another;
@@ -58,7 +58,7 @@ TEST_F(TestAVLSuite, OperatorAssignmentAnotherTree)
     EXPECT_TRUE(testObj.is_valid());
 }
 
-TEST_F(TestAVLSuite, OperatorCompareEqual)
+TEST_F(TestAVLTreeSuite, OperatorCompareEqual)
 {
     AVLTree<int> another;
     AVLTree<int> testObj;
@@ -78,7 +78,7 @@ TEST_F(TestAVLSuite, OperatorCompareEqual)
     EXPECT_TRUE(testObj == another);
 }
 
-TEST_F(TestAVLSuite, MethodIsSameSet)
+TEST_F(TestAVLTreeSuite, MethodIsSameSet)
 {
     AVLTree<int> another;
     AVLTree<int> testObj;
@@ -96,7 +96,7 @@ TEST_F(TestAVLSuite, MethodIsSameSet)
     EXPECT_FALSE(testObj.is_same_set(another));
 }
 
-TEST_F(TestAVLSuite, MethodSwap)
+TEST_F(TestAVLTreeSuite, MethodSwap)
 {
     AVLTree<int> another = {1, 2, 3, 4, 5};
     AVLTree<int> testObj;
@@ -116,7 +116,7 @@ TEST_F(TestAVLSuite, MethodSwap)
     EXPECT_EQ(testObj.size(), 0U);
 }
 
-TEST_F(TestAVLSuite, MethodInsert)
+TEST_F(TestAVLTreeSuite, MethodInsert)
 {
     AVLTree<int> testObj;
     EXPECT_TRUE(testObj.empty());
@@ -149,7 +149,7 @@ TEST_F(TestAVLSuite, MethodInsert)
     EXPECT_EQ(testObj.size_set(), 3U);
 }
 
-TEST_F(TestAVLSuite, MethodContain)
+TEST_F(TestAVLTreeSuite, MethodContain)
 {
     AVLTree<int> testObj;
     EXPECT_TRUE(testObj.empty());
@@ -170,7 +170,7 @@ TEST_F(TestAVLSuite, MethodContain)
     EXPECT_FALSE(testObj.contain(3));
 }
 
-TEST_F(TestAVLSuite, MethodCount)
+TEST_F(TestAVLTreeSuite, MethodCount)
 {
     AVLTree<int> testObj;
     EXPECT_EQ(testObj.count(5), 0U);
@@ -190,7 +190,7 @@ TEST_F(TestAVLSuite, MethodCount)
     EXPECT_EQ(testObj.count(0), 0U);
 }
 
-TEST_F(TestAVLSuite, MethodGetNode)
+TEST_F(TestAVLTreeSuite, MethodGetNode)
 {
     AVLTree<int> testObj;
     EXPECT_TRUE(testObj.empty());
@@ -209,7 +209,7 @@ TEST_F(TestAVLSuite, MethodGetNode)
     EXPECT_EQ(find_node->data, 7);
 }
 
-TEST_F(TestAVLSuite, MethodErase)
+TEST_F(TestAVLTreeSuite, MethodErase)
 {
     AVLTree<int> testObj;
     EXPECT_TRUE(testObj.empty());
@@ -254,7 +254,7 @@ TEST_F(TestAVLSuite, MethodErase)
     EXPECT_TRUE(testObj.empty());
 }
 
-TEST_F(TestAVLSuite, MethodClear)
+TEST_F(TestAVLTreeSuite, MethodClear)
 {
     AVLTree<int> testObj;
     EXPECT_TRUE(testObj.empty());
@@ -278,7 +278,7 @@ TEST_F(TestAVLSuite, MethodClear)
     EXPECT_EQ(testObj.size(), 0U);
 }
 
-TEST_F(TestAVLSuite, MethodTraversal)
+TEST_F(TestAVLTreeSuite, MethodTraversal)
 {
     std::vector<std::pair<int, std::size_t>> elements;
 
@@ -312,7 +312,7 @@ TEST_F(TestAVLSuite, MethodTraversal)
     EXPECT_EQ(elements[1].second, 2U);
 }
 
-TEST_F(TestAVLSuite, MethodGetMinNode)
+TEST_F(TestAVLTreeSuite, MethodGetMinNode)
 {
     AVLTree<int> testObj;
     EXPECT_TRUE(testObj.get_min_node() == nullptr);
@@ -333,7 +333,7 @@ TEST_F(TestAVLSuite, MethodGetMinNode)
     EXPECT_EQ(testObj.get_min_node()->data, 1);
 }
 
-TEST_F(TestAVLSuite, MethodGetMaxNode)
+TEST_F(TestAVLTreeSuite, MethodGetMaxNode)
 {
     AVLTree<int> testObj;
     EXPECT_TRUE(testObj.get_max_node() == nullptr);
@@ -354,7 +354,7 @@ TEST_F(TestAVLSuite, MethodGetMaxNode)
     EXPECT_EQ(testObj.get_max_node()->data, 9);
 }
 
-TEST_F(TestAVLSuite, MethodGetLowestCommonAncestor)
+TEST_F(TestAVLTreeSuite, MethodGetLowestCommonAncestor)
 {
     AVLTree<int> testObj;
     testObj.insert(5);
@@ -374,4 +374,69 @@ TEST_F(TestAVLSuite, MethodGetLowestCommonAncestor)
     EXPECT_TRUE(testObj.get_lowest_common_ancestor(5, 5) != nullptr);
 
     EXPECT_TRUE(testObj.get_lowest_common_ancestor(0, 10) == nullptr);
+}
+
+
+class TestAVLMapSuite : public ::testing::Test
+{
+protected:
+    void SetUp() override
+    {
+
+    }
+
+    void TearDown() override
+    {
+
+    }
+};
+
+TEST_F(TestAVLMapSuite, ConstructorDefault)
+{
+    AVLMap<int, int> testObj;
+}
+
+TEST_F(TestAVLMapSuite, ConstructorAnother)
+{
+    AVLMap<int, int> testObj;
+}
+
+TEST_F(TestAVLMapSuite, OperatorAssignmentAnother)
+{
+    AVLMap<int, int> testObj;
+}
+
+TEST_F(TestAVLMapSuite, OperatorCompareEqual)
+{
+    AVLMap<int, int> testObj;
+}
+
+TEST_F(TestAVLMapSuite, MethodSwap)
+{
+    AVLMap<int, int> testObj;
+}
+
+TEST_F(TestAVLMapSuite, MethodInsert)
+{
+    AVLMap<int, int> testObj;
+}
+
+TEST_F(TestAVLMapSuite, MethodContain)
+{
+    AVLMap<int, int> testObj;
+}
+
+TEST_F(TestAVLMapSuite, MethodGetNode)
+{
+    AVLMap<int, int> testObj;
+}
+
+TEST_F(TestAVLMapSuite, MethodErase)
+{
+    AVLMap<int, int> testObj;
+}
+
+TEST_F(TestAVLMapSuite, MethodClear)
+{
+    AVLMap<int, int> testObj;
 }

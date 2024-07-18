@@ -665,4 +665,337 @@ private:
     std::size_t m_size_set;
 };
 
+
+template <typename TK, typename TV>
+class AVLMap
+{
+public:
+    struct Node
+    {
+        TK key;
+        TV value;
+        std::size_t height;
+        Node* left;
+        Node* right;
+
+        Node(const TK& k, const TV& v)
+            : key(k)
+            , value(v)
+            , height(0U)
+            , left(nullptr)
+            , right(nullptr)
+        {
+        }
+    };
+
+    AVLMap()
+        : m_root(nullptr)
+        , m_size(0U)
+    {
+    }
+
+    AVLMap(const AVLMap<TK, TV>& another)
+        : AVLMap()
+    {
+        m_root = recursive_clone_tree(m_root, another.m_root);
+        m_size = another.m_size;
+    }
+
+    AVLMap<TK, TV>& operator=(const AVLMap<TK, TV>& another)
+    {
+        if (m_root != nullptr)
+        {
+            clear();
+        }
+
+        m_root = recursive_clone_tree(m_root, another.m_root);
+        m_size = another.m_size;
+
+        return *this;
+    }
+
+    ~AVLMap()
+    {
+        clear();
+    }
+
+    bool operator==(const AVLMap<TK, TV>& another)
+    {
+        return recursive_equal_compare(m_root, another.m_root);
+    }
+
+    void swap(AVLMap<TK, TV>& another)
+    {
+        std::swap(m_root, another.m_root);
+        std::swap(m_size, another.m_size);
+    }
+
+    void insert(const TK& key, const TV& value)
+    {
+        m_root = recursive_insert(m_root, key, value);
+    }
+
+    bool contain(const TK& key)
+    {
+        return recursive_contain(m_root, key);
+    }
+
+    const Node* get_node(const TK& key)
+    {
+        return recursive_find_node(m_root, key);
+    }
+
+    void erase(const TK& key)
+    {
+        m_root = recursive_erase(m_root, key);
+    }
+
+    void clear()
+    {
+        recursive_deallocate(m_root);
+        m_root = nullptr;
+        m_size = 0U;
+    }
+
+    Node* get_root()
+    {
+        return m_root;
+    }
+
+    Node* get_min_node()
+    {
+        return get_min_node(m_root);
+    }
+
+    Node* get_max_node()
+    {
+        return get_max_node(m_root);
+    }
+
+    std::size_t size() const
+    {
+        return m_size;
+    }
+
+    bool empty()
+    {
+        return m_size == 0U;
+    }
+
+    std::size_t height()
+    {
+        return get_height(m_root);
+    }
+
+    bool is_valid()
+    {
+        return check_bst_validity(m_root);
+    }
+
+private:
+    Node* recursive_clone_tree(Node* this_node, Node* that_node)
+    {
+        if (that_node == nullptr)
+        {
+            if (this_node != nullptr)
+            {
+                recursive_deallocate(this_node);
+                this_node = nullptr;
+            }
+
+            return this_node;
+        }
+
+        if (this_node == nullptr)
+        {
+            this_node = new Node(that_node->data);
+            this_node->count = that_node->count;
+        }
+        else
+        {
+            this_node->data = that_node->data;
+            this_node->count = that_node->count;
+        }
+
+        this_node->left = recursive_clone_tree(this_node->left, that_node->left);
+        this_node->right = recursive_clone_tree(this_node->right, that_node->right);
+
+        return this_node;
+    }
+
+    bool recursive_equal_compare(Node* this_node, Node* that_node)
+    {
+        if (this_node == nullptr && that_node == nullptr)
+        {
+            return true;
+        }
+
+        if ((this_node == nullptr && that_node != nullptr)
+        ||  (this_node != nullptr && that_node == nullptr))
+        {
+            return false;
+        }
+
+        if ((this_node->key != that_node->key)
+        ||  (this_node->value != that_node->value))
+        {
+            return false;
+        }
+
+        return recursive_equal_compare(this_node->left, that_node->left)
+            && recursive_equal_compare(this_node->right, that_node->right);
+    }
+
+    Node* recursive_insert(Node* cur, const TK& key, const TV& value)
+    {
+        return nullptr;
+    }
+
+    bool recursive_contain(Node* cur, const TK& key)
+    {
+        if (cur == nullptr)
+        {
+            return false;
+        }
+
+        if (key == cur->data)
+        {
+            return true;
+        }
+
+        if (key < cur->data)
+        {
+            return recursive_contain(cur->left, key);
+        }
+        else
+        {
+            return recursive_contain(cur->right, key);
+        }
+    }
+
+    const Node* recursive_find_node(Node* cur, const TK& key)
+    {
+        if (cur == nullptr)
+        {
+            return nullptr;
+        }
+
+        if (key == cur->data)
+        {
+            return cur;
+        }
+
+        if (key < cur->data)
+        {
+            return recursive_find_node(cur->left, key);
+        }
+        else
+        {
+            return recursive_find_node(cur->right, key);
+        }
+    }
+
+    Node* recursive_erase(Node* cur, const TK& key)
+    {
+        return nullptr;
+    }
+
+    void recursive_deallocate(Node* cur)
+    {
+        if (cur == nullptr)
+        {
+            return;
+        }
+
+        recursive_deallocate(cur->left);
+        recursive_deallocate(cur->right);
+
+        delete cur;
+    }
+
+    bool check_bst_validity(Node* cur, Node* minNode = nullptr, Node* maxNode = nullptr)
+    {
+        if (cur == nullptr)
+        {
+            return true;
+        }
+
+        if ((minNode != nullptr && cur->key <= minNode->key)
+        ||  (maxNode != nullptr && cur->key >= maxNode->key))
+        {
+            return false;
+        }
+
+        return check_bst_validity(cur->left, minNode, cur)
+            && check_bst_validity(cur->right, cur, maxNode);
+    }
+
+    // use for node that has balance factor > 0
+    Node* rotate_right(Node* cur)
+    {
+        return nullptr;
+    }
+
+    // use for node that has balance factor < 0
+    Node* rotate_left(Node* cur)
+    {
+        return nullptr;
+    }
+
+    std::size_t get_height(Node* cur)
+    {
+        if (cur == nullptr)
+        {
+            return 0U;
+        }
+
+        return cur->height;
+    }
+
+    int get_balance_factor(Node* cur)
+    {
+        if (cur == nullptr)
+        {
+            return 0;
+        }
+
+        return static_cast<int>(get_height(cur->left))
+             - static_cast<int>(get_height(cur->right));
+    }
+
+    Node* get_min_node(Node* cur)
+    {
+        if (cur == nullptr)
+        {
+            return cur;
+        }
+
+        while (cur->left != nullptr)
+        {
+            cur = cur->left;
+        }
+
+        return cur;
+    }
+
+    Node* get_max_node(Node* cur)
+    {
+        if (cur == nullptr)
+        {
+            return cur;
+        }
+
+        while (cur->right != nullptr)
+        {
+            cur = cur->right;
+        }
+
+        return cur;
+    }
+
+private:
+    Node* m_root;
+    std::size_t m_size;
+};
+
 #endif // AVL_TREE_H
