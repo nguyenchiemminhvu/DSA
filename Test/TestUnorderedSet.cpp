@@ -19,5 +19,6 @@ protected:
 TEST_F(TestUnorderedSetSuite, ConstructorDefault)
 {
     UnorderedSet<int> testObj;
+    EXPECT_TRUE(testObj.empty());
 }
 
