@@ -11,8 +11,8 @@ template<typename TK, typename TV>
 class HashTable
 {
 public:
-    HashTable(std::size_t initial_size = 16)
-        : m_table(initial_size), m_size(0)
+    HashTable(std::size_t initial_size = 16U)
+        : m_table(initial_size), m_size(0U)
     {
 
     }
@@ -27,7 +27,7 @@ public:
     {
         if (load_factor() >= 0.75)
         {
-            resize_table(m_table.size() * 2);
+            resize_table(m_table.size() * 2U);
         }
 
         std::size_t index = hash_key(key);
@@ -35,10 +35,10 @@ public:
         ++m_size;
     }
 
-    TV& retrieve(const TK& key) const
+    TV& retrieve(const TK& key)
     {
         std::size_t index = hash_key(key);
-        for (const auto& kv : m_table[index])
+        for (auto& kv : m_table[index])
         {
             if (kv.first == key)
             {
@@ -83,7 +83,7 @@ public:
         {
             bucket.clear();
         }
-        m_size = 0;
+        m_size = 0U;
     }
 
     std::size_t size() const
