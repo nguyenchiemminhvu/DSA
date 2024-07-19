@@ -52,7 +52,7 @@ public:
     AVLTree(const AVLTree<T>& another)
         : AVLTree()
     {
-        if (!another.empty())
+        if (another.m_root != nullptr)
         {
             m_root = recursive_clone_tree(m_root, another.m_root);
             m_size = another.m_size;
@@ -81,7 +81,7 @@ public:
             clear();
         }
 
-        if (!another.empty())
+        if (another.m_root != nullptr)
         {
             m_root = recursive_clone_tree(m_root, another.m_root);
             m_size = another.m_size;
@@ -102,8 +102,11 @@ public:
 
     bool is_same_set(const AVLTree<T>& another)
     {
-        std::vector<std::pair<T, std::size_t>> this_elements = traversal();
-        std::vector<std::pair<T, std::size_t>> that_elements = another.traversal();
+        std::vector<std::pair<T, std::size_t>> this_elements;
+        recursive_traversal(m_root, this_elements);
+
+        std::vector<std::pair<T, std::size_t>> that_elements;
+        recursive_traversal(another.m_root, that_elements);
 
         bool res = true;
         if (this_elements.size() != that_elements.size())
@@ -156,7 +159,7 @@ public:
         }
     }
 
-    const Node* get_node(const T& key)
+    Node* get_node(const T& key)
     {
         return recursive_find_node(m_root, key);
     }
@@ -384,7 +387,7 @@ private:
         }
     }
 
-    const Node* recursive_find_node(Node* cur, const T& key)
+    Node* recursive_find_node(Node* cur, const T& key)
     {
         if (cur == nullptr)
         {
@@ -740,7 +743,7 @@ public:
         return recursive_contain(m_root, key);
     }
 
-    const Node* get_node(const TK& key)
+    Node* get_node(const TK& key)
     {
         return recursive_find_node(m_root, key);
     }

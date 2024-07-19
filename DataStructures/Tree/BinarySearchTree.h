@@ -138,7 +138,7 @@ public:
         return recursive_contain(m_root, key);
     }
 
-    const Node* get_node(const T& key)
+    Node* get_node(const T& key)
     {
         return recursive_find_node(m_root, key);
     }
@@ -324,7 +324,7 @@ private:
         }
     }
 
-    const Node* recursive_find_node(Node* cur, const T& key)
+    Node* recursive_find_node(Node* cur, const T& key)
     {
         if (cur == nullptr)
         {
