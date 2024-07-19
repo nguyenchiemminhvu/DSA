@@ -40,6 +40,11 @@ set(TEST_SOURCES
     TestHashTable.cpp
     TestUnorderedSet.cpp
     TestUnorderedMap.cpp
+    TestTrie.cpp
+    TestUnionFind.cpp
+    TestBinaryIndexedTree.cpp
+    TestSegmentTree.cpp
+    TestGraph.cpp
 )
 
 # Add the executable for tests
