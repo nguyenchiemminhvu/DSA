@@ -39,6 +39,7 @@ set(TEST_SOURCES
     TestMap.cpp
     TestHashTable.cpp
     TestUnorderedSet.cpp
+    TestUnorderedMap.cpp
 )
 
 # Add the executable for tests
