@@ -93,7 +93,7 @@ TEST_F(TestUnorderedSetSuite, MethodErase)
         EXPECT_NO_FATAL_FAILURE(testObj.erase(i));
     }
 
-    EXPECT_NO_THROW(testObj.erase(100));
+    EXPECT_THROW(testObj.erase(100), std::out_of_range);
 }
 
 TEST_F(TestUnorderedSetSuite, MethodClear)
