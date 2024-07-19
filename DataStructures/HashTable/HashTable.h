@@ -74,7 +74,7 @@ public:
                 return;
             }
         }
-        throw std::runtime_error("Key not found");
+        throw std::out_of_range("Key is not found");
     }
 
     void clear()

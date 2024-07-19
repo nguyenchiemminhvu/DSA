@@ -106,6 +106,8 @@ TEST_F(TestHashSuite, MethodRemove)
     {
         EXPECT_FALSE(testObj.contain(i));
     }
+
+    EXPECT_THROW(testObj.remove(100), std::out_of_range);
 }
 
 TEST_F(TestHashSuite, MethodClear)

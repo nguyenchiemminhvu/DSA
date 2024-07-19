@@ -57,7 +57,14 @@ public:
 
     void erase(const T& key)
     {
-        m_core.remove(key);
+        try
+        {
+            m_core.remove(key);
+        }
+        catch (const std::out_of_range& e)
+        {
+            std::cerr << e.what() << '\n';
+        }
     }
 
     void clear()
