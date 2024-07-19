@@ -47,7 +47,7 @@ public:
         , m_front_idx(0U)
         , m_back_idx(0U)
     {
-        if (!another.empty())
+        if (another.m_data != nullptr)
         {
             m_size = another.m_size;
             m_capacity = another.m_capacity;

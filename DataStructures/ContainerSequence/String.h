@@ -14,7 +14,7 @@ class Vector<char>
 {
 public:
     using iterator = char*;
-    using const_iterator = char*;
+    using const_iterator = const char*;
 
     Vector()
         : m_data(nullptr)
@@ -49,12 +49,12 @@ public:
         , m_capacity(0U)
     {
         this->expand(another.capacity() == 0 ? 1 : another.capacity());
-        std::copy(another.begin(), another.end(), m_data);
+        std::copy(another.m_data, another.m_data + another.m_size, m_data);
 
         m_size = another.size();
     }
 
-    Vector(char* str)
+    Vector(const char* str)
         : m_data(nullptr)
         , m_size(0U)
         , m_capacity(0U)
@@ -66,7 +66,7 @@ public:
         m_size = str_len;
     }
 
-    Vector(char* str, std::size_t n)
+    Vector(const char* str, std::size_t n)
         : m_data(nullptr)
         , m_size(0U)
         , m_capacity(0U)
@@ -86,13 +86,13 @@ public:
 
         this->clear();
         this->expand(another.capacity());
-        std::copy(another.begin(), another.end(), m_data);
+        std::copy(another.m_data, another.m_data + another.m_size, m_data);
 
         m_size = another.size();
         return *this;
     }
 
-    Vector<char>& operator=(char* str)
+    Vector<char>& operator=(const char* str)
     {
         this->clear();
 
@@ -184,7 +184,7 @@ public:
         m_size++;
     }
 
-    void insert(std::size_t index, iterator left, iterator right)
+    void insert(std::size_t index, const_iterator left, const_iterator right)
     {
         if (index > m_size)
         {
@@ -203,7 +203,7 @@ public:
             m_data[i] = m_data[i - num_elements];
         }
 
-        for (iterator it = left; it != right; ++it)
+        for (const_iterator it = left; it != right; ++it)
         {
             m_data[index + (it - left)] = *it;
         }
@@ -211,7 +211,7 @@ public:
         m_size = new_size;
     }
 
-    void insert(std::size_t index, char* str)
+    void insert(std::size_t index, const char* str)
     {
         std::size_t str_len = strlen(str);
         this->insert(index, str, str + str_len);
@@ -325,12 +325,12 @@ public:
         return m_data + m_size;
     }
 
-    char* data() const
+    const char* data() const
     {
         return m_data;
     }
 
-    char* c_str() const
+    const char* c_str() const
     {
         return m_data;
     }

@@ -81,10 +81,10 @@ public:
         if (another.m_data != nullptr)
         {
             this->expand(another.capacity());
-            std::copy(another.begin(), another.end(), m_data);
+            std::copy(another.m_data, another.m_data + another.m_size, m_data);
         }
 
-        m_size = another.size();
+        m_size = another.m_size;
     }
 
     Vector<T>& operator=(const Vector<T>& another)
@@ -98,8 +98,8 @@ public:
         if (another.m_data != nullptr)
         {
             this->expand(another.capacity());
-            std::copy(another.begin(), another.end(), m_data);
-            m_size = another.size();
+            std::copy(another.m_data, another.m_data + another.m_size, m_data);
+            m_size = another.m_size;
         }
         return *this;
     }

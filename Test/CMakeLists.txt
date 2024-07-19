@@ -37,7 +37,7 @@ set(TEST_SOURCES
     TestAVLTree.cpp
     TestSet.cpp
     TestMap.cpp
-    TestHashing.cpp
+    TestHashTable.cpp
 )
 
 # Add the executable for tests

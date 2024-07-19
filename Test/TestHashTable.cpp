@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "Hashing/Hashing.h"
+#include "HashTable/HashTable.h"
 
 class TestHashSuite : public ::testing::Test
 {

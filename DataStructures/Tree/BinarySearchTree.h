@@ -47,7 +47,7 @@ public:
     BinarySearchTree(const BinarySearchTree<T>& another)
         : BinarySearchTree()
     {
-        if (!another.empty())
+        if (another.m_root != nullptr)
         {
             m_root = recursive_clone_tree(m_root, another.m_root);
             m_size = another.m_size;
@@ -76,7 +76,7 @@ public:
             clear();
         }
 
-        if (!another.empty())
+        if (another.m_root != nullptr)
         {
             m_root = recursive_clone_tree(m_root, another.m_root);
             m_size = another.m_size;
@@ -97,8 +97,11 @@ public:
 
     bool is_same_set(const BinarySearchTree<T>& another)
     {
-        std::vector<std::pair<T, std::size_t>> this_elements = traversal();
-        std::vector<std::pair<T, std::size_t>> that_elements = another.traversal();
+        std::vector<std::pair<T, std::size_t>> this_elements;
+        recursive_traversal(m_root, this_elements);
+
+        std::vector<std::pair<T, std::size_t>> that_elements;
+        recursive_traversal(another.m_root, that_elements);
 
         bool res = true;
         if (this_elements.size() != that_elements.size())
