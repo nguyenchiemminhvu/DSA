@@ -18,5 +18,5 @@ protected:
 
 TEST_F(TestBinaryIndexedTreeSuite, ConstructorDefault)
 {
-    BinaryIndexedTree<int> testObj;
+    BinaryIndexedTree<int> testObj(10U);
 }
