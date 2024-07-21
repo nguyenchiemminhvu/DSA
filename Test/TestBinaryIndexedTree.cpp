@@ -78,3 +78,23 @@ TEST_F(TestBinaryIndexedTreeSuite, MethodQueryRange)
     EXPECT_EQ(testObj.query_range(2, 3), 2);
     EXPECT_EQ(testObj.query_range(3, 3), 1);
 }
+
+
+class TestBinaryIndexedTree2DSuite : public ::testing::Test
+{
+protected:
+    void SetUp() override
+    {
+
+    }
+
+    void TearDown() override
+    {
+
+    }
+};
+
+TEST_F(TestBinaryIndexedTree2DSuite, ConstructorDefault)
+{
+    BinaryIndexedTree2D<int> testObj(10U, 10U);
+}
