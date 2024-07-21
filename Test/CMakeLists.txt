@@ -40,10 +40,10 @@ set(TEST_SOURCES
     TestHashTable.cpp
     TestUnorderedSet.cpp
     TestUnorderedMap.cpp
-    TestTrie.cpp
-    TestUnionFind.cpp
     TestBinaryIndexedTree.cpp
     TestSegmentTree.cpp
+    TestTrie.cpp
+    TestUnionFind.cpp
     TestGraph.cpp
 )
 

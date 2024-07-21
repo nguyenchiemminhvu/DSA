@@ -2,7 +2,7 @@
 
 #include "Graph/Graph.h"
 
-class TestUndirectedGraphSuite : public ::testing::Test
+class TestUnweightedGraphSuite : public ::testing::Test
 {
 protected:
     void SetUp() override
@@ -16,14 +16,14 @@ protected:
     }
 };
 
-TEST_F(TestUndirectedGraphSuite, ConstructorDefault)
+TEST_F(TestUnweightedGraphSuite, ConstructorDefault)
 {
-    UndirectedGraph<int> testObj;
+    UnweightedGraph<int> testObj;
 }
 
 
 
-class TestDirectedGraphSuite : public ::testing::Test
+class TestWeightedGraphSuite : public ::testing::Test
 {
 protected:
     void SetUp() override
@@ -37,7 +37,7 @@ protected:
     }
 };
 
-TEST_F(TestDirectedGraphSuite, ConstructorDefault)
+TEST_F(TestWeightedGraphSuite, ConstructorDefault)
 {
-    DirectedGraph<int> testObj;
+    WeightedGraph<int> testObj;
 }

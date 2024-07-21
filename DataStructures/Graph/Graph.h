@@ -2,15 +2,15 @@
 #define GRAPH_H
 
 template <typename T>
-class UndirectedGraph
+class UnweightedGraph
 {
 public:
-    UndirectedGraph()
+    UnweightedGraph()
     {
 
     }
 
-    ~UndirectedGraph()
+    ~UnweightedGraph()
     {
 
     }
@@ -27,15 +27,15 @@ public:
 };
 
 template <typename T>
-class DirectedGraph
+class WeightedGraph
 {
 public:
-    DirectedGraph()
+    WeightedGraph()
     {
 
     }
 
-    ~DirectedGraph()
+    ~WeightedGraph()
     {
 
     }
