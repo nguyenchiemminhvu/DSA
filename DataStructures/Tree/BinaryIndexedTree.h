@@ -24,6 +24,15 @@ public:
     {
     }
 
+    BinaryIndexedTree(const std::vector<T>& V)
+        : BinaryIndexedTree(V.size())
+    {
+        for (int i = 0; i < V.size(); i++)
+        {
+            update(i + 1, V[i]);
+        }
+    }
+
     ~BinaryIndexedTree()
     {
         

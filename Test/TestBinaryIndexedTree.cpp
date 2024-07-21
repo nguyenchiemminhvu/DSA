@@ -25,6 +25,19 @@ TEST_F(TestBinaryIndexedTreeSuite, ConstructorDefault)
     }
 }
 
+TEST_F(TestBinaryIndexedTreeSuite, ConstructorVector)
+{
+    std::vector<int> V = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    BinaryIndexedTree<int> testObj(V);
+
+    int cur = 0;
+    for (int i = 1; i <= 10; i++)
+    {
+        cur += i;
+        EXPECT_EQ(testObj.query_prefix_sum(i), cur);
+    }
+}
+
 TEST_F(TestBinaryIndexedTreeSuite, MethodUpdate)
 {
     BinaryIndexedTree<int> testObj(10U);
