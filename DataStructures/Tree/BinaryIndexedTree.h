@@ -10,18 +10,17 @@
  * 
  * @ref
  * https://www.geeksforgeeks.org/fenwick-tree-for-competitive-programming
- * https://www.hackerearth.com/practice/notes/binary-indexed-tree-or-fenwick-tree
- * https://cp-algorithms.com/data_structures/fenwick.html
  * https://www.topcoder.com/thrive/articles/Binary%20Indexed%20Trees
  */
 
 template <typename T>
 class BinaryIndexedTree
 {
+    static_assert(std::is_arithmetic<T>::value, "Template parameter must be an arithmetic type");
+
 public:
     BinaryIndexedTree(const std::size_t& size)
         : m_tree(size + 1U, T())
-        , m_size(size)
     {
     }
 
@@ -31,26 +30,37 @@ public:
     }
 
     // Update function to add 'delta' to element at index 'idx'
-    void update(const std::size_t& idx, const T& delta)
+    void update(int idx, const T& delta)
     {
-
+        while (idx < m_tree.size())
+        {
+            m_tree[idx] += delta;
+            int right_most_set_bit = idx & (-idx);
+            idx += right_most_set_bit;
+        }
     }
 
     // Query function to get the prefix sum up to index 'idx'
-    T query_prefix_sum(const std::size_t& idx)
+    T query_prefix_sum(int idx)
     {
-        return T();
+        T sum = T{};
+        while (idx > 0)
+        {
+            sum += m_tree[idx];
+            int right_most_set_bit = idx & (-idx);
+            idx -= right_most_set_bit;
+        }
+        return sum;
     }
 
     // Query function to get the sum between two indices (inclusive)
-    T query_range(const std::size_t& left, const std::size_t& right)
+    T query_range(int left, int right)
     {
         return query_prefix_sum(right) - query_prefix_sum(left - 1U);
     }
 
 private:
     std::vector<T> m_tree;
-    std::size_t m_size;
 };
 
 #endif // BINARY_INDEXED_TREE_H
