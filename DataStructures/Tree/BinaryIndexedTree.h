@@ -56,7 +56,7 @@ public:
     // Query function to get the sum between two indices (inclusive)
     T query_range(int left, int right)
     {
-        return query_prefix_sum(right) - query_prefix_sum(left - 1U);
+        return query_prefix_sum(right) - query_prefix_sum(left - 1);
     }
 
 private:
