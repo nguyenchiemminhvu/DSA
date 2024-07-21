@@ -118,14 +118,22 @@ public:
     }
 
     // Update function to add 'delta' to element at index 'idx'
-    void update(int row, int col, const T& delta)
+    void update(int row_bot_right, int col_bot_right, const T& delta)
     {
-        if (row < 0
-         || row >= m_tree.size()
-         || col < 0
-         || col >= m_tree[0].size())
+        if (row_bot_right < 0
+         || row_bot_right >= m_tree.size()
+         || col_bot_right < 0
+         || col_bot_right >= m_tree[0].size())
         {
             throw std::out_of_range("Invalid indices");
+        }
+
+        for (int row = row_bot_right; row < m_tree.size(); row += (row & (-row)))
+        {
+            for (int col = col_bot_right; col < m_tree[row].size(); col += (col & (-col)))
+            {
+                m_tree[row][col] += delta;
+            }
         }
     }
 
@@ -140,7 +148,17 @@ public:
             throw std::out_of_range("Invalid indices");
         }
 
-        return T();
+        T sum = T{};
+
+        for (int row = row_bot_right; row > 0; row -= (row & (-row)))
+        {
+            for (int col = col_bot_right; col > 0; col -= (col & (-col)))
+            {
+                sum += m_tree[row][col];
+            }
+        }
+
+        return sum;
     }
 
     // Query function to get the sum between two indices (inclusive)
@@ -152,7 +170,10 @@ public:
             throw std::out_of_range("Invalid indices");
         }
 
-        return T();
+        return query_prefix_sum(row_bot_right, col_bot_right)
+             - query_prefix_sum(row_up_left - 1, col_bot_right)
+             - query_prefix_sum(row_bot_right, col_up_left - 1)
+             + query_prefix_sum(row_up_left - 1, col_up_left - 1);
     }
 
 private:
