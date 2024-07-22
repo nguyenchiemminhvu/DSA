@@ -98,6 +98,31 @@ TEST_F(TestTrieSuite, MethodCount)
 TEST_F(TestTrieSuite, MethodContainWildcards)
 {
     Trie testObj;
+    testObj.insert("abc");
+    testObj.insert("abc");
+    testObj.insert("abd");
+    testObj.insert("abe");
+
+    EXPECT_TRUE(testObj.contain_wildcards("***"));
+    EXPECT_TRUE(testObj.contain_wildcards("ab*"));
+    EXPECT_TRUE(testObj.contain_wildcards("a*c"));
+    EXPECT_TRUE(testObj.contain_wildcards("**e"));
+    EXPECT_FALSE(testObj.contain_wildcards("****"));
+}
+
+TEST_F(TestTrieSuite, MethodCountWildcards)
+{
+    Trie testObj;
+    testObj.insert("abc");
+    testObj.insert("abc");
+    testObj.insert("abd");
+    testObj.insert("abe");
+
+    EXPECT_EQ(testObj.count_wildcards("ab*"), 4U);
+    EXPECT_EQ(testObj.count_wildcards("a*c"), 2U);
+    EXPECT_EQ(testObj.count_wildcards("***"), 4U);
+    EXPECT_EQ(testObj.count_wildcards("**e"), 1U);
+    EXPECT_EQ(testObj.count_wildcards("****"), 0U);
 }
 
 TEST_F(TestTrieSuite, MethodGetList)

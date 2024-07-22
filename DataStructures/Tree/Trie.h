@@ -108,7 +108,12 @@ public:
 
     bool contain_wildcards(const std::string& str)
     {
-        return false;
+        return recursive_contain_wildcards(m_root, str, 0U);
+    }
+
+    std::size_t count_wildcards(const std::string& str)
+    {
+        return recursive_count_wildcards(m_root, str, 0U);
     }
 
     std::vector<std::string> get_list()
@@ -163,6 +168,70 @@ public:
     }
 
 private:
+    bool recursive_contain_wildcards(Node* cur, const std::string& str, std::size_t idx)
+    {
+        if (cur == nullptr)
+        {
+            return false;
+        }
+
+        if (idx >= str.length())
+        {
+            return cur->count > 0U;
+        }
+
+        if (str[idx] == '*')
+        {
+            for (auto& child : cur->children)
+            {
+                if (recursive_contain_wildcards(child.second, str, idx + 1))
+                {
+                    return true;
+                }
+            }
+        }
+        else
+        {
+            if (cur->children.find(str[idx]) != cur->children.end())
+            {
+                return recursive_contain_wildcards(cur->children[str[idx]], str, idx + 1);
+            }
+        }
+
+        return false;
+    }
+
+    std::size_t recursive_count_wildcards(Node* cur, const std::string& str, std::size_t idx)
+    {
+        if (cur == nullptr)
+        {
+            return 0U;
+        }
+
+        if (idx >= str.length())
+        {
+            return cur->count;
+        }
+
+        std::size_t count = 0U;
+        if (str[idx] == '*')
+        {
+            for (auto& child : cur->children)
+            {
+                count += recursive_count_wildcards(child.second, str, idx + 1);
+            }
+        }
+        else
+        {
+            if (cur->children.find(str[idx]) != cur->children.end())
+            {
+                count += recursive_count_wildcards(cur->children[str[idx]], str, idx + 1);
+            }
+        }
+
+        return count;
+    }
+
     void recursive_get_list(Node* cur, std::string temp, std::vector<std::string>& res)
     {
         if (cur == nullptr)
