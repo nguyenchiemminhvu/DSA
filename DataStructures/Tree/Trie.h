@@ -19,6 +19,14 @@ public:
             : key(k), count(0U)
         {
         }
+
+        ~Node()
+        {
+            for (auto& child : children)
+            {
+                delete child.second;
+            }
+        }
     };
 
     Trie()
@@ -43,7 +51,7 @@ public:
 
     ~Trie()
     {
-        clear();
+        delete m_root;
     }
 
     void swap(Trie& another)
@@ -155,10 +163,10 @@ public:
 
     void clear()
     {
-        if (!empty())
+        if (m_root != nullptr)
         {
-            recursive_deallocate(m_root);
-            m_root->children.clear();
+            delete m_root;
+            m_root = nullptr;
         }
     }
 
@@ -279,25 +287,6 @@ private:
         }
 
         return false;
-    }
-
-    void recursive_deallocate(Node* cur)
-    {
-        if (cur == nullptr)
-        {
-            return;
-        }
-
-        for (auto& child : cur->children)
-        {
-            recursive_deallocate(child.second);
-        }
-
-        if (cur != nullptr)
-        {
-            delete cur;
-            cur = nullptr;
-        }
     }
 
 private:
