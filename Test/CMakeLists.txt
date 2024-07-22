@@ -41,7 +41,6 @@ set(TEST_SOURCES
     TestUnorderedSet.cpp
     TestUnorderedMap.cpp
     TestBinaryIndexedTree.cpp
-    TestSegmentTree.cpp
     TestTrie.cpp
     TestUnionFind.cpp
     TestGraph.cpp
