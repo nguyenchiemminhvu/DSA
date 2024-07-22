@@ -24,6 +24,11 @@ public:
 
     void unite(int x, int y)
     {
+        if (x < 0 || x >= m_parents.size() || y < 0 || y >= m_parents.size())
+        {
+            throw std::out_of_range("Index out of range");
+        }
+
         int rootX = find(x);
         int rootY = find(y);
 
@@ -48,6 +53,11 @@ public:
 
     int find(int x)
     {
+        if (x < 0 || x >= m_parents.size())
+        {
+            throw std::out_of_range("Index out of range");
+        }
+
         if (m_parents[x] != x)
         {
             // Path compression
@@ -59,6 +69,11 @@ public:
 
     bool same_group(int x, int y)
     {
+        if (x < 0 || x >= m_parents.size() || y < 0 || y >= m_parents.size())
+        {
+            throw std::out_of_range("Index out of range");
+        }
+
         return find(x) == find(y);
     }
 
