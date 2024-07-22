@@ -18,7 +18,7 @@ protected:
 
 TEST_F(TestUnweightedGraphSuite, ConstructorDefault)
 {
-    UnweightedGraph<int> testObj;
+    UnweightedGraph testObj(7U);
 }
 
 
@@ -39,5 +39,5 @@ protected:
 
 TEST_F(TestWeightedGraphSuite, ConstructorDefault)
 {
-    WeightedGraph<int> testObj;
+    WeightedGraph testObj(7U);
 }
