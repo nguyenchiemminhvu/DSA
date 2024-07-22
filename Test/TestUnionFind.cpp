@@ -16,17 +16,17 @@ protected:
     }
 };
 
-TEST_F(TestUnionFindSuite, ConstructorDefault)
+TEST_F(TestUnionFindSuite, ConstructorWithNumElement)
 {
-    UnionFind testObj;
+    UnionFind testObj(5U);
 }
 
 TEST_F(TestUnionFindSuite, MethodUnite)
 {
-    UnionFind testObj;
+    UnionFind testObj(5U);
 }
 
 TEST_F(TestUnionFindSuite, MethodSameGroup)
 {
-    UnionFind testObj;
+    UnionFind testObj(5U);
 }
