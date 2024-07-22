@@ -7,8 +7,11 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <algorithm>
+#include <utility>
 
 #include "./../DisjointSet/UnionFind.h"
+
+constexpr std::size_t UNREACHABLE_DISTANCE = std::numeric_limits<std::size_t>::max();
 
 class UnweightedGraph
 {
@@ -30,6 +33,8 @@ public:
         {
             throw std::out_of_range("Invalid vertex");
         }
+
+        m_adj_list[source].push_back(dest);
     }
 
     bool has_edge(const std::size_t& source, const std::size_t& dest)
@@ -37,6 +42,15 @@ public:
         if (source >= m_num_vertex || dest >= m_num_vertex)
         {
             throw std::out_of_range("Invalid vertex");
+        }
+
+        const std::vector<std::size_t>& adj_with_source = m_adj_list[source];
+        for (const std::size_t& vertex : adj_with_source)
+        {
+            if (vertex == dest)
+            {
+                return true;
+            }
         }
 
         return false;
@@ -48,6 +62,9 @@ public:
         {
             throw std::out_of_range("Invalid vertex");
         }
+
+        std::vector<std::size_t>& adj_with_source = m_adj_list[source];
+        adj_with_source.erase(std::remove(adj_with_source.begin(), adj_with_source.end(), dest), adj_with_source.end());
     }
 
     bool is_connected(const std::size_t& source, const std::size_t& dest)
@@ -67,7 +84,7 @@ public:
             throw std::out_of_range("Invalid vertex");
         }
 
-        return 0U;
+        return UNREACHABLE_DISTANCE;
     }
 
     std::vector<std::size_t> shortest_path(const std::size_t& source, const std::size_t& dest)
@@ -100,12 +117,14 @@ public:
 
     }
 
-    void add_edge(const std::size_t& source, const std::size_t& dest)
+    void add_edge(const std::size_t& source, const std::size_t& dest, const std::size_t& weight)
     {
         if (source >= m_num_vertex || dest >= m_num_vertex)
         {
             throw std::out_of_range("Invalid vertex");
         }
+
+        m_adj_list[source].push_back({dest, weight});
     }
 
     bool has_edge(const std::size_t& source, const std::size_t& dest)
@@ -113,6 +132,15 @@ public:
         if (source >= m_num_vertex || dest >= m_num_vertex)
         {
             throw std::out_of_range("Invalid vertex");
+        }
+
+        const std::vector<std::pair<std::size_t, std::size_t>>& adj_with_source = m_adj_list[source];
+        for (const std::pair<std::size_t, std::size_t>& p : adj_with_source)
+        {
+            if (p.first == dest)
+            {
+                return true;
+            }
         }
 
         return false;
@@ -124,6 +152,19 @@ public:
         {
             throw std::out_of_range("Invalid vertex");
         }
+
+        std::vector<std::pair<std::size_t, std::size_t>>& adj_with_source = m_adj_list[source];
+        adj_with_source.erase(
+            std::remove_if(
+                adj_with_source.begin(),
+                adj_with_source.end(),
+                [dest](const std::pair<std::size_t, std::size_t>& p)
+                {
+                    return p.first == dest;
+                }
+            ),
+            adj_with_source.end()
+        );
     }
 
     bool is_connected(const std::size_t& source, const std::size_t& dest)
