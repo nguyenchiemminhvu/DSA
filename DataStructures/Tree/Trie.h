@@ -88,6 +88,24 @@ public:
         return cur->count > 0U;
     }
 
+    std::size_t count(const std::string& str)
+    {
+        Node* cur = m_root;
+        for (std::size_t i = 0U; i < str.length(); i++)
+        {
+            if (cur->children.find(str[i]) == cur->children.end())
+            {
+                return 0U;
+            }
+            else
+            {
+                cur = cur->children[str[i]];
+            }
+        }
+        
+        return cur->count;
+    }
+
     bool contain_wildcards(const std::string& str)
     {
         return false;
@@ -106,7 +124,21 @@ public:
     {
         std::vector<std::string> res;
 
-        
+        Node* cur = m_root;
+        for (std::size_t i = 0U; i < prefix.length(); i++)
+        {
+            if (cur->children.find(prefix[i]) == cur->children.end())
+            {
+                return res;
+            }
+            else
+            {
+                cur = cur->children[prefix[i]];
+            }
+        }
+
+        std::string temp = prefix;
+        recursive_get_list(cur, temp, res);
 
         return res;
     }
@@ -118,8 +150,11 @@ public:
 
     void clear()
     {
-        recursive_deallocate(m_root);
-        m_root->children.clear();
+        if (!empty())
+        {
+            recursive_deallocate(m_root);
+            m_root->children.clear();
+        }
     }
 
     bool empty()

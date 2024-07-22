@@ -79,6 +79,22 @@ TEST_F(TestTrieSuite, MethodContain)
     EXPECT_FALSE(testObj.contain("aaaabaaa"));
 }
 
+TEST_F(TestTrieSuite, MethodCount)
+{
+    Trie testObj;
+    testObj.insert("aaaaaaaa");
+    EXPECT_EQ(testObj.count("aaaaaaaa"), 1U);
+
+    testObj.insert("aaaaaaaa");
+    EXPECT_EQ(testObj.count("aaaaaaaa"), 2U);
+
+    testObj.insert("aaaaaaaa");
+    EXPECT_EQ(testObj.count("aaaaaaaa"), 3U);
+
+    testObj.insert("aaaaaaaaa");
+    EXPECT_EQ(testObj.count("aaaaaaab"), 0U);
+}
+
 TEST_F(TestTrieSuite, MethodContainWildcards)
 {
     Trie testObj;
@@ -98,23 +114,66 @@ TEST_F(TestTrieSuite, MethodGetList)
     L = testObj.get_list();
     EXPECT_EQ(L.size(), 4U);
 
-    EXPECT_EQ(L[0], "abc");
-    EXPECT_EQ(L[1], "abc");
-    EXPECT_EQ(L[2], "abd");
-    EXPECT_EQ(L[3], "abe");
+    std::sort(L.begin(), L.end());
+    EXPECT_TRUE(L[0] == "abc");
+    EXPECT_TRUE(L[1] == "abc");
+    EXPECT_TRUE(L[2] == "abd");
+    EXPECT_TRUE(L[3] == "abe");
 }
 
 TEST_F(TestTrieSuite, MethodGetListPrefix)
 {
     Trie testObj;
+
+    std::vector<std::string> L = testObj.get_list_prefix("ab");
+    EXPECT_TRUE(L.empty());
+
+    testObj.insert("abc");
+    testObj.insert("abc");
+    testObj.insert("abd");
+    testObj.insert("abe");
+    L = testObj.get_list_prefix("ab");
+    EXPECT_EQ(L.size(), 4U);
+
+    std::sort(L.begin(), L.end());
+    EXPECT_TRUE(L[0] == "abc");
+    EXPECT_TRUE(L[1] == "abc");
+    EXPECT_TRUE(L[2] == "abd");
+    EXPECT_TRUE(L[3] == "abe");
 }
 
 TEST_F(TestTrieSuite, MethodErase)
 {
     Trie testObj;
+    testObj.insert("abc");
+    testObj.insert("abc");
+    testObj.insert("abd");
+    testObj.insert("abe");
+
+    EXPECT_EQ(testObj.count("abc"), 2U);
+
+    testObj.erase("abc");
+    EXPECT_EQ(testObj.count("abc"), 1U);
+
+    testObj.erase("abc");
+    EXPECT_EQ(testObj.count("abc"), 0U);
+
+    testObj.erase("abd");
+    EXPECT_FALSE(testObj.contain("abd"));
+
+    testObj.erase("abe");
+    EXPECT_FALSE(testObj.contain("abe"));
 }
 
 TEST_F(TestTrieSuite, MethodClear)
 {
     Trie testObj;
+
+    testObj.insert("abc");
+    testObj.insert("abc");
+    testObj.insert("abd");
+    testObj.insert("abe");
+
+    testObj.clear();
+    EXPECT_TRUE(testObj.empty());
 }
