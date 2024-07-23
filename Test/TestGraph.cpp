@@ -264,19 +264,49 @@ TEST_F(TestWeightedGraphSuite, MethodIsConnected)
 TEST_F(TestWeightedGraphSuite, MethodDistance)
 {
     WeightedGraph testObj(7U);
+
+    EXPECT_NO_THROW(testObj.add_edge(0U, 1U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(1U, 2U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(2U, 3U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(3U, 4U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(4U, 5U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(5U, 6U, 1U));
+
+    EXPECT_EQ(testObj.distance(0U, 1U), 1U);
+    EXPECT_EQ(testObj.distance(0U, 2U), 2U);
+    EXPECT_EQ(testObj.distance(0U, 3U), 3U);
+    EXPECT_EQ(testObj.distance(0U, 4U), 4U);
+    EXPECT_EQ(testObj.distance(0U, 5U), 5U);
+    EXPECT_EQ(testObj.distance(0U, 6U), 6U);
+
+    EXPECT_NO_THROW(testObj.add_edge(0U, 6U, 4U));
+    EXPECT_EQ(testObj.distance(0U, 6U), 4U);
+
+    EXPECT_THROW(testObj.distance(0U, 7U), std::out_of_range);
 }
 
 TEST_F(TestWeightedGraphSuite, MethodShortestPath)
 {
     WeightedGraph testObj(7U);
-}
 
-TEST_F(TestWeightedGraphSuite, MethodMinSpanningTreeKruskal)
-{
-    WeightedGraph testObj(7U);
-}
+    EXPECT_EQ(testObj.shortest_path(0U, 0U).size(), 1U);
+    EXPECT_EQ(testObj.shortest_path(0U, 1U).size(), 0U);
 
-TEST_F(TestWeightedGraphSuite, MethodMinSpanningTreePrim)
-{
-    WeightedGraph testObj(7U);
+    EXPECT_NO_THROW(testObj.add_edge(0U, 1U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(1U, 2U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(2U, 3U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(3U, 4U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(4U, 5U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(5U, 6U, 1U));
+
+    std::vector<std::size_t> path = testObj.shortest_path(0U, 6U);
+    for (std::size_t i = 0U; i < path.size(); i++)
+    {
+        EXPECT_EQ(path[i], i);
+    }
+
+    EXPECT_NO_THROW(testObj.add_edge(0U, 6U, 4U));
+    path = testObj.shortest_path(0U, 6U);
+    EXPECT_EQ(path[0], 0U);
+    EXPECT_EQ(path[1], 6U);
 }

@@ -231,7 +231,7 @@ public:
             throw std::out_of_range("Invalid vertex");
         }
 
-        m_adj_list[source].push_back({dest, weight});
+        m_adj_list[source].push_back({weight, dest});
     }
 
     bool has_edge(const std::size_t& source, const std::size_t& dest)
@@ -244,7 +244,7 @@ public:
         const std::vector<std::pair<std::size_t, std::size_t>>& adj_with_source = m_adj_list[source];
         for (const std::pair<std::size_t, std::size_t>& p : adj_with_source)
         {
-            if (p.first == dest)
+            if (p.second == dest)
             {
                 return true;
             }
@@ -267,7 +267,7 @@ public:
                 adj_with_source.end(),
                 [dest](const std::pair<std::size_t, std::size_t>& p)
                 {
-                    return p.first == dest;
+                    return p.second == dest;
                 }
             ),
             adj_with_source.end()
@@ -304,10 +304,10 @@ public:
             const std::vector<std::pair<std::size_t, std::size_t>>& adj_with_cur = m_adj_list[cur];
             for (const std::pair<std::size_t, std::size_t>& next : adj_with_cur)
             {
-                if (visited.find(next.first) == visited.end())
+                if (visited.find(next.second) == visited.end())
                 {
-                    Q.push(next.first);
-                    visited.insert(next.first);
+                    Q.push(next.second);
+                    visited.insert(next.second);
                 }
             }
         }
@@ -322,7 +322,46 @@ public:
             throw std::out_of_range("Invalid vertex");
         }
 
-        return 0U;
+        if (source == dest)
+        {
+            return 0U;
+        }
+
+        std::vector<std::size_t> v_dist(m_num_vertex, UNREACHABLE_DISTANCE);
+        v_dist[source] = 0U;
+
+        std::priority_queue<std::pair<std::size_t, std::size_t>,
+                            std::vector<std::pair<std::size_t, std::size_t>>,
+                            std::greater<std::pair<std::size_t, std::size_t>>> PQ;
+        PQ.push({0U, source});
+
+        while (!PQ.empty())
+        {
+            std::pair<std::size_t, std::size_t> cur = PQ.top();
+            PQ.pop();
+            
+            if (cur.first > v_dist[cur.second])
+            {
+                continue;
+            }
+
+            if (cur.second == dest)
+            {
+                return cur.first;
+            }
+
+            const std::vector<std::pair<std::size_t, std::size_t>>& adj_with_cur = m_adj_list[cur.second];
+            for (const std::pair<std::size_t, std::size_t>& next : adj_with_cur)
+            {
+                if (cur.first + next.first < v_dist[next.second])
+                {
+                    v_dist[next.second] = cur.first + next.first;
+                    PQ.push({v_dist[next.second], next.second});
+                }
+            }
+        }
+
+        return UNREACHABLE_DISTANCE;
     }
 
     std::vector<std::size_t> shortest_path(const std::size_t& source, const std::size_t& dest)
@@ -332,17 +371,62 @@ public:
             throw std::out_of_range("Invalid vertex");
         }
 
-        return {};
-    }
+        if (source == dest)
+        {
+            return {source};
+        }
 
-    std::vector<std::pair<std::size_t, std::size_t>> min_spanning_tree_kruskal()
-    {
-        return {};
-    }
+        std::vector<std::size_t> path;
 
-    std::vector<std::pair<std::size_t, std::size_t>> min_spanning_tree_prim()
-    {
-        return {};
+        std::priority_queue<std::pair<std::size_t, std::size_t>,
+                            std::vector<std::pair<std::size_t, std::size_t>>,
+                            std::greater<std::pair<std::size_t, std::size_t>>> PQ;
+        PQ.push({0U, source});
+
+        std::unordered_map<std::size_t, std::size_t> parents;
+        parents[source] = source;
+
+        std::vector<std::size_t> v_dist(m_num_vertex, UNREACHABLE_DISTANCE);
+        v_dist[source] = 0U;
+
+        while (!PQ.empty())
+        {
+            std::pair<std::size_t, std::size_t> cur = PQ.top();
+            PQ.pop();
+
+            if (cur.first > v_dist[cur.second])
+            {
+                continue;
+            }
+
+            if (cur.second == dest)
+            {
+                // Build path from source to dest using parent mapping
+                path.push_back(dest);
+                std::size_t parent = parents[dest];
+                while (parent != source)
+                {
+                    path.push_back(parent);
+                    parent = parents[parent];
+                }
+                path.push_back(source);
+                std::reverse(path.begin(), path.end());
+                break;
+            }
+
+            const std::vector<std::pair<std::size_t, std::size_t>>& adj_with_cur = m_adj_list[cur.second];
+            for (const std::pair<std::size_t, std::size_t>& next : adj_with_cur)
+            {
+                if (cur.first + next.first < v_dist[next.second])
+                {
+                    v_dist[next.second] = cur.first + next.first;
+                    PQ.push({v_dist[next.second], next.second});
+                    parents[next.second] = cur.second;
+                }
+            }
+        }
+
+        return path;
     }
 
 private:
