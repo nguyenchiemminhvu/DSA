@@ -170,5 +170,113 @@ protected:
 
 TEST_F(TestWeightedGraphSuite, ConstructorDefault)
 {
+    EXPECT_NO_FATAL_FAILURE(WeightedGraph testObj(7U));
+}
+
+TEST_F(TestWeightedGraphSuite, MethodAddEdge)
+{
+    WeightedGraph testObj(7U);
+
+    EXPECT_NO_THROW(testObj.add_edge(0U, 1U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(1U, 2U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(2U, 3U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(3U, 4U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(4U, 5U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(5U, 6U, 1U));
+
+    EXPECT_THROW(testObj.add_edge(6U, 7U, 1U), std::out_of_range);
+}
+
+TEST_F(TestWeightedGraphSuite, MethodHasEdge)
+{
+    WeightedGraph testObj(7U);
+
+    EXPECT_FALSE(testObj.has_edge(0U, 1U));
+    EXPECT_FALSE(testObj.has_edge(1U, 2U));
+    EXPECT_FALSE(testObj.has_edge(2U, 3U));
+    EXPECT_FALSE(testObj.has_edge(3U, 4U));
+    EXPECT_FALSE(testObj.has_edge(4U, 5U));
+    EXPECT_FALSE(testObj.has_edge(5U, 6U));
+
+    EXPECT_NO_THROW(testObj.add_edge(0U, 1U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(1U, 2U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(2U, 3U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(3U, 4U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(4U, 5U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(5U, 6U, 1U));
+
+    EXPECT_TRUE(testObj.has_edge(0U, 1U));
+    EXPECT_TRUE(testObj.has_edge(1U, 2U));
+    EXPECT_TRUE(testObj.has_edge(2U, 3U));
+    EXPECT_TRUE(testObj.has_edge(3U, 4U));
+    EXPECT_TRUE(testObj.has_edge(4U, 5U));
+    EXPECT_TRUE(testObj.has_edge(5U, 6U));
+}
+
+TEST_F(TestWeightedGraphSuite, MethodRemoveEdge)
+{
+    WeightedGraph testObj(7U);
+
+    EXPECT_NO_THROW(testObj.add_edge(0U, 1U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(1U, 2U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(2U, 3U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(3U, 4U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(4U, 5U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(5U, 6U, 1U));
+
+    EXPECT_NO_THROW(testObj.remove_edge(0U, 1U));
+    EXPECT_FALSE(testObj.has_edge(0U, 1U));
+
+    EXPECT_NO_THROW(testObj.remove_edge(1U, 2U));
+    EXPECT_FALSE(testObj.has_edge(1U, 2U));
+
+    EXPECT_NO_THROW(testObj.remove_edge(2U, 3U));
+    EXPECT_FALSE(testObj.has_edge(2U, 3U));
+
+    EXPECT_NO_THROW(testObj.remove_edge(3U, 4U));
+    EXPECT_FALSE(testObj.has_edge(3U, 4U));
+
+    EXPECT_NO_THROW(testObj.remove_edge(4U, 5U));
+    EXPECT_FALSE(testObj.has_edge(4U, 5U));
+
+    EXPECT_NO_THROW(testObj.remove_edge(5U, 6U));
+    EXPECT_FALSE(testObj.has_edge(5U, 6U));
+}
+
+TEST_F(TestWeightedGraphSuite, MethodIsConnected)
+{
+    WeightedGraph testObj(7U);
+
+    EXPECT_FALSE(testObj.is_connected(0U, 1U));
+    EXPECT_FALSE(testObj.is_connected(2U, 4U));
+
+    EXPECT_NO_THROW(testObj.add_edge(0U, 1U, 1U));
+    EXPECT_TRUE(testObj.is_connected(0U, 1U));
+
+    EXPECT_NO_THROW(testObj.add_edge(2U, 5U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(5U, 3U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(3U, 4U, 1U));
+    EXPECT_TRUE(testObj.is_connected(2U, 4U));
+
+    EXPECT_TRUE(testObj.is_connected(6U, 6U));
+}
+
+TEST_F(TestWeightedGraphSuite, MethodDistance)
+{
+    WeightedGraph testObj(7U);
+}
+
+TEST_F(TestWeightedGraphSuite, MethodShortestPath)
+{
+    WeightedGraph testObj(7U);
+}
+
+TEST_F(TestWeightedGraphSuite, MethodMinSpanningTreeKruskal)
+{
+    WeightedGraph testObj(7U);
+}
+
+TEST_F(TestWeightedGraphSuite, MethodMinSpanningTreePrim)
+{
     WeightedGraph testObj(7U);
 }

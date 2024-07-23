@@ -281,6 +281,37 @@ public:
             throw std::out_of_range("Invalid vertex");
         }
 
+        if (source == dest)
+        {
+            return true;
+        }
+
+        std::unordered_set<std::size_t> visited;
+        std::queue<std::size_t> Q;
+        Q.push(source);
+        visited.insert(source);
+
+        while (!Q.empty())
+        {
+            std::size_t cur = Q.front();
+            Q.pop();
+
+            if (cur == dest)
+            {
+                return true;
+            }
+
+            const std::vector<std::pair<std::size_t, std::size_t>>& adj_with_cur = m_adj_list[cur];
+            for (const std::pair<std::size_t, std::size_t>& next : adj_with_cur)
+            {
+                if (visited.find(next.first) == visited.end())
+                {
+                    Q.push(next.first);
+                    visited.insert(next.first);
+                }
+            }
+        }
+
         return false;
     }
 
