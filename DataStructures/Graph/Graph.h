@@ -74,6 +74,37 @@ public:
             throw std::out_of_range("Invalid vertex");
         }
 
+        if (source == dest)
+        {
+            return true;
+        }
+
+        std::unordered_set<std::size_t> visited;
+        std::queue<std::size_t> Q;
+        Q.push(source);
+        visited.insert(source);
+
+        while (!Q.empty())
+        {
+            std::size_t cur = Q.front();
+            Q.pop();
+
+            if (cur == dest)
+            {
+                return true;
+            }
+
+            const std::vector<std::size_t>& adj_with_cur = m_adj_list[cur];
+            for (const std::size_t& next : adj_with_cur)
+            {
+                if (visited.find(next) == visited.end())
+                {
+                    Q.push(next);
+                    visited.insert(next);
+                }
+            }
+        }
+
         return false;
     }
 
@@ -82,6 +113,37 @@ public:
         if (source >= m_num_vertex || dest >= m_num_vertex)
         {
             throw std::out_of_range("Invalid vertex");
+        }
+
+        if (source == dest)
+        {
+            return 0U;
+        }
+
+        std::unordered_set<std::size_t> visited;
+        std::queue<std::pair<std::size_t, std::size_t>> Q;
+        Q.push({source, 0U});
+        visited.insert(source);
+
+        while (!Q.empty())
+        {
+            std::pair<std::size_t, std::size_t> cur = Q.front();
+            Q.pop();
+
+            if (cur.first == dest)
+            {
+                return cur.second;
+            }
+
+            const std::vector<std::size_t>& adj_with_cur = m_adj_list[cur.first];
+            for (const std::size_t& next : adj_with_cur)
+            {
+                if (visited.find(next) == visited.end())
+                {
+                    Q.push({next, cur.second + 1U});
+                    visited.insert(next);
+                }
+            }
         }
 
         return UNREACHABLE_DISTANCE;
@@ -94,12 +156,57 @@ public:
             throw std::out_of_range("Invalid vertex");
         }
 
-        return {};
+        if (source == dest)
+        {
+            return {source};
+        }
+
+        std::vector<std::size_t> path;
+        std::unordered_set<std::size_t> visited;
+        std::unordered_map<std::size_t, std::size_t> parents;
+        std::queue<std::size_t> Q;
+        Q.push(source);
+        visited.insert(source);
+        parents[source] = source;
+
+        while (!Q.empty())
+        {
+            std::size_t cur = Q.front();
+            Q.pop();
+
+            if (cur == dest)
+            {
+                // Build path from source to dest using parent mapping
+                path.push_back(dest);
+                std::size_t parent = parents[dest];
+                while (parent != source)
+                {
+                    path.push_back(parent);
+                    parent = parents[parent];
+                }
+                path.push_back(source);
+                std::reverse(path.begin(), path.end());
+                break;
+            }
+
+            const std::vector<std::size_t>& adj_with_cur = m_adj_list[cur];
+            for (const std::size_t& next : adj_with_cur)
+            {
+                if (visited.find(next) == visited.end())
+                {
+                    parents[next] = cur;
+                    Q.push(next);
+                    visited.insert(next);
+                }
+            }
+        }
+
+        return path;
     }
 
 private:
-    std::unordered_map<std::size_t, std::vector<std::size_t>> m_adj_list;
     std::size_t m_num_vertex;
+    std::unordered_map<std::size_t, std::vector<std::size_t>> m_adj_list;
 };
 
 
@@ -208,8 +315,8 @@ public:
     }
 
 private:
-    std::unordered_map<std::size_t, std::vector<std::pair<std::size_t, std::size_t>>> m_adj_list;
     std::size_t m_num_vertex;
+    std::unordered_map<std::size_t, std::vector<std::pair<std::size_t, std::size_t>>> m_adj_list;
 };
 
 #endif // GRAPH_H
