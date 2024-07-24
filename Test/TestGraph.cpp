@@ -526,14 +526,58 @@ TEST_F(TestUndirectedGraph, MethodShortestPath)
     EXPECT_EQ(path[1], 6U);
 }
 
-TEST_F(TestUndirectedGraph, MethodMinSpanningTreePrim)
-{
-    UndirectedGraph testObj(7U);
-}
-
 TEST_F(TestUndirectedGraph, MethodMinSpanningTreeKruskal)
 {
     UndirectedGraph testObj(7U);
+
+    std::vector<std::pair<std::size_t, std::pair<std::size_t, std::size_t>>> min_spanning_tree = testObj.min_spanning_tree_kruskal();
+    EXPECT_EQ(min_spanning_tree.size(), 0U);
+
+    EXPECT_NO_THROW(testObj.add_edge(0U, 1U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(1U, 2U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(2U, 3U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(3U, 4U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(4U, 5U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(5U, 6U, 1U));
+
+    min_spanning_tree = testObj.min_spanning_tree_kruskal();
+    EXPECT_EQ(min_spanning_tree.size(), 6U);
+
+    for (const std::pair<std::size_t, std::pair<std::size_t, std::size_t>>& edge : min_spanning_tree)
+    {
+        EXPECT_EQ(edge.first, 1U);
+    }
+
+    EXPECT_NO_THROW(testObj.remove_edge(2U, 3U));
+    min_spanning_tree = testObj.min_spanning_tree_kruskal();
+    EXPECT_EQ(min_spanning_tree.size(), 0U);
+}
+
+TEST_F(TestUndirectedGraph, MethodMinSpanningTreePrim)
+{
+    UndirectedGraph testObj(7U);
+
+    std::vector<std::pair<std::size_t, std::pair<std::size_t, std::size_t>>> min_spanning_tree = testObj.min_spanning_tree_prim();
+    EXPECT_EQ(min_spanning_tree.size(), 0U);
+
+    EXPECT_NO_THROW(testObj.add_edge(0U, 1U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(1U, 2U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(2U, 3U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(3U, 4U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(4U, 5U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(5U, 6U, 1U));
+
+    min_spanning_tree = testObj.min_spanning_tree_prim();
+    EXPECT_EQ(min_spanning_tree.size(), 6U);
+
+    for (const std::pair<std::size_t, std::pair<std::size_t, std::size_t>>& edge : min_spanning_tree)
+    {
+        EXPECT_EQ(edge.first, 1U);
+    }
+
+    EXPECT_NO_THROW(testObj.remove_edge(2U, 3U));
+    min_spanning_tree = testObj.min_spanning_tree_prim();
+    EXPECT_EQ(min_spanning_tree.size(), 0U);
 }
 
 TEST_F(TestUndirectedGraph, MethodMinDistanceAllPairs)

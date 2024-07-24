@@ -466,17 +466,26 @@ public:
 
     virtual bool has_cycle() override
     {
-        std::unordered_set<std::size_t> visited;
-        for (std::size_t i = 0U; i < m_num_vertex; i++)
+        UnionFind UF(m_num_vertex);
+        for (std::size_t cur = 0U; cur < m_num_vertex; cur++)
         {
-            if (visited.find(i) == visited.end())
+            const std::vector<std::pair<std::size_t, std::size_t>>& adj_with_cur = m_adj_list[cur];
+            for (const std::pair<std::size_t, std::size_t>& adj_vertex : adj_with_cur)
             {
-                if (has_cycle_dfs_util(i, visited, UNREACHABLE_DISTANCE))
+                if (cur < adj_vertex.second)
                 {
-                    return true;
+                    int rootCur = UF.find(cur);
+                    int rootNext = UF.find(adj_vertex.second);
+                    if (rootCur == rootNext)
+                    {
+                        return true;
+                    }
+
+                    UF.unite(cur, adj_vertex.second);
                 }
             }
         }
+
         return false;
     }
 
@@ -508,43 +517,69 @@ public:
         return components;
     }
 
-    std::vector<std::pair<std::size_t, std::pair<std::size_t, std::size_t>>> min_spanning_tree_prim()
-    {
-        return {};
-    }
-
     std::vector<std::pair<std::size_t, std::pair<std::size_t, std::size_t>>> min_spanning_tree_kruskal()
     {
-        return {};
+        std::vector<std::pair<std::size_t, std::pair<std::size_t, std::size_t>>> min_tree;
+
+        std::priority_queue<std::pair<std::size_t, std::pair<std::size_t, std::size_t>>,
+                            std::vector<std::pair<std::size_t, std::pair<std::size_t, std::size_t>>>,
+                            std::greater<std::pair<std::size_t, std::pair<std::size_t, std::size_t>>>> PQ;
+        
+        for (std::size_t cur = 0U; cur < m_num_vertex; cur++)
+        {
+            const std::vector<std::pair<std::size_t, std::size_t>>& adj_with_cur = m_adj_list[cur];
+            for (const std::pair<std::size_t, std::size_t>& adj_vertex : adj_with_cur)
+            {
+                if (cur < adj_vertex.second)
+                {
+                    PQ.push({adj_vertex.first, {cur, adj_vertex.second}});
+                }
+            }
+        }
+
+        UnionFind UF(m_num_vertex);
+        while (!PQ.empty() && min_tree.size() < m_num_vertex - 1U)
+        {
+            std::pair<std::size_t, std::pair<std::size_t, std::size_t>> cur_edge = PQ.top();
+            PQ.pop();
+
+            if (UF.find(cur_edge.second.first) == UF.find(cur_edge.second.second))
+            {
+                continue;
+            }
+            else
+            {
+                UF.unite(cur_edge.second.first, cur_edge.second.second);
+                min_tree.push_back(cur_edge);
+            }
+        }
+
+        if (min_tree.size() < m_num_vertex - 1U)
+        {
+            // Graph is not fully connected, no spanning tree available
+            min_tree.clear();
+        }
+
+        return min_tree;
+    }
+
+    std::vector<std::pair<std::size_t, std::pair<std::size_t, std::size_t>>> min_spanning_tree_prim()
+    {
+        std::vector<std::pair<std::size_t, std::pair<std::size_t, std::size_t>>> min_tree;
+
+        if (min_tree.size() < m_num_vertex - 1U)
+        {
+            // Graph is not fully connected, no spanning tree available
+            min_tree.clear();
+        }
+
+        return min_tree;
     }
 
     std::vector<std::vector<std::size_t>> min_distance_all_pairs()
     {
         // Floyd Warshall Algorithm
         return {};
-    }
-
-private:
-    bool has_cycle_dfs_util(std::size_t cur, std::unordered_set<std::size_t>& visited, std::size_t parent)
-    {
-        visited.insert(cur);
-
-        const std::vector<std::pair<std::size_t, std::size_t>>& adj_with_cur = m_adj_list[cur];
-        for (const std::pair<std::size_t, std::size_t>& next : adj_with_cur)
-        {
-            if (visited.find(next.second) == visited.end())
-            {
-                if (has_cycle_dfs_util(next.second, visited, cur))
-                {
-                    return true;
-                }
-            }
-            else if (next.second != parent)
-            {
-                return true;
-            }
-        }
-        return false;
     }
 };
 
