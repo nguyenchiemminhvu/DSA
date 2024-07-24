@@ -209,7 +209,11 @@ public:
 
     virtual std::vector<std::vector<std::size_t>> connected_components() override
     {
-        return {};
+        std::vector<std::vector<std::size_t>> components;
+
+        
+
+        return components;
     }
 
     virtual std::size_t distance(const std::size_t& source, const std::size_t& dest)
