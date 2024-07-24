@@ -154,6 +154,15 @@ public:
 
     virtual bool has_cycle()
     {
+        std::vector<bool> visited(m_num_vertex, false);
+        std::vector<bool> waypoints(m_num_vertex, false);
+        for (std::size_t i = 0U; i < m_num_vertex; i++)
+        {
+            if (has_cycle_dfs(i, visited, waypoints))
+            {
+                return true;
+            }
+        }
         return false;
     }
 
@@ -269,6 +278,33 @@ public:
         }
 
         return path;
+    }
+
+private:
+    bool has_cycle_dfs(std::size_t cur, std::vector<bool>& visited, std::vector<bool>& waypoints)
+    {
+        if (!visited[cur])
+        {
+            visited[cur] = true;
+            waypoints[cur] = true;
+
+            const std::vector<std::pair<std::size_t, std::size_t>>& adj_with_cur = m_adj_list[cur];
+            for (const std::pair<std::size_t, std::size_t>& next : adj_with_cur)
+            {
+                if (!visited[next.second] && has_cycle_dfs(next.second, visited, waypoints))
+                {
+                    return true;
+                }
+                else if (waypoints[next.second])
+                {
+                    return true;
+                }
+            }
+        }
+
+        waypoints[cur] = false;
+
+        return false;
     }
 };
 

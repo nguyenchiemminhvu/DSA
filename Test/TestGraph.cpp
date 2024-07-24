@@ -126,6 +126,21 @@ TEST_F(TestDirectedGraph, MethodIsConnected)
 TEST_F(TestDirectedGraph, MethodHasCycle)
 {
     DirectedGraph testObj(7U);
+
+    EXPECT_NO_THROW(testObj.add_edge(0U, 1U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(1U, 2U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(2U, 3U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(3U, 4U, 1U));
+    EXPECT_FALSE(testObj.has_cycle());
+
+    EXPECT_NO_THROW(testObj.add_edge(4U, 2U, 1U));
+    EXPECT_TRUE(testObj.has_cycle());
+
+    EXPECT_NO_THROW(testObj.remove_edge(2U, 3U));
+    EXPECT_FALSE(testObj.has_cycle());
+
+    EXPECT_NO_THROW(testObj.add_edge(2U, 4U, 1U));
+    EXPECT_TRUE(testObj.has_cycle());
 }
 
 TEST_F(TestDirectedGraph, MethodDistance)
