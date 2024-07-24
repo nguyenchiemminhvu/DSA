@@ -146,11 +146,47 @@ TEST_F(TestDirectedGraph, MethodHasCycle)
 TEST_F(TestDirectedGraph, MethodTraversalBFS)
 {
     DirectedGraph testObj(7U);
+
+    EXPECT_NO_THROW(testObj.add_edge(0U, 1U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(1U, 2U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(2U, 3U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(3U, 4U, 1U));
+
+    std::vector<std::size_t> group = testObj.traversal_bfs(0U);
+    std::sort(group.begin(), group.end());
+    EXPECT_EQ(group[0U], 0U);
+    EXPECT_EQ(group[1U], 1U);
+    EXPECT_EQ(group[2U], 2U);
+    EXPECT_EQ(group[3U], 3U);
+
+    group = testObj.traversal_bfs(1U);
+    std::sort(group.begin(), group.end());
+    EXPECT_EQ(group[0U], 1U);
+    EXPECT_EQ(group[1U], 2U);
+    EXPECT_EQ(group[2U], 3U);
 }
 
 TEST_F(TestDirectedGraph, MethodTraversalDFS)
 {
     DirectedGraph testObj(7U);
+
+    EXPECT_NO_THROW(testObj.add_edge(0U, 1U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(1U, 2U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(2U, 3U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(3U, 4U, 1U));
+
+    std::vector<std::size_t> group = testObj.traversal_dfs(0U);
+    std::sort(group.begin(), group.end());
+    EXPECT_EQ(group[0U], 0U);
+    EXPECT_EQ(group[1U], 1U);
+    EXPECT_EQ(group[2U], 2U);
+    EXPECT_EQ(group[3U], 3U);
+
+    group = testObj.traversal_dfs(1U);
+    std::sort(group.begin(), group.end());
+    EXPECT_EQ(group[0U], 1U);
+    EXPECT_EQ(group[1U], 2U);
+    EXPECT_EQ(group[2U], 3U);
 }
 
 TEST_F(TestDirectedGraph, MethodDistance)
@@ -349,11 +385,49 @@ TEST_F(TestUndirectedGraph, MethodHasCycle)
 TEST_F(TestUndirectedGraph, MethodTraversalBFS)
 {
     UndirectedGraph testObj(7U);
+
+    EXPECT_NO_THROW(testObj.add_edge(0U, 1U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(1U, 2U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(2U, 3U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(3U, 4U, 1U));
+
+    std::vector<std::size_t> group = testObj.traversal_bfs(0U);
+    std::sort(group.begin(), group.end());
+    EXPECT_EQ(group[0U], 0U);
+    EXPECT_EQ(group[1U], 1U);
+    EXPECT_EQ(group[2U], 2U);
+    EXPECT_EQ(group[3U], 3U);
+
+    group = testObj.traversal_bfs(1U);
+    std::sort(group.begin(), group.end());
+    EXPECT_EQ(group[0U], 0U);
+    EXPECT_EQ(group[1U], 1U);
+    EXPECT_EQ(group[2U], 2U);
+    EXPECT_EQ(group[3U], 3U);
 }
 
 TEST_F(TestUndirectedGraph, MethodTraversalDFS)
 {
     UndirectedGraph testObj(7U);
+
+    EXPECT_NO_THROW(testObj.add_edge(0U, 1U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(1U, 2U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(2U, 3U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(3U, 4U, 1U));
+
+    std::vector<std::size_t> group = testObj.traversal_dfs(0U);
+    std::sort(group.begin(), group.end());
+    EXPECT_EQ(group[0U], 0U);
+    EXPECT_EQ(group[1U], 1U);
+    EXPECT_EQ(group[2U], 2U);
+    EXPECT_EQ(group[3U], 3U);
+
+    group = testObj.traversal_dfs(1U);
+    std::sort(group.begin(), group.end());
+    EXPECT_EQ(group[0U], 0U);
+    EXPECT_EQ(group[1U], 1U);
+    EXPECT_EQ(group[2U], 2U);
+    EXPECT_EQ(group[3U], 3U);
 }
 
 TEST_F(TestUndirectedGraph, MethodDistance)

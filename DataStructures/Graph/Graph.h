@@ -170,12 +170,40 @@ public:
 
     virtual std::vector<std::size_t> traversal_bfs(const std::size_t& source)
     {
-        return {};
+        std::vector<std::size_t> elements;
+        std::unordered_set<std::size_t> visited;
+        std::queue<std::size_t> Q;
+        Q.push(source);
+        visited.insert(source);
+
+        while (!Q.empty())
+        {
+            std::size_t cur = Q.front();
+            Q.pop();
+
+            elements.push_back(cur);
+
+            const std::vector<std::pair<std::size_t, std::size_t>>& adj_with_cur = m_adj_list[cur];
+            for (const std::pair<std::size_t, std::size_t>& next : adj_with_cur)
+            {
+                if (visited.find(next.second) == visited.end())
+                {
+                    Q.push(next.second);
+                    visited.insert(next.second);
+                }
+            }
+        }
+
+        return elements;
     }
 
     virtual std::vector<std::size_t> traversal_dfs(const std::size_t& source)
     {
-        return {};
+        std::vector<std::size_t> elements;
+        std::unordered_set<std::size_t> visited;
+        traversal_dfs_util(source, visited, elements);
+
+        return elements;
     }
 
     virtual std::size_t distance(const std::size_t& source, const std::size_t& dest)
@@ -293,6 +321,21 @@ public:
     }
 
 private:
+    void traversal_dfs_util(std::size_t cur, std::unordered_set<std::size_t>& visited, std::vector<std::size_t>& elements)
+    {
+        visited.insert(cur);
+        elements.push_back(cur);
+
+        const std::vector<std::pair<std::size_t, std::size_t>>& adj_with_cur = m_adj_list[cur];
+        for (const std::pair<std::size_t, std::size_t>& next : adj_with_cur)
+        {
+            if (visited.find(next.second) == visited.end())
+            {
+                traversal_dfs_util(next.second, visited, elements);       
+            }
+        }
+    }
+
     bool has_cycle_dfs_util(std::size_t cur, std::vector<bool>& visited, std::vector<bool>& waypoints)
     {
         if (!visited[cur])
