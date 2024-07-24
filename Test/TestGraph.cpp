@@ -143,6 +143,16 @@ TEST_F(TestDirectedGraph, MethodHasCycle)
     EXPECT_TRUE(testObj.has_cycle());
 }
 
+TEST_F(TestDirectedGraph, MethodTraversalBFS)
+{
+    DirectedGraph testObj(7U);
+}
+
+TEST_F(TestDirectedGraph, MethodTraversalDFS)
+{
+    DirectedGraph testObj(7U);
+}
+
 TEST_F(TestDirectedGraph, MethodDistance)
 {
     DirectedGraph testObj(7U);
@@ -334,6 +344,16 @@ TEST_F(TestUndirectedGraph, MethodHasCycle)
 
     EXPECT_NO_THROW(testObj.add_edge(0U, 3U));
     EXPECT_TRUE(testObj.has_cycle());
+}
+
+TEST_F(TestUndirectedGraph, MethodTraversalBFS)
+{
+    UndirectedGraph testObj(7U);
+}
+
+TEST_F(TestUndirectedGraph, MethodTraversalDFS)
+{
+    UndirectedGraph testObj(7U);
 }
 
 TEST_F(TestUndirectedGraph, MethodDistance)

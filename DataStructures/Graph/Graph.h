@@ -31,6 +31,8 @@ public:
     virtual void remove_edge(const std::size_t& source, const std::size_t& dest) = 0;
     virtual bool is_connected(const std::size_t& source, const std::size_t& dest) = 0;
     virtual bool has_cycle() = 0;
+    virtual std::vector<std::size_t> traversal_bfs(const std::size_t& source) = 0;
+    virtual std::vector<std::size_t> traversal_dfs(const std::size_t& source) = 0;
     virtual std::size_t distance(const std::size_t& source, const std::size_t& dest) = 0;
     virtual std::vector<std::size_t> shortest_path(const std::size_t& source, const std::size_t& dest) = 0;
 
@@ -158,12 +160,22 @@ public:
         std::vector<bool> waypoints(m_num_vertex, false);
         for (std::size_t i = 0U; i < m_num_vertex; i++)
         {
-            if (has_cycle_dfs(i, visited, waypoints))
+            if (has_cycle_dfs_util(i, visited, waypoints))
             {
                 return true;
             }
         }
         return false;
+    }
+
+    virtual std::vector<std::size_t> traversal_bfs(const std::size_t& source)
+    {
+        return {};
+    }
+
+    virtual std::vector<std::size_t> traversal_dfs(const std::size_t& source)
+    {
+        return {};
     }
 
     virtual std::size_t distance(const std::size_t& source, const std::size_t& dest)
@@ -281,7 +293,7 @@ public:
     }
 
 private:
-    bool has_cycle_dfs(std::size_t cur, std::vector<bool>& visited, std::vector<bool>& waypoints)
+    bool has_cycle_dfs_util(std::size_t cur, std::vector<bool>& visited, std::vector<bool>& waypoints)
     {
         if (!visited[cur])
         {
@@ -291,7 +303,7 @@ private:
             const std::vector<std::pair<std::size_t, std::size_t>>& adj_with_cur = m_adj_list[cur];
             for (const std::pair<std::size_t, std::size_t>& next : adj_with_cur)
             {
-                if (!visited[next.second] && has_cycle_dfs(next.second, visited, waypoints))
+                if (!visited[next.second] && has_cycle_dfs_util(next.second, visited, waypoints))
                 {
                     return true;
                 }
@@ -383,7 +395,7 @@ public:
         {
             if (visited.find(i) == visited.end())
             {
-                if (has_cycle_dfs(i, visited, UNREACHABLE_DISTANCE))
+                if (has_cycle_dfs_util(i, visited, UNREACHABLE_DISTANCE))
                 {
                     return true;
                 }
@@ -414,7 +426,7 @@ public:
     }
 
 private:
-    bool has_cycle_dfs(std::size_t cur, std::unordered_set<std::size_t>& visited, std::size_t parent)
+    bool has_cycle_dfs_util(std::size_t cur, std::unordered_set<std::size_t>& visited, std::size_t parent)
     {
         visited.insert(cur);
 
@@ -423,7 +435,7 @@ private:
         {
             if (visited.find(next.second) == visited.end())
             {
-                if (has_cycle_dfs(next.second, visited, cur))
+                if (has_cycle_dfs_util(next.second, visited, cur))
                 {
                     return true;
                 }
