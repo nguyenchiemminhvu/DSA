@@ -378,6 +378,17 @@ public:
 
     virtual bool has_cycle() override
     {
+        std::unordered_set<std::size_t> visited;
+        for (std::size_t i = 0U; i < m_num_vertex; i++)
+        {
+            if (visited.find(i) == visited.end())
+            {
+                if (has_cycle_dfs(i, visited, UNREACHABLE_DISTANCE))
+                {
+                    return true;
+                }
+            }
+        }
         return false;
     }
 
@@ -400,6 +411,29 @@ public:
     {
         // Floyd Warshall Algorithm
         return {};
+    }
+
+private:
+    bool has_cycle_dfs(std::size_t cur, std::unordered_set<std::size_t>& visited, std::size_t parent)
+    {
+        visited.insert(cur);
+
+        const std::vector<std::pair<std::size_t, std::size_t>>& adj_with_cur = m_adj_list[cur];
+        for (const std::pair<std::size_t, std::size_t>& next : adj_with_cur)
+        {
+            if (visited.find(next.second) == visited.end())
+            {
+                if (has_cycle_dfs(next.second, visited, cur))
+                {
+                    return true;
+                }
+            }
+            else if (next.second != parent)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 };
 
