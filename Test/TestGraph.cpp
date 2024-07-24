@@ -192,6 +192,21 @@ TEST_F(TestDirectedGraph, MethodTraversalDFS)
 TEST_F(TestDirectedGraph, MethodConnectedComponents)
 {
     DirectedGraph testObj(7U);
+
+    EXPECT_NO_THROW(testObj.add_edge(0U, 1U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(1U, 2U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(2U, 0U, 1U));
+
+    EXPECT_NO_THROW(testObj.add_edge(2U, 3U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(3U, 4U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(4U, 3U, 1U));
+
+    EXPECT_NO_THROW(testObj.add_edge(4U, 5U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(5U, 6U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(6U, 5U, 1U));
+
+    std::vector<std::vector<std::size_t>> components = testObj.connected_components();
+    EXPECT_EQ(components.size(), 3U);
 }
 
 TEST_F(TestDirectedGraph, MethodDistance)

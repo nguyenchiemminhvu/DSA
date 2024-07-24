@@ -211,7 +211,30 @@ public:
     {
         std::vector<std::vector<std::size_t>> components;
 
-        
+        std::vector<bool> in_scc(m_num_vertex, false);
+
+        for (std::size_t cur = 0U; cur < m_num_vertex; cur++)
+        {
+            if (in_scc[cur] == false)
+            {
+                std::vector<std::size_t> component;
+                component.push_back(cur);
+                in_scc[cur] = true;
+
+                for (std::size_t candidate = 0U; candidate < m_num_vertex; candidate++)
+                {
+                    if (in_scc[candidate] == false
+                     && is_connected(cur, candidate)
+                     && is_connected(candidate, cur))
+                    {
+                        component.push_back(candidate);
+                        in_scc[candidate] = true;
+                    }
+                }
+
+                components.push_back(component);
+            }
+        }
 
         return components;
     }
