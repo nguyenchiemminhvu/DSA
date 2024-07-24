@@ -33,6 +33,7 @@ public:
     virtual bool has_cycle() = 0;
     virtual std::vector<std::size_t> traversal_bfs(const std::size_t& source) = 0;
     virtual std::vector<std::size_t> traversal_dfs(const std::size_t& source) = 0;
+    virtual std::vector<std::vector<std::size_t>> connected_components() = 0;
     virtual std::size_t distance(const std::size_t& source, const std::size_t& dest) = 0;
     virtual std::vector<std::size_t> shortest_path(const std::size_t& source, const std::size_t& dest) = 0;
 
@@ -204,6 +205,11 @@ public:
         traversal_dfs_util(source, visited, elements);
 
         return elements;
+    }
+
+    virtual std::vector<std::vector<std::size_t>> connected_components() override
+    {
+        return {};
     }
 
     virtual std::size_t distance(const std::size_t& source, const std::size_t& dest)
@@ -447,9 +453,32 @@ public:
         return false;
     }
 
-    std::vector<std::vector<std::size_t>> connected_components()
+    virtual std::vector<std::vector<std::size_t>> connected_components() override
     {
-        return {};
+        std::vector<std::vector<std::size_t>> components;
+
+        UnionFind UF(m_num_vertex);
+        for (std::size_t cur = 0U; cur < m_num_vertex; cur++)
+        {
+            const std::vector<std::pair<std::size_t, std::size_t>>& adj_with_cur = m_adj_list[cur];
+            for (const std::pair<std::size_t, std::size_t>& adj_vertex : adj_with_cur)
+            {
+                UF.unite(cur, adj_vertex.second);
+            }
+        }
+
+        std::unordered_map<std::size_t, std::vector<std::size_t>> groups;
+        for (std::size_t cur = 0U; cur < m_num_vertex; cur++)
+        {
+            groups[UF.find(cur)].push_back(cur);
+        }
+
+        for (std::unordered_map<std::size_t, std::vector<std::size_t>>::iterator it = groups.begin(); it != groups.end(); it++)
+        {
+            components.push_back(it->second);
+        }
+
+        return components;
     }
 
     std::vector<std::pair<std::size_t, std::pair<std::size_t, std::size_t>>> min_spanning_tree_prim()

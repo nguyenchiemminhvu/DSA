@@ -189,6 +189,11 @@ TEST_F(TestDirectedGraph, MethodTraversalDFS)
     EXPECT_EQ(group[2U], 3U);
 }
 
+TEST_F(TestDirectedGraph, MethodConnectedComponents)
+{
+    DirectedGraph testObj(7U);
+}
+
 TEST_F(TestDirectedGraph, MethodDistance)
 {
     DirectedGraph testObj(7U);
@@ -430,6 +435,32 @@ TEST_F(TestUndirectedGraph, MethodTraversalDFS)
     EXPECT_EQ(group[3U], 3U);
 }
 
+TEST_F(TestUndirectedGraph, MethodConnectedComponents)
+{
+    UndirectedGraph testObj(7U);
+    
+    EXPECT_NO_THROW(testObj.add_edge(0U, 1U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(1U, 2U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(2U, 3U, 1U));
+
+    EXPECT_NO_THROW(testObj.add_edge(4U, 5U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(5U, 6U, 1U));
+
+    std::vector<std::vector<std::size_t>> components = testObj.connected_components();
+    EXPECT_EQ(components.size(), 2U);
+
+    EXPECT_NO_THROW(testObj.remove_edge(2U, 3U));
+    components = testObj.connected_components();
+    EXPECT_EQ(components.size(), 3U);
+
+    std::size_t count_vertex = 0U;
+    for (const std::vector<std::size_t>& component : components)
+    {
+        count_vertex += component.size();
+    }
+    EXPECT_EQ(count_vertex, 7U);
+}
+
 TEST_F(TestUndirectedGraph, MethodDistance)
 {
     UndirectedGraph testObj(7U);
@@ -478,11 +509,6 @@ TEST_F(TestUndirectedGraph, MethodShortestPath)
     path = testObj.shortest_path(0U, 6U);
     EXPECT_EQ(path[0], 0U);
     EXPECT_EQ(path[1], 6U);
-}
-
-TEST_F(TestUndirectedGraph, MethodConnectedComponents)
-{
-    UndirectedGraph testObj(7U);
 }
 
 TEST_F(TestUndirectedGraph, MethodMinSpanningTreePrim)
