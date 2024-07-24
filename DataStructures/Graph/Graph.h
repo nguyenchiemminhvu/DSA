@@ -567,6 +567,45 @@ public:
     {
         std::vector<std::pair<std::size_t, std::pair<std::size_t, std::size_t>>> min_tree;
 
+        std::vector<std::size_t> parents(m_num_vertex, UNREACHABLE_DISTANCE);
+        std::vector<std::size_t> weights(m_num_vertex, UNREACHABLE_DISTANCE);
+        std::unordered_set<std::size_t> mst_set;
+        std::priority_queue<std::pair<std::size_t, std::size_t>,
+                            std::vector<std::pair<std::size_t, std::size_t>>,
+                            std::greater<std::pair<std::size_t, std::size_t>>> PQ;
+        PQ.push({0U, 0U});
+        weights[0U] = 0U;
+
+        while (!PQ.empty())
+        {
+            std::pair<std::size_t, std::size_t> cur = PQ.top();
+            PQ.pop();
+
+            mst_set.insert(cur.second);
+
+            const std::vector<std::pair<std::size_t, std::size_t>>& adj_with_cur = m_adj_list[cur.second];
+            for (const std::pair<std::size_t, std::size_t>& next : adj_with_cur)
+            {
+                if (mst_set.find(next.second) == mst_set.end())
+                {
+                    if (weights[next.second] > next.first)
+                    {
+                        weights[next.second] = next.first;
+                        parents[next.second] = cur.second;
+                        PQ.push({next.first, next.second});
+                    }
+                }
+            }
+        }
+
+        for (std::size_t i = 1U; i < m_num_vertex; i++)
+        {
+            if (parents[i] != UNREACHABLE_DISTANCE)
+            {
+                min_tree.push_back({weights[i], {parents[i], i}});
+            }
+        }
+
         if (min_tree.size() < m_num_vertex - 1U)
         {
             // Graph is not fully connected, no spanning tree available
