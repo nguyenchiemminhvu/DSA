@@ -398,7 +398,7 @@ public:
 
                     if (min_dist[source][intermediate] + min_dist[intermediate][dest] < min_dist[source][dest])
                     {
-                        min_dist[source][dest] = min_dist[source][intermediate] + min_dist[dest][intermediate];
+                        min_dist[source][dest] = min_dist[source][intermediate] + min_dist[intermediate][dest];
                     }
                 }
             }
