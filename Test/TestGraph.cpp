@@ -578,6 +578,58 @@ TEST_F(TestUndirectedGraph, MethodShortestPath)
     EXPECT_EQ(path[1], 6U);
 }
 
+TEST_F(TestUndirectedGraph, MethodMinDistanceAllPairs)
+{
+    UndirectedGraph testObj(7U);
+
+    std::vector<std::vector<std::size_t>> min_dist = testObj.min_distance_all_pairs();
+    for (std::size_t i = 0U; i < 7U; i++)
+    {
+        for (std::size_t j = 0U; j < 7U; j++)
+        {
+            if (i == j)
+            {
+                EXPECT_EQ(min_dist[i][j], 0U);
+                EXPECT_EQ(min_dist[j][i], 0U);
+            }
+            else
+            {
+                EXPECT_EQ(min_dist[i][j], UNREACHABLE_DISTANCE);
+                EXPECT_EQ(min_dist[j][i], UNREACHABLE_DISTANCE);
+            }
+        }
+    }
+
+    EXPECT_NO_THROW(testObj.add_edge(0U, 1U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(1U, 2U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(2U, 3U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(3U, 4U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(4U, 5U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(5U, 6U, 1U));
+
+    min_dist = testObj.min_distance_all_pairs();
+
+    EXPECT_EQ(min_dist[0U][1U], 1U);
+    EXPECT_EQ(min_dist[1U][2U], 1U);
+    EXPECT_EQ(min_dist[2U][3U], 1U);
+    EXPECT_EQ(min_dist[3U][4U], 1U);
+    EXPECT_EQ(min_dist[4U][5U], 1U);
+    EXPECT_EQ(min_dist[5U][6U], 1U);
+
+    EXPECT_EQ(min_dist[1U][0U], 1U);
+    EXPECT_EQ(min_dist[2U][1U], 1U);
+    EXPECT_EQ(min_dist[3U][2U], 1U);
+    EXPECT_EQ(min_dist[4U][3U], 1U);
+    EXPECT_EQ(min_dist[5U][4U], 1U);
+    EXPECT_EQ(min_dist[6U][5U], 1U);
+
+    EXPECT_EQ(min_dist[0U][2U], 2U);
+    EXPECT_EQ(min_dist[2U][0U], 2U);
+
+    EXPECT_EQ(min_dist[0U][6U], 6U);
+    EXPECT_EQ(min_dist[6U][0U], 6U);
+}
+
 TEST_F(TestUndirectedGraph, MethodMinSpanningTreeKruskal)
 {
     UndirectedGraph testObj(7U);
@@ -632,54 +684,12 @@ TEST_F(TestUndirectedGraph, MethodMinSpanningTreePrim)
     EXPECT_EQ(min_spanning_tree.size(), 0U);
 }
 
-TEST_F(TestUndirectedGraph, MethodMinDistanceAllPairs)
+TEST_F(TestUndirectedGraph, MethodFindBridges)
 {
     UndirectedGraph testObj(7U);
+}
 
-    std::vector<std::vector<std::size_t>> min_dist = testObj.min_distance_all_pairs();
-    for (std::size_t i = 0U; i < 7U; i++)
-    {
-        for (std::size_t j = 0U; j < 7U; j++)
-        {
-            if (i == j)
-            {
-                EXPECT_EQ(min_dist[i][j], 0U);
-                EXPECT_EQ(min_dist[j][i], 0U);
-            }
-            else
-            {
-                EXPECT_EQ(min_dist[i][j], UNREACHABLE_DISTANCE);
-                EXPECT_EQ(min_dist[j][i], UNREACHABLE_DISTANCE);
-            }
-        }
-    }
-
-    EXPECT_NO_THROW(testObj.add_edge(0U, 1U, 1U));
-    EXPECT_NO_THROW(testObj.add_edge(1U, 2U, 1U));
-    EXPECT_NO_THROW(testObj.add_edge(2U, 3U, 1U));
-    EXPECT_NO_THROW(testObj.add_edge(3U, 4U, 1U));
-    EXPECT_NO_THROW(testObj.add_edge(4U, 5U, 1U));
-    EXPECT_NO_THROW(testObj.add_edge(5U, 6U, 1U));
-
-    min_dist = testObj.min_distance_all_pairs();
-
-    EXPECT_EQ(min_dist[0U][1U], 1U);
-    EXPECT_EQ(min_dist[1U][2U], 1U);
-    EXPECT_EQ(min_dist[2U][3U], 1U);
-    EXPECT_EQ(min_dist[3U][4U], 1U);
-    EXPECT_EQ(min_dist[4U][5U], 1U);
-    EXPECT_EQ(min_dist[5U][6U], 1U);
-
-    EXPECT_EQ(min_dist[1U][0U], 1U);
-    EXPECT_EQ(min_dist[2U][1U], 1U);
-    EXPECT_EQ(min_dist[3U][2U], 1U);
-    EXPECT_EQ(min_dist[4U][3U], 1U);
-    EXPECT_EQ(min_dist[5U][4U], 1U);
-    EXPECT_EQ(min_dist[6U][5U], 1U);
-
-    EXPECT_EQ(min_dist[0U][2U], 2U);
-    EXPECT_EQ(min_dist[2U][0U], 2U);
-
-    EXPECT_EQ(min_dist[0U][6U], 6U);
-    EXPECT_EQ(min_dist[6U][0U], 6U);
+TEST_F(TestUndirectedGraph, MethodFindArticulationPoints)
+{
+    UndirectedGraph testObj(7U);
 }

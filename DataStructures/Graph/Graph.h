@@ -577,6 +577,50 @@ public:
         return components;
     }
 
+    virtual std::vector<std::vector<std::size_t>> min_distance_all_pairs() override
+    {
+        std::vector<std::vector<std::size_t>> min_dist(m_num_vertex, std::vector<std::size_t>(m_num_vertex, UNREACHABLE_DISTANCE));
+
+        for (std::size_t cur = 0U; cur < m_num_vertex; cur++)
+        {
+            min_dist[cur][cur] = 0U;
+
+            const std::vector<std::pair<std::size_t, std::size_t>>& adj_with_cur = m_adj_list[cur];
+            for (const std::pair<std::size_t, std::size_t>& adj_vertex : adj_with_cur)
+            {
+                min_dist[cur][adj_vertex.second] = adj_vertex.first;
+                min_dist[adj_vertex.second][cur] = adj_vertex.first;
+            }
+        }
+
+        for (std::size_t intermediate = 0U; intermediate < m_num_vertex; intermediate++)
+        {
+            for (std::size_t source = 0U; source < m_num_vertex; source++)
+            {
+                if (min_dist[source][intermediate] == UNREACHABLE_DISTANCE)
+                {
+                    continue;
+                }
+
+                for (std::size_t dest = 0U; dest < m_num_vertex; dest++)
+                {
+                    if (min_dist[intermediate][dest] == UNREACHABLE_DISTANCE)
+                    {
+                        continue;
+                    }
+
+                    if (min_dist[source][intermediate] + min_dist[intermediate][dest] < min_dist[source][dest])
+                    {
+                        min_dist[source][dest] = min_dist[source][intermediate] + min_dist[intermediate][dest];
+                        min_dist[dest][source] = min_dist[source][intermediate] + min_dist[intermediate][dest];
+                    }
+                }
+            }
+        }
+
+        return min_dist;
+    }
+
     std::vector<std::pair<std::size_t, std::pair<std::size_t, std::size_t>>> min_spanning_tree_kruskal()
     {
         std::vector<std::pair<std::size_t, std::pair<std::size_t, std::size_t>>> min_tree;
@@ -675,48 +719,22 @@ public:
         return min_tree;
     }
 
-    virtual std::vector<std::vector<std::size_t>> min_distance_all_pairs() override
+    std::vector<std::pair<std::size_t, std::size_t>> find_bridges()
     {
-        std::vector<std::vector<std::size_t>> min_dist(m_num_vertex, std::vector<std::size_t>(m_num_vertex, UNREACHABLE_DISTANCE));
+        std::vector<std::pair<std::size_t, std::size_t>> bridges;
 
-        for (std::size_t cur = 0U; cur < m_num_vertex; cur++)
-        {
-            min_dist[cur][cur] = 0U;
 
-            const std::vector<std::pair<std::size_t, std::size_t>>& adj_with_cur = m_adj_list[cur];
-            for (const std::pair<std::size_t, std::size_t>& adj_vertex : adj_with_cur)
-            {
-                min_dist[cur][adj_vertex.second] = adj_vertex.first;
-                min_dist[adj_vertex.second][cur] = adj_vertex.first;
-            }
-        }
 
-        for (std::size_t intermediate = 0U; intermediate < m_num_vertex; intermediate++)
-        {
-            for (std::size_t source = 0U; source < m_num_vertex; source++)
-            {
-                if (min_dist[source][intermediate] == UNREACHABLE_DISTANCE)
-                {
-                    continue;
-                }
+        return bridges;
+    }
 
-                for (std::size_t dest = 0U; dest < m_num_vertex; dest++)
-                {
-                    if (min_dist[intermediate][dest] == UNREACHABLE_DISTANCE)
-                    {
-                        continue;
-                    }
+    std::vector<std::size_t> find_articulation_points()
+    {
+        std::vector<std::size_t> articulation_points;
 
-                    if (min_dist[source][intermediate] + min_dist[intermediate][dest] < min_dist[source][dest])
-                    {
-                        min_dist[source][dest] = min_dist[source][intermediate] + min_dist[intermediate][dest];
-                        min_dist[dest][source] = min_dist[source][intermediate] + min_dist[intermediate][dest];
-                    }
-                }
-            }
-        }
+        
 
-        return min_dist;
+        return articulation_points;
     }
 };
 
