@@ -36,6 +36,7 @@ public:
     virtual std::vector<std::vector<std::size_t>> connected_components() = 0;
     virtual std::size_t distance(const std::size_t& source, const std::size_t& dest) = 0;
     virtual std::vector<std::size_t> shortest_path(const std::size_t& source, const std::size_t& dest) = 0;
+    virtual std::vector<std::vector<std::size_t>> min_distance_all_pairs() = 0;
 
 protected:
     std::size_t m_num_vertex;
@@ -61,7 +62,10 @@ public:
             throw std::out_of_range("Invalid vertex");
         }
 
-        m_adj_list[source].push_back({1U, dest});
+        if (source != dest)
+        {
+            m_adj_list[source].push_back({1U, dest});
+        }
     }
 
     virtual void add_edge(const std::size_t& source, const std::size_t& dest, const std::size_t& weight)
@@ -71,7 +75,10 @@ public:
             throw std::out_of_range("Invalid vertex");
         }
 
-        m_adj_list[source].push_back({weight, dest});
+        if (source != dest)
+        {
+            m_adj_list[source].push_back({weight, dest});
+        }
     }
 
     virtual bool has_edge(const std::size_t& source, const std::size_t& dest)
@@ -79,6 +86,11 @@ public:
         if (source >= m_num_vertex || dest >= m_num_vertex)
         {
             throw std::out_of_range("Invalid vertex");
+        }
+
+        if (source == dest)
+        {
+            return true;
         }
 
         const std::vector<std::pair<std::size_t, std::size_t>>& adj_with_source = m_adj_list[source];
@@ -353,6 +365,48 @@ public:
         return path;
     }
 
+    virtual std::vector<std::vector<std::size_t>> min_distance_all_pairs()
+    {
+        std::vector<std::vector<std::size_t>> min_dist(m_num_vertex, std::vector<std::size_t>(m_num_vertex, UNREACHABLE_DISTANCE));
+
+        for (std::size_t cur = 0U; cur < m_num_vertex; cur++)
+        {
+            min_dist[cur][cur] = 0U;
+
+            const std::vector<std::pair<std::size_t, std::size_t>>& adj_with_cur = m_adj_list[cur];
+            for (const std::pair<std::size_t, std::size_t>& adj_vertex : adj_with_cur)
+            {
+                min_dist[cur][adj_vertex.second] = adj_vertex.first;
+            }
+        }
+
+        for (std::size_t intermediate = 0U; intermediate < m_num_vertex; intermediate++)
+        {
+            for (std::size_t source = 0U; source < m_num_vertex; source++)
+            {
+                if (min_dist[source][intermediate] == UNREACHABLE_DISTANCE)
+                {
+                    continue;
+                }
+
+                for (std::size_t dest = 0U; dest < m_num_vertex; dest++)
+                {
+                    if (min_dist[intermediate][dest] == UNREACHABLE_DISTANCE)
+                    {
+                        continue;
+                    }
+
+                    if (min_dist[source][intermediate] + min_dist[intermediate][dest] < min_dist[source][dest])
+                    {
+                        min_dist[source][dest] = min_dist[source][intermediate] + min_dist[dest][intermediate];
+                    }
+                }
+            }
+        }
+
+        return min_dist;
+    }
+
 private:
     void traversal_dfs_util(std::size_t cur, std::unordered_set<std::size_t>& visited, std::vector<std::size_t>& elements)
     {
@@ -415,8 +469,11 @@ public:
             throw std::out_of_range("Invalid vertex");
         }
 
-        m_adj_list[source].push_back({1U, dest});
-        m_adj_list[dest].push_back({1U, source});
+        if (source != dest)
+        {
+            m_adj_list[source].push_back({1U, dest});
+            m_adj_list[dest].push_back({1U, source});
+        }
     }
 
     virtual void add_edge(const std::size_t& source, const std::size_t& dest, const std::size_t& weight) override
@@ -426,8 +483,11 @@ public:
             throw std::out_of_range("Invalid vertex");
         }
 
-        m_adj_list[source].push_back({weight, dest});
-        m_adj_list[dest].push_back({weight, source});
+        if (source != dest)
+        {
+            m_adj_list[source].push_back({weight, dest});
+            m_adj_list[dest].push_back({weight, source});
+        }
     }
 
     virtual void remove_edge(const std::size_t& source, const std::size_t& dest) override
@@ -615,10 +675,48 @@ public:
         return min_tree;
     }
 
-    std::vector<std::vector<std::size_t>> min_distance_all_pairs()
+    virtual std::vector<std::vector<std::size_t>> min_distance_all_pairs() override
     {
-        // Floyd Warshall Algorithm
-        return {};
+        std::vector<std::vector<std::size_t>> min_dist(m_num_vertex, std::vector<std::size_t>(m_num_vertex, UNREACHABLE_DISTANCE));
+
+        for (std::size_t cur = 0U; cur < m_num_vertex; cur++)
+        {
+            min_dist[cur][cur] = 0U;
+
+            const std::vector<std::pair<std::size_t, std::size_t>>& adj_with_cur = m_adj_list[cur];
+            for (const std::pair<std::size_t, std::size_t>& adj_vertex : adj_with_cur)
+            {
+                min_dist[cur][adj_vertex.second] = adj_vertex.first;
+                min_dist[adj_vertex.second][cur] = adj_vertex.first;
+            }
+        }
+
+        for (std::size_t intermediate = 0U; intermediate < m_num_vertex; intermediate++)
+        {
+            for (std::size_t source = 0U; source < m_num_vertex; source++)
+            {
+                if (min_dist[source][intermediate] == UNREACHABLE_DISTANCE)
+                {
+                    continue;
+                }
+
+                for (std::size_t dest = 0U; dest < m_num_vertex; dest++)
+                {
+                    if (min_dist[intermediate][dest] == UNREACHABLE_DISTANCE)
+                    {
+                        continue;
+                    }
+
+                    if (min_dist[source][intermediate] + min_dist[intermediate][dest] < min_dist[source][dest])
+                    {
+                        min_dist[source][dest] = min_dist[source][intermediate] + min_dist[intermediate][dest];
+                        min_dist[dest][source] = min_dist[source][intermediate] + min_dist[intermediate][dest];
+                    }
+                }
+            }
+        }
+
+        return min_dist;
     }
 };
 

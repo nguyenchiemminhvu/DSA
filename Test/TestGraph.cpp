@@ -259,6 +259,11 @@ TEST_F(TestDirectedGraph, MethodShortestPath)
     EXPECT_EQ(path[1], 6U);
 }
 
+TEST_F(TestDirectedGraph, MethodMinDistanceAllPairs)
+{
+    DirectedGraph testObj(7U);
+}
+
 
 class TestUndirectedGraph : public ::testing::Test
 {
