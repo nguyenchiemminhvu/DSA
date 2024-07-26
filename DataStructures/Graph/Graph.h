@@ -36,6 +36,7 @@ public:
     virtual std::vector<std::vector<std::size_t>> connected_components() = 0;
     virtual std::size_t distance(const std::size_t& source, const std::size_t& dest) = 0;
     virtual std::vector<std::size_t> shortest_path(const std::size_t& source, const std::size_t& dest) = 0;
+    virtual std::unordered_set<std::size_t> reachable_vertices(const std::size_t& source, const std::size_t& limited_distance) = 0;
     virtual std::vector<std::vector<std::size_t>> min_distance_all_pairs() = 0;
 
 protected:
@@ -363,6 +364,49 @@ public:
         }
 
         return path;
+    }
+
+    virtual std::unordered_set<std::size_t> reachable_vertices(const std::size_t& source, const std::size_t& limited_distance)
+    {
+        if (source >= m_num_vertex)
+        {
+            throw std::out_of_range("Invalid vertex");
+        }
+
+        std::unordered_set<std::size_t> reachable_vertices;
+
+        std::vector<std::size_t> v_dist(m_num_vertex, UNREACHABLE_DISTANCE);
+        v_dist[source] = 0U;
+
+        std::priority_queue<std::pair<std::size_t, std::size_t>,
+                            std::vector<std::pair<std::size_t, std::size_t>>,
+                            std::greater<std::pair<std::size_t, std::size_t>>> PQ;
+        PQ.push({0U, source});
+
+        while (!PQ.empty())
+        {
+            std::pair<std::size_t, std::size_t> cur = PQ.top();
+            PQ.pop();
+
+            if (cur.first > std::min(limited_distance, v_dist[cur.second]))
+            {
+                continue;
+            }
+
+            reachable_vertices.insert(cur.second);
+
+            const std::vector<std::pair<std::size_t, std::size_t>>& adj_with_cur = m_adj_list[cur.second];
+            for (const std::pair<std::size_t, std::size_t>& next : adj_with_cur)
+            {
+                if (cur.first + next.first < v_dist[next.second])
+                {
+                    v_dist[next.second] = cur.first + next.first;
+                    PQ.push({v_dist[next.second], next.second});
+                }
+            }
+        }
+
+        return reachable_vertices;
     }
 
     virtual std::vector<std::vector<std::size_t>> min_distance_all_pairs()

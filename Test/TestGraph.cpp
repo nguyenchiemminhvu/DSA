@@ -259,6 +259,39 @@ TEST_F(TestDirectedGraph, MethodShortestPath)
     EXPECT_EQ(path[1], 6U);
 }
 
+TEST_F(TestDirectedGraph, MethodReachableVertices)
+{
+    DirectedGraph testObj(7U);
+
+    EXPECT_EQ(testObj.reachable_vertices(0U, 0U).size(), 1U);
+    EXPECT_EQ(testObj.reachable_vertices(0U, 1U).size(), 1U);
+
+    EXPECT_NO_THROW(testObj.add_edge(0U, 1U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(1U, 2U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(2U, 3U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(3U, 4U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(4U, 5U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(5U, 6U, 1U));
+
+    std::unordered_set<std::size_t> reachable = testObj.reachable_vertices(0U, 1U);
+    EXPECT_TRUE(reachable.find(0U) != reachable.end());
+    EXPECT_TRUE(reachable.find(1U) != reachable.end());
+    EXPECT_TRUE(reachable.find(2U) == reachable.end());
+
+    reachable = testObj.reachable_vertices(0U, 2U);
+    EXPECT_TRUE(reachable.find(0U) != reachable.end());
+    EXPECT_TRUE(reachable.find(1U) != reachable.end());
+    EXPECT_TRUE(reachable.find(2U) != reachable.end());
+    EXPECT_TRUE(reachable.find(3U) == reachable.end());
+
+    reachable = testObj.reachable_vertices(0U, 3U);
+    EXPECT_TRUE(reachable.find(0U) != reachable.end());
+    EXPECT_TRUE(reachable.find(1U) != reachable.end());
+    EXPECT_TRUE(reachable.find(2U) != reachable.end());
+    EXPECT_TRUE(reachable.find(3U) != reachable.end());
+    EXPECT_TRUE(reachable.find(4U) == reachable.end());
+}
+
 TEST_F(TestDirectedGraph, MethodMinDistanceAllPairs)
 {
     DirectedGraph testObj(7U);
@@ -576,6 +609,39 @@ TEST_F(TestUndirectedGraph, MethodShortestPath)
     path = testObj.shortest_path(0U, 6U);
     EXPECT_EQ(path[0], 0U);
     EXPECT_EQ(path[1], 6U);
+}
+
+TEST_F(TestUndirectedGraph, MethodReachableVertices)
+{
+    UndirectedGraph testObj(7U);
+
+    EXPECT_EQ(testObj.reachable_vertices(0U, 0U).size(), 1U);
+    EXPECT_EQ(testObj.reachable_vertices(0U, 1U).size(), 1U);
+
+    EXPECT_NO_THROW(testObj.add_edge(0U, 1U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(1U, 2U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(2U, 3U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(3U, 4U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(4U, 5U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(5U, 6U, 1U));
+
+    std::unordered_set<std::size_t> reachable = testObj.reachable_vertices(0U, 1U);
+    EXPECT_TRUE(reachable.find(0U) != reachable.end());
+    EXPECT_TRUE(reachable.find(1U) != reachable.end());
+    EXPECT_TRUE(reachable.find(2U) == reachable.end());
+
+    reachable = testObj.reachable_vertices(0U, 2U);
+    EXPECT_TRUE(reachable.find(0U) != reachable.end());
+    EXPECT_TRUE(reachable.find(1U) != reachable.end());
+    EXPECT_TRUE(reachable.find(2U) != reachable.end());
+    EXPECT_TRUE(reachable.find(3U) == reachable.end());
+
+    reachable = testObj.reachable_vertices(0U, 3U);
+    EXPECT_TRUE(reachable.find(0U) != reachable.end());
+    EXPECT_TRUE(reachable.find(1U) != reachable.end());
+    EXPECT_TRUE(reachable.find(2U) != reachable.end());
+    EXPECT_TRUE(reachable.find(3U) != reachable.end());
+    EXPECT_TRUE(reachable.find(4U) == reachable.end());
 }
 
 TEST_F(TestUndirectedGraph, MethodMinDistanceAllPairs)
