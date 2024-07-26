@@ -764,6 +764,7 @@ TEST_F(TestUndirectedGraph, MethodFindBridges)
     std::vector<std::pair<std::size_t, std::size_t>> bridges = testObj.find_bridges();
     EXPECT_EQ(bridges.size(), 6U);
 
+    std::sort(bridges.begin(), bridges.end());
     for (std::size_t i = 0U; i < 6U; i++)
     {
         EXPECT_EQ(bridges[i].first, i);

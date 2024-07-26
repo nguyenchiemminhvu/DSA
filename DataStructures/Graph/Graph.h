@@ -767,25 +767,17 @@ public:
     {
         std::vector<std::pair<std::size_t, std::size_t>> bridges;
 
-        for (std::size_t source = 0U; source < m_num_vertex; source++)
+        std::unordered_set<std::size_t> visited;
+        std::vector<std::size_t> parents(m_num_vertex, UNREACHABLE_DISTANCE);
+        std::vector<std::size_t> discovery(m_num_vertex, 0U);
+        std::vector<std::size_t> low(m_num_vertex, 0U);
+        std::size_t f_time = 0U;
+
+        for (std::size_t cur = 0U; cur < m_num_vertex; cur++)
         {
-            const std::vector<std::pair<std::size_t, std::size_t>> adj_with_source = m_adj_list[source];
-            for (const std::pair<std::size_t, std::size_t> adj_vertex : adj_with_source)
+            if (visited.find(cur) == visited.end())
             {
-                if (source > adj_vertex.second)
-                {
-                    continue;
-                }
-
-                std::size_t weight = adj_vertex.first;
-                remove_edge(source, adj_vertex.second);
-
-                if (distance(source, adj_vertex.second) == UNREACHABLE_DISTANCE)
-                {
-                    bridges.push_back({source, adj_vertex.second});
-                }
-
-                add_edge(source, adj_vertex.second, weight);
+                find_bridges_dfs(cur, visited, parents, discovery, low, f_time, bridges);
             }
         }
 
@@ -799,6 +791,47 @@ public:
         
 
         return articulation_points;
+    }
+
+private:
+    void find_bridges_dfs(std::size_t cur
+                        , std::unordered_set<std::size_t>& visited
+                        , std::vector<std::size_t>& parents
+                        , std::vector<std::size_t>& disc
+                        , std::vector<std::size_t>& low
+                        , std::size_t& f_time
+                        , std::vector<std::pair<std::size_t, std::size_t>>& bridges)
+    {
+        f_time++;
+
+        disc[cur] = f_time;
+        low[cur] = f_time;
+
+        visited.insert(cur);
+
+        const std::vector<std::pair<std::size_t, std::size_t>>& adj_with_cur = m_adj_list[cur];
+        for (const std::pair<std::size_t, std::size_t>& adj_vertex : adj_with_cur)
+        {
+            if (visited.find(adj_vertex.second) == visited.end())
+            {
+                parents[adj_vertex.second] = cur;
+                find_bridges_dfs(adj_vertex.second, visited, parents, disc, low, f_time, bridges);
+
+                low[cur] = std::min(low[cur], low[adj_vertex.second]);
+
+                if (low[adj_vertex.second] > disc[cur])
+                {
+                    bridges.push_back({cur, adj_vertex.second});
+                }
+            }
+            else
+            {
+                if (adj_vertex.second != parents[cur])
+                {
+                    low[cur] = std::min(low[cur], disc[adj_vertex.second]);
+                }
+            }
+        }
     }
 };
 
