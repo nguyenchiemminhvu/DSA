@@ -833,6 +833,17 @@ private:
             }
         }
     }
+
+    void find_articulation_points_dfs(std::size_t cur
+                                    , std::unordered_set<std::size_t>& visited
+                                    , std::vector<std::size_t>& parents
+                                    , std::vector<std::size_t>& disc
+                                    , std::vector<std::size_t>& low
+                                    , std::size_t& f_time
+                                    , std::vector<std::size_t>& articulation)
+    {
+
+    }
 };
 
 #endif // GRAPH_H
