@@ -767,7 +767,27 @@ public:
     {
         std::vector<std::pair<std::size_t, std::size_t>> bridges;
 
+        for (std::size_t source = 0U; source < m_num_vertex; source++)
+        {
+            const std::vector<std::pair<std::size_t, std::size_t>> adj_with_source = m_adj_list[source];
+            for (const std::pair<std::size_t, std::size_t> adj_vertex : adj_with_source)
+            {
+                if (source > adj_vertex.second)
+                {
+                    continue;
+                }
 
+                std::size_t weight = adj_vertex.first;
+                remove_edge(source, adj_vertex.second);
+
+                if (distance(source, adj_vertex.second) == UNREACHABLE_DISTANCE)
+                {
+                    bridges.push_back({source, adj_vertex.second});
+                }
+
+                add_edge(source, adj_vertex.second, weight);
+            }
+        }
 
         return bridges;
     }

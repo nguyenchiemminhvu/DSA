@@ -753,6 +753,22 @@ TEST_F(TestUndirectedGraph, MethodMinSpanningTreePrim)
 TEST_F(TestUndirectedGraph, MethodFindBridges)
 {
     UndirectedGraph testObj(7U);
+
+    EXPECT_NO_THROW(testObj.add_edge(0U, 1U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(1U, 2U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(2U, 3U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(3U, 4U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(4U, 5U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(5U, 6U, 1U));
+
+    std::vector<std::pair<std::size_t, std::size_t>> bridges = testObj.find_bridges();
+    EXPECT_EQ(bridges.size(), 6U);
+
+    for (std::size_t i = 0U; i < 6U; i++)
+    {
+        EXPECT_EQ(bridges[i].first, i);
+        EXPECT_EQ(bridges[i].second, i + 1);
+    }
 }
 
 TEST_F(TestUndirectedGraph, MethodFindArticulationPoints)
