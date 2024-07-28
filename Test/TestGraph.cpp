@@ -778,5 +778,26 @@ TEST_F(TestUndirectedGraph, MethodFindBridges)
 
 TEST_F(TestUndirectedGraph, MethodFindArticulationPoints)
 {
-    UndirectedGraph testObj(7U);
+    UndirectedGraph testObj(9U);
+
+    EXPECT_NO_THROW(testObj.add_edge(0U, 1U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(1U, 2U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(2U, 3U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(3U, 4U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(4U, 5U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(5U, 6U, 1U));
+
+    EXPECT_NO_THROW(testObj.add_edge(6U, 7U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(7U, 8U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(8U, 6U, 1U));
+
+    std::vector<std::size_t> articulation = testObj.find_articulation_points();
+
+    EXPECT_EQ(articulation.size(), 6U);
+
+    std::sort(articulation.begin(), articulation.end());
+    for (std::size_t i = 0U; i < 6U; i++)
+    {
+        EXPECT_EQ(articulation[i], i + 1);
+    }
 }

@@ -770,14 +770,14 @@ public:
         std::unordered_set<std::size_t> visited;
         std::vector<std::size_t> parents(m_num_vertex, UNREACHABLE_DISTANCE);
         std::vector<std::size_t> discovery(m_num_vertex, 0U);
-        std::vector<std::size_t> low(m_num_vertex, 0U);
+        std::vector<std::size_t> low_link(m_num_vertex, 0U);
         std::size_t f_time = 0U;
 
         for (std::size_t cur = 0U; cur < m_num_vertex; cur++)
         {
             if (visited.find(cur) == visited.end())
             {
-                find_bridges_dfs(cur, visited, parents, discovery, low, f_time, bridges);
+                find_bridges_dfs(cur, visited, parents, discovery, low_link, f_time, bridges);
             }
         }
 
@@ -788,7 +788,19 @@ public:
     {
         std::vector<std::size_t> articulation_points;
 
-        
+        std::unordered_set<std::size_t> visited;
+        std::vector<std::size_t> parents(m_num_vertex, UNREACHABLE_DISTANCE);
+        std::vector<std::size_t> discovery(m_num_vertex, 0U);
+        std::vector<std::size_t> low_link(m_num_vertex, 0U);
+        std::size_t f_time = 0U;
+
+        for (std::size_t cur = 0U; cur < m_num_vertex; cur++)
+        {
+            if (visited.find(cur) == visited.end())
+            {
+                find_articulation_points_dfs(cur, visited, discovery, low_link, f_time, UNREACHABLE_DISTANCE, articulation_points);
+            }
+        }
 
         return articulation_points;
     }
@@ -798,14 +810,13 @@ private:
                         , std::unordered_set<std::size_t>& visited
                         , std::vector<std::size_t>& parents
                         , std::vector<std::size_t>& disc
-                        , std::vector<std::size_t>& low
+                        , std::vector<std::size_t>& low_link
                         , std::size_t& f_time
                         , std::vector<std::pair<std::size_t, std::size_t>>& bridges)
     {
         f_time++;
-
         disc[cur] = f_time;
-        low[cur] = f_time;
+        low_link[cur] = f_time;
 
         visited.insert(cur);
 
@@ -815,11 +826,11 @@ private:
             if (visited.find(adj_vertex.second) == visited.end())
             {
                 parents[adj_vertex.second] = cur;
-                find_bridges_dfs(adj_vertex.second, visited, parents, disc, low, f_time, bridges);
+                find_bridges_dfs(adj_vertex.second, visited, parents, disc, low_link, f_time, bridges);
 
-                low[cur] = std::min(low[cur], low[adj_vertex.second]);
-
-                if (low[adj_vertex.second] > disc[cur])
+                // backtrack
+                low_link[cur] = std::min(low_link[cur], low_link[adj_vertex.second]);
+                if (low_link[adj_vertex.second] > disc[cur])
                 {
                     bridges.push_back({cur, adj_vertex.second});
                 }
@@ -828,7 +839,7 @@ private:
             {
                 if (adj_vertex.second != parents[cur])
                 {
-                    low[cur] = std::min(low[cur], disc[adj_vertex.second]);
+                    low_link[cur] = std::min(low_link[cur], disc[adj_vertex.second]);
                 }
             }
         }
@@ -836,13 +847,42 @@ private:
 
     void find_articulation_points_dfs(std::size_t cur
                                     , std::unordered_set<std::size_t>& visited
-                                    , std::vector<std::size_t>& parents
                                     , std::vector<std::size_t>& disc
-                                    , std::vector<std::size_t>& low
+                                    , std::vector<std::size_t>& low_link
                                     , std::size_t& f_time
+                                    , std::size_t parent
                                     , std::vector<std::size_t>& articulation)
     {
+        f_time++;
+        disc[cur] = f_time;
+        low_link[cur] = f_time;
 
+        visited.insert(cur);
+
+        int children = 0;
+        const std::vector<std::pair<std::size_t, std::size_t>>& adj_with_cur = m_adj_list[cur];
+        for (const std::pair<std::size_t, std::size_t>& adj_vertex : adj_with_cur)
+        {
+            if (visited.find(adj_vertex.second) == visited.end())
+            {
+                children++;
+                find_articulation_points_dfs(adj_vertex.second, visited, disc, low_link, f_time, cur, articulation);
+
+                // backtrack
+                low_link[cur] = std::min(low_link[cur], low_link[adj_vertex.second]);
+                if (parent != UNREACHABLE_DISTANCE && low_link[adj_vertex.second] >= disc[cur])
+                {
+                    articulation.push_back(cur);
+                }
+            }
+            else
+            {
+                if (adj_vertex.second != parent)
+                {
+                    low_link[cur] = std::min(low_link[cur], disc[adj_vertex.second]);
+                }
+            }
+        }
     }
 };
 
