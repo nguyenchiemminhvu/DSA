@@ -814,13 +814,6 @@ TEST_F(TestUndirectedGraph, MethodColoringGraph)
     EXPECT_NO_THROW(testObj.add_edge(5U, 6U, 1U));
 
     std::vector<std::size_t> color_map = testObj.coloring_graph();
-    for (std::size_t i = 0U; i < 7U; i += 2U)
-    {
-        EXPECT_EQ(color_map[i], 0U);
-    }
-
-    for (std::size_t i = 1U; i < 7U; i += 2U)
-    {
-        EXPECT_EQ(color_map[i], 1U);
-    }
+    std::unordered_set<std::size_t> color_set(color_map.begin(), color_map.end());
+    EXPECT_EQ(color_set.size(), 2U);
 }

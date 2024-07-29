@@ -808,7 +808,47 @@ public:
     std::vector<std::size_t> coloring_graph()
     {
         std::vector<std::size_t> color_map(m_num_vertex, UNREACHABLE_DISTANCE);
-        (void)recursive_coloring(0U, color_map);
+        
+        std::vector<std::size_t> sorted_vertex(m_num_vertex);
+        for (std::size_t i = 0U; i < m_num_vertex; i++)
+        {
+            sorted_vertex[i] = i;
+        }
+
+        std::sort(
+            sorted_vertex.begin(), 
+            sorted_vertex.end(), 
+            [this](std::size_t a, std::size_t b)
+            {
+                return m_adj_list[a].size() > m_adj_list[b].size();
+            }
+        );
+
+        for (std::size_t cur : sorted_vertex)
+        {
+            std::vector<bool> available(m_num_vertex, true);
+
+            const std::vector<std::pair<std::size_t, std::size_t>>& adj_with_cur = m_adj_list[cur];
+            for (const std::pair<std::size_t, std::size_t>& adj_vertex : adj_with_cur)
+            {
+                if (color_map[adj_vertex.second] != UNREACHABLE_DISTANCE)
+                {
+                    available[color_map[adj_vertex.second]] = false;
+                }
+            }
+
+            std::size_t chosen_color = UNREACHABLE_DISTANCE;
+            for (std::size_t i = 0U; i < m_num_vertex; i++)
+            {
+                if (available[i])
+                {
+                    chosen_color = i;
+                    break;
+                }
+            }
+
+            color_map[cur] = chosen_color;
+        }
 
         return color_map;
     }
@@ -891,41 +931,6 @@ private:
                 }
             }
         }
-    }
-
-    bool recursive_coloring(std::size_t cur, std::vector<std::size_t>& color_map)
-    {
-        if (cur == m_num_vertex)
-        {
-            return true;
-        }
-
-        for (std::size_t color_id = 0U; color_id < m_num_vertex; color_id++)
-        {
-            bool valid_color = true;
-            const std::vector<std::pair<std::size_t, std::size_t>>& adj_with_cur = m_adj_list[cur];
-            for (const std::pair<std::size_t, std::size_t>& adj_vertex : adj_with_cur)
-            {
-                if (color_id == color_map[adj_vertex.second])
-                {
-                    valid_color = false;
-                    break;
-                }
-            }
-
-            if (valid_color)
-            {
-                color_map[cur] = color_id;
-                if (recursive_coloring(cur + 1, color_map))
-                {
-                    // found a solution
-                    return true;
-                }
-                color_map[cur] = UNREACHABLE_DISTANCE;
-            }
-        }
-
-        return false;
     }
 };
 
