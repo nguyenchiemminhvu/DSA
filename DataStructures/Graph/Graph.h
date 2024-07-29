@@ -805,6 +805,14 @@ public:
         return articulation_points;
     }
 
+    std::vector<std::size_t> coloring_graph()
+    {
+        std::vector<std::size_t> color_map(m_num_vertex, UNREACHABLE_DISTANCE);
+        (void)recursive_coloring(0U, color_map);
+
+        return color_map;
+    }
+
 private:
     void find_bridges_dfs(std::size_t cur
                         , std::unordered_set<std::size_t>& visited
@@ -883,6 +891,41 @@ private:
                 }
             }
         }
+    }
+
+    bool recursive_coloring(std::size_t cur, std::vector<std::size_t>& color_map)
+    {
+        if (cur == m_num_vertex)
+        {
+            return true;
+        }
+
+        for (std::size_t color_id = 0U; color_id < m_num_vertex; color_id++)
+        {
+            bool valid_color = true;
+            const std::vector<std::pair<std::size_t, std::size_t>>& adj_with_cur = m_adj_list[cur];
+            for (const std::pair<std::size_t, std::size_t>& adj_vertex : adj_with_cur)
+            {
+                if (color_id == color_map[adj_vertex.second])
+                {
+                    valid_color = false;
+                    break;
+                }
+            }
+
+            if (valid_color)
+            {
+                color_map[cur] = color_id;
+                if (recursive_coloring(cur + 1, color_map))
+                {
+                    // found a solution
+                    return true;
+                }
+                color_map[cur] = UNREACHABLE_DISTANCE;
+            }
+        }
+
+        return false;
     }
 };
 

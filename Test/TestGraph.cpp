@@ -801,3 +801,26 @@ TEST_F(TestUndirectedGraph, MethodFindArticulationPoints)
         EXPECT_EQ(articulation[i], i + 1);
     }
 }
+
+TEST_F(TestUndirectedGraph, MethodColoringGraph)
+{
+    UndirectedGraph testObj(7U);
+
+    EXPECT_NO_THROW(testObj.add_edge(0U, 1U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(1U, 2U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(2U, 3U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(3U, 4U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(4U, 5U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(5U, 6U, 1U));
+
+    std::vector<std::size_t> color_map = testObj.coloring_graph();
+    for (std::size_t i = 0U; i < 7U; i += 2U)
+    {
+        EXPECT_EQ(color_map[i], 0U);
+    }
+
+    for (std::size_t i = 1U; i < 7U; i += 2U)
+    {
+        EXPECT_EQ(color_map[i], 1U);
+    }
+}
