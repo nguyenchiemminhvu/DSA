@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <climits>
+#include <stack>
 #include <queue>
 #include <unordered_map>
 #include <unordered_set>
@@ -451,6 +452,67 @@ public:
         return min_dist;
     }
 
+    std::vector<std::size_t> topological_sort()
+    {
+        if (has_cycle())
+        {
+            return {};
+        }
+
+        std::vector<std::size_t> sorted;
+
+        std::unordered_set<std::size_t> visited;
+        std::stack<std::size_t> st;
+        for (std::size_t cur = 0U; cur < m_num_vertex; cur++)
+        {
+            if (visited.find(cur) == visited.end())
+            {
+                topological_sort_dfs(cur, visited, st);
+            }
+        }
+
+        while (!st.empty())
+        {
+            sorted.push_back(st.top());
+            st.pop();
+        }
+
+        return sorted;
+    }
+
+    bool is_topologically_sorted(const std::vector<std::size_t>& vertices)
+    {
+        if (has_cycle())
+        {
+            return false;
+        }
+
+        if (vertices.size() != m_num_vertex)
+        {
+            return false;
+        }
+
+        std::unordered_map<std::size_t, std::size_t> topo_index;
+        for (std::size_t i = 0U; i < vertices.size(); i++)
+        {
+            topo_index[vertices[i]] = i;
+        }
+
+        for (std::size_t cur = 0U; cur < m_num_vertex; cur++)
+        {
+            const std::vector<std::pair<std::size_t, std::size_t>>& adj_with_cur = m_adj_list[cur];
+            for (const std::pair<std::size_t, std::size_t>& adj_vertex : adj_with_cur)
+            {
+                if (topo_index[cur] >= topo_index[adj_vertex.second])
+                {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
 private:
     void traversal_dfs_util(std::size_t cur, std::unordered_set<std::size_t>& visited, std::vector<std::size_t>& elements)
     {
@@ -491,6 +553,22 @@ private:
         waypoints[cur] = false;
 
         return false;
+    }
+
+    void topological_sort_dfs(std::size_t cur, std::unordered_set<std::size_t>& visited, std::stack<std::size_t>& st)
+    {
+        visited.insert(cur);
+
+        const std::vector<std::pair<std::size_t, std::size_t>>& adj_with_cur = m_adj_list[cur];
+        for (const std::pair<std::size_t, std::size_t>& adj_vertex : adj_with_cur)
+        {
+            if (visited.find(adj_vertex.second) == visited.end())
+            {
+                topological_sort_dfs(adj_vertex.second, visited, st);
+            }
+        }
+
+        st.push(cur);
     }
 };
 

@@ -344,6 +344,40 @@ TEST_F(TestDirectedGraph, MethodMinDistanceAllPairs)
     EXPECT_EQ(min_dist[6U][0U], UNREACHABLE_DISTANCE);
 }
 
+TEST_F(TestDirectedGraph, MethodTopologicalSort)
+{
+    DirectedGraph testObj(7U);
+
+    EXPECT_NO_THROW(testObj.add_edge(0U, 1U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(1U, 2U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(2U, 3U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(3U, 4U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(4U, 5U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(5U, 6U, 1U));
+
+    std::vector<std::size_t> topo_sorted = testObj.topological_sort();
+    EXPECT_TRUE(testObj.is_topologically_sorted(topo_sorted));
+    for (std::size_t i = 1U; i < 7U; i++)
+    {
+        EXPECT_TRUE(topo_sorted[i] > topo_sorted[i - 1]);
+    }
+}
+
+TEST_F(TestDirectedGraph, MethodIsTopologicallySorted)
+{
+    DirectedGraph testObj(7U);
+
+    EXPECT_NO_THROW(testObj.add_edge(0U, 1U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(1U, 2U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(2U, 3U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(3U, 4U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(4U, 5U, 1U));
+    EXPECT_NO_THROW(testObj.add_edge(5U, 6U, 1U));
+
+    std::vector<std::size_t> sorted = {0U, 1U, 2U, 3U, 4U, 5U, 6U};
+    EXPECT_TRUE(testObj.is_topologically_sorted(sorted));
+}
+
 
 class TestUndirectedGraph : public ::testing::Test
 {
