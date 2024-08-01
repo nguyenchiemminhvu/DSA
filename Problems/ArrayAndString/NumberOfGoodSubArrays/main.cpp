@@ -39,7 +39,7 @@ public:
         std::ios_base::sync_with_stdio(false);
         std::cin.tie(nullptr);
         std::cout.tie(nullptr);
-    
+
         long long res = 0;
 
         int n = nums.size();
