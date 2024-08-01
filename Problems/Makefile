@@ -9,7 +9,7 @@ DSA_LIB:
 	cd $(realpath $(PWD)/../) && ./configure
 	cd $(realpath $(PWD)/../) && make
 	cd $(realpath $(PWD)/../) && sudo make install-strip
-	cd $(realpath $(PWD)/../) && git clean -df
+	cd $(realpath $(PWD)/../) && make clean
 
 $(TARGETS): %/main: %/main.cpp
 	@echo "Compiling $<"
@@ -18,5 +18,6 @@ $(TARGETS): %/main: %/main.cpp
 clean:
 	@echo "Cleaning up..."
 	@find . -type f -name main -exec rm -f {} \;
+	cd $(realpath $(PWD)/../) && git clean -df
 
 .PHONY: all clean
