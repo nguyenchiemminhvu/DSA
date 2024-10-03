@@ -11,6 +11,5 @@ $(TARGETS): %/main: %/main.cpp
 clean:
 	@echo "Cleaning up..."
 	@find . -type f -name main -exec rm -f {} \;
-	cd $(realpath $(PWD)/../) && git clean -df
 
 .PHONY: all clean
