@@ -25,6 +25,30 @@ public:
 
         std::map<std::pair<int, int>, int> visited;
         visited[{r, c}] = 0;
+        int timestamp = 0;
+        for (int i = 0; i < moves.size(); i++)
+        {
+            char dir = std::get<0>(moves[i]);
+            int steps = std::get<1>(moves[i]);
+
+            for (int j = 0; j < steps; j++)
+            {
+                r += dir_row[dir_map[dir]];
+                c += dir_col[dir_map[dir]];
+                timestamp++;
+
+                if (visited.find({r, c}) != visited.end())
+                {
+                    return timestamp - visited[{r, c}];
+                }
+                else
+                {
+                    visited[{r, c}] = timestamp;
+                }
+            }
+        }
+
+        return -1;
     }
 };
 
