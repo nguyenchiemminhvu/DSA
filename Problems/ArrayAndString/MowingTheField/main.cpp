@@ -9,6 +9,7 @@ https://usaco.org/index.php?page=viewproblem2&cpid=593
 #include <map>
 #include <unordered_map>
 #include <tuple>
+#include <climits>
 
 using namespace std;
 
@@ -26,6 +27,8 @@ public:
         std::map<std::pair<int, int>, int> visited;
         visited[{r, c}] = 0;
         int timestamp = 0;
+        int min_time_diff = INT_MAX;
+
         for (int i = 0; i < moves.size(); i++)
         {
             char dir = std::get<0>(moves[i]);
@@ -39,16 +42,15 @@ public:
 
                 if (visited.find({r, c}) != visited.end())
                 {
-                    return timestamp - visited[{r, c}];
+                    int time_diff = timestamp - visited[{r, c}];
+                    min_time_diff = min(min_time_diff, time_diff);
                 }
-                else
-                {
-                    visited[{r, c}] = timestamp;
-                }
+
+                visited[{r, c}] = timestamp;
             }
         }
 
-        return -1;
+        return (min_time_diff == INT_MAX) ? -1 : min_time_diff;
     }
 };
 
