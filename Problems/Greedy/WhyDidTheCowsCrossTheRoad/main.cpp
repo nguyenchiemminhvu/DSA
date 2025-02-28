@@ -10,7 +10,7 @@ As it turns out, chickens are very busy creatures and have limited time to help 
 #include <cstdio>
 #include <vector>
 #include <algorithm>
-#include <queue>
+#include <set>
 
 using namespace std;
 
@@ -19,18 +19,19 @@ class Solution
 public:
     int maxCowChickenPairs(std::vector<int>& chickenTimes, std::vector<std::pair<int, int>>& cowTimes)
     {
-        std::sort(chickenTimes.begin(), chickenTimes.end());
-        std::sort(cowTimes.begin(), cowTimes.end(), [](const std::pair<int, int>& a, const std::pair<int, int>& b) {
-            return a.second < b.second;
-        });
+        std::multiset<int> chickenTimesSet(chickenTimes.begin(), chickenTimes.end());
+        std::sort(cowTimes.begin(), cowTimes.end(), [](const auto& a, const auto& b) { return a.second < b.second; });
 
         int maxPairs = 0;
 
-        std::priority_queue<int, std::vector<int>, std::greater<int>> pq;
-
         for (int i = 0; i < cowTimes.size(); i++)
         {
-
+            auto chickenIT = chickenTimesSet.lower_bound(cowTimes[i].first);
+            if (chickenIT != chickenTimesSet.end() && *chickenIT <= cowTimes[i].second)
+            {
+                maxPairs++;
+                chickenTimesSet.erase(chickenIT);
+            }
         }
 
         return maxPairs;
@@ -39,8 +40,8 @@ public:
 
 int main()
 {
-    // freopen("helpcross.in", "r", stdin);
-    // freopen("helpcross.out", "w", stdout);
+    freopen("helpcross.in", "r", stdin);
+    freopen("helpcross.out", "w", stdout);
 
     int c, n;
     std::cin >> c >> n;
