@@ -10,8 +10,9 @@ Sergei B. was very pleased, and now he wants to visit as few flats as possible i
  */
 
 #include <iostream>
-#include <set>
 #include <string>
+#include <unordered_set>
+#include <unordered_map>
 #include <algorithm>
 
 using namespace std;
@@ -30,36 +31,28 @@ int main()
     std::string input;
     std::cin >> input;
 
-    std::multiset<char> ms(input.begin(), input.end());
-    int left = 0;
-    int right = input.length() - 1;
-    while (left < right)
-    {
-        int count_left = ms.count(input[left]);
-        int count_right = ms.count(input[right]);
+    std::unordered_set<char> us(input.begin(), input.end());
+    std::unordered_map<char, int> freq;
 
-        if (count_left > count_right)
+    int min_length = input.length();
+    int left = 0;
+    for (int right = 0; right < n; right++)
+    {
+        freq[input[right]]++;
+        while (freq.size() == us.size())
         {
-            ms.erase(ms.lower_bound(input[left]));
+            min_length = std::min(min_length, right - left + 1);
+
+            freq[input[left]]--;
+            if (freq[input[left]] <= 0)
+            {
+                freq.erase(input[left]);
+            }
             left++;
-        }
-        else if (count_left < count_right)
-        {
-            ms.erase(ms.lower_bound(input[right]));
-            right--;
-        }
-        else if (count_left > 1)
-        {
-            ms.erase(ms.lower_bound(input[left]));
-            left++;
-        }
-        else
-        {
-            break;
         }
     }
 
-    std::cout << ms.size() << std::endl;
+    std::cout << min_length << std::endl;
 
     return 0;
 }
