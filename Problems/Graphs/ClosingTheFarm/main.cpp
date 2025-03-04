@@ -16,39 +16,121 @@ FJ is interested in knowing at each point in time (initially, and after each clo
 
 using namespace std;
 
-void add_edge(unordered_map<int, vector<int>>& adj_list, int src, int dst)
+class UnionFind
 {
-    adj_list[src].push_back(dst);
-    adj_list[dst].push_back(src);
-}
-
-void DFS(const unordered_map<int, vector<int>>& adj_list, int from, unordered_set<int>& visited, const unordered_set<int>& open_barns)
-{
-    visited.insert(from);
-    for (int adj : adj_list.at(from))
+public:
+    UnionFind(std::size_t num_element)
+        : m_parents(num_element)
+        , m_rank(num_element, 0)
+        , m_size(num_element, 1)
+        , m_num_clusters(num_element)
     {
-        if (visited.find(adj) == visited.end() && open_barns.find(adj) != open_barns.end())
+        for (std::size_t i = 0U; i < num_element; i++)
         {
-            DFS(adj_list, adj, visited, open_barns);
+            m_parents[i] = i;
         }
     }
-}
 
-bool is_connected(const unordered_map<int, vector<int>>& adj_list, const unordered_set<int>& open_barns)
-{
-    if (open_barns.empty())
-        return true;
-
-    unordered_set<int> visited;
-    DFS(adj_list, *open_barns.begin(), visited, open_barns);
-    for (int barn : open_barns)
+    ~UnionFind()
     {
-        if (visited.find(barn) == visited.end())
+    }
+
+    void unite(int x, int y)
+    {
+        int rootX = find(x);
+        int rootY = find(y);
+
+        if (rootX != rootY)
         {
-            return false;
+            // Union by rank
+            if (m_rank[rootX] > m_rank[rootY])
+            {
+                m_parents[rootY] = rootX;
+                m_size[rootX] += m_size[rootY];
+            }
+            else if (m_rank[rootX] < m_rank[rootY])
+            {
+                m_parents[rootX] = rootY;
+                m_size[rootY] += m_size[rootX];
+            }
+            else
+            {
+                m_parents[rootY] = rootX;
+                m_rank[rootX]++;
+                m_size[rootX] += m_size[rootY];
+            }
+
+            m_num_clusters--;
         }
     }
-    return true;
+
+    int find(int x)
+    {
+        if (m_parents[x] != x)
+        {
+            // Path compression
+            m_parents[x] = find(m_parents[x]);
+        }
+
+        return m_parents[x];
+    }
+
+    bool same_group(int x, int y)
+    {
+        return find(x) == find(y);
+    }
+
+    int cluster_size(int x)
+    {
+        int rootX = find(x);
+        return m_size[rootX];
+    }
+
+    int num_clusters() const
+    {
+        return m_num_clusters;
+    }
+
+private:
+    std::vector<int> m_parents;
+    std::vector<int> m_rank;
+    std::vector<int> m_size;
+    int m_num_clusters;
+};
+
+bool is_connected(unordered_map<int, vector<int>>& adj_list, int n, std::unordered_set<int>& closed)
+{
+    UnionFind uf(n);
+    for (int i = 0; i < n; i++)
+    {
+        if (closed.count(i))
+        {
+            continue;
+        }
+
+        for (int adj : adj_list[i])
+        {
+            if (closed.count(adj))
+            {
+                continue;
+            }
+
+            uf.unite(i, adj);
+        }
+    }
+
+    std::unordered_set<int> group_ids;
+    for (int i = 0; i < n; i++)
+    {
+        if (closed.count(i))
+        {
+            continue;
+        }
+
+        group_ids.insert(uf.find(i));
+    }
+
+    return group_ids.size() == 1;
 }
 
 int main()
@@ -64,22 +146,19 @@ int main()
     {
         int u, v;
         cin >> u >> v;
-        add_edge(adj_list, u, v);
+        adj_list[u - 1].push_back(v - 1);
+        adj_list[v - 1].push_back(u - 1);
     }
 
     vector<int> closing_order(n);
     for (int i = 0; i < n; i++)
     {
         cin >> closing_order[i];
+        closing_order[i]--;
     }
 
-    unordered_set<int> open_barns;
-    for (int i = 1; i <= n; i++)
-    {
-        open_barns.insert(i);
-    }
-
-    if (is_connected(adj_list, open_barns))
+    unordered_set<int> closed;
+    if (is_connected(adj_list, n, closed))
     {
         cout << "YES" << endl;
     }
@@ -91,9 +170,9 @@ int main()
     for (int i = 0; i < n - 1; i++)
     {
         int p = closing_order[i];
-        open_barns.erase(p);
+        closed.insert(p);
 
-        if (is_connected(adj_list, open_barns))
+        if (is_connected(adj_list, n, closed))
         {
             cout << "YES" << endl;
         }
@@ -101,8 +180,6 @@ int main()
         {
             cout << "NO" << endl;
         }
-
-        open_barns.insert(p);
     }
 
     return 0;
