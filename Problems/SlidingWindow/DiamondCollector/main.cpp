@@ -17,61 +17,38 @@ using namespace std;
 class Solution
 {
 public:
-    int maxDiamondOnTwoCases(std::vector<int>& diamonds, int K)
+    long long maxDiamondOnTwoCases(std::vector<long long>& diamonds, long long K)
     {
-        int n = diamonds.size();
+        long long res = 0LL;
+        long long n = diamonds.size();
         std::sort(diamonds.begin(), diamonds.end());
 
-        // store the intervals [left, right] where (d[right] - d[left] <= K)
-        std::vector<std::vector<int>> intervals;
-        intervals.push_back({0, 0, 0});
-        int left = 0;
-        for (int right = 0; right < n; right++)
+        std::vector<long long> canTakeFromLeft(n, 0);
+        for (long long left = 0; left < n; left++)
         {
-            if (diamonds[right] - diamonds[left] <= K)
+            long long right = left;
+            while (right < n && diamonds[right] - diamonds[left] <= K)
             {
-                intervals.back()[0] = left;
-                intervals.back()[1] = right;
-                intervals.back()[2] = right - left + 1;
+                right++;
             }
-            else
-            {
-                intervals.push_back({right, right, 0});
-                while (diamonds[right] - diamonds[left] > K)
-                {
-                    left++;
-                }
-            }
+
+            canTakeFromLeft[left] = right - left;
         }
 
-        // the problem becomes: find the couple of non-overlap intervals with maximum value,
-        // where value of an interval is (end - start + 1).
-        // Return the maximum value of that non-overlap interval couple.
-        // Reference: https://www.geeksforgeeks.org/maximum-sum-of-at-most-two-non-overlapping-intervals-in-a-list-of-intervals-interval-scheduling-problem/
-        int maxDiamonds = 0;
-        std::priority_queue<std::vector<int>> pq; // sorted by greater end time of intervals
-        int cur_max = 0;
-        for (const std::vector<int> interval : intervals)
+        std::vector<long long> maxTakeFromRight(n + 1, 0);
+        maxTakeFromRight[n] = 0;
+        for (long long i = n - 1; i >= 0; i--)
         {
-            if (!pq.empty())
-            {
-                if (pq.top()[0] > interval[0])
-                {
-                    // overlap, don't calculate max from sum of this couple
-                    break;
-                }
-
-                // calculate the max value of the previous non-overlap interval,
-                // prepare to combine with the current non-overlap interval
-                cur_max = std::max(cur_max, pq.top()[1]);
-                pq.pop();
-            }
-
-            maxDiamonds = std::max(maxDiamonds, cur_max + interval[2]);
-            pq.push({interval[1], interval[2]});
+            maxTakeFromRight[i] = std::max(maxTakeFromRight[i + 1], canTakeFromLeft[i]);
         }
 
-        return maxDiamonds;
+        for (long long left = 0; left < n; left++)
+        {
+            long long right = left + canTakeFromLeft[left];
+            res = std::max(res, canTakeFromLeft[left] + maxTakeFromRight[right]);
+        }
+
+        return res;
     }
 };
 
@@ -80,10 +57,10 @@ int main()
     freopen("diamond.in", "r", stdin);
     freopen("diamond.out", "w", stdout);
 
-    int n, k;
+    long long n, k;
     std::cin >> n >> k;
-    std::vector<int> diamonds(n);
-    for (int i = 0; i < n; i++)
+    std::vector<long long> diamonds(n);
+    for (long long i = 0; i < n; i++)
     {
         std::cin >> diamonds[i];
     }
