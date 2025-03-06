@@ -31,56 +31,6 @@ static bool fast = []()
 - Maintain a prefix maximum for the prices in the second store (b[i]).
 - Handle the multiset operations correctly to find the closest prices.
  */
-class Solution
-{
-    const long long INF = (long long)(1e9);
-
-public:
-    long long minPriceDifference(std::vector<std::pair<long long, long long>>& prices)
-    {
-        long long n = prices.size();
-
-        std::vector<long long> max_first_idx(n);
-        for (long long i = 0; i < n; i++)
-        {
-            max_first_idx[i] = i;
-        }
-        std::sort(max_first_idx.begin(), max_first_idx.end(), [prices](const long long i, const long long j) {
-            return prices[i].first > prices[j].first;
-        });
-
-        long long max_second_prefix = -INF; // max of second prices from 0 to i - 1
-        std::multiset<long long> max_second_suffix; // max of second prices from i + 1 to n - 1
-        max_second_suffix.insert(-INF);
-        max_second_suffix.insert(INF);
-        for (long long i = 0; i < n; i++)
-        {
-            max_second_suffix.insert(prices[i].second);
-        }
-
-        long long min_diff = INF;
-        for (long long i = 0; i < n; i++)
-        {
-            // remove the current second price at current index of max first price
-            max_second_suffix.erase(max_second_suffix.find(prices[max_first_idx[i]].second));
-
-            long long max_second_candidate = -INF; // max of second price prefix and suffix
-
-            min_diff = std::min(
-                {
-                    min_diff, 
-                    std::abs(prices[max_first_idx[i]].first - std::max(max_second_prefix, *max_second_suffix.lower_bound(prices[max_first_idx[i]].first))), 
-                    std::abs(prices[max_first_idx[i]].first - std::max(max_second_prefix, *max_second_suffix.upper_bound(prices[max_first_idx[i]].first)))
-                }
-            );
-
-            // update max second prefix 0...i-1 with current i index
-            max_second_prefix = std::max(max_second_prefix, prices[max_first_idx[i]].second);
-        }
-        return min_diff;
-    }
-};
-
 int main()
 {
     long long T;
@@ -90,14 +40,41 @@ int main()
         long long n;
         std::cin >> n;
 
-        std::vector<std::pair<long long, long long>> prices(n);
+        std::vector<long long> a(n);
+        std::vector<long long> b(n);
+        std::vector<long long> pos(n);
         for (long long i = 0; i < n; i++)
         {
-            std::cin >> prices[i].first >> prices[i].second;
+            std::cin >> a[i] >> b[i];
+            pos[i] = i;
         }
 
-        Solution sol;
-        std::cout << sol.minPriceDifference(prices) << std::endl;
+        std::sort(pos.begin(), pos.end(), [&](long long i, long long j) {
+            return a[i] > a[j];
+        });
+
+        long long max_second_left = INT_MIN;
+        std::multiset<long long> max_second_right({INT_MIN, INT_MAX});
+        for (int i = 0; i < n; i++)
+        {
+            max_second_right.insert(b[i]);
+        }
+
+        long long min_diff = LONG_MAX;
+        for (long long i = 0; i < n; i++)
+        {
+            max_second_right.erase(max_second_right.find(b[pos[i]]));
+            min_diff = std::min(
+                {
+                    min_diff, 
+                    std::abs(a[pos[i]] - std::max(*max_second_right.lower_bound(a[pos[i]]), max_second_left)), 
+                    std::abs(a[pos[i]] - std::max(*std::prev(max_second_right.upper_bound(a[pos[i]])), max_second_left))
+                }
+            );
+            max_second_left = std::max(max_second_left, b[pos[i]]);
+        }
+
+        std::cout << min_diff << std::endl;
     }
 
     return 0;
