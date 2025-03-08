@@ -1,5 +1,6 @@
 /**
 https://vjudge.net/contest/691170#problem/I
+https://codeforces.com/problemset/problem/1244/F
 
 There are n chips arranged in a circle, numbered from 1 to n.
 
@@ -9,62 +10,145 @@ Note that for each i from 2 to (n−1) two neighbouring chips have numbers (i−
 
 The following picture describes one iteration with n=6. The chips 1, 3 and 4 are initially black, and the chips 2, 5 and 6 are white. After the iteration 2, 3 and 4 become black, and 1, 5 and 6 become white.
 Your task is to determine the color of each chip after k iterations.
- */
+*/
 
 #include <iostream>
 #include <vector>
 #include <string>
-#include <unordered_map>
+#include <queue>
 
 using namespace std;
 
-static bool fast = []()
+class Solution
 {
-    std::cin.tie(0)->sync_with_stdio(false);
-    return true;
-}();
+public:
+    std::string simulateIterations(std::string& chip_colors, int n, int total_iterations)
+    {
+        std::vector<bool> stable(n, false);
+        std::queue<std::pair<int, bool> > q_process; // <index, is_right>
+
+        // iterate on the segments of stable chips, find left and right boundary of each segment
+        for (int left = 0; left < n; left++)
+        {
+            int right = left;
+            while (right + 1 < n && chip_colors[right + 1] == chip_colors[right])
+            {
+                right++;
+            }
+
+            if (right - left + 1 >= 2)
+            {
+                for (int i = left; i <= right; i++)
+                {
+                    stable[i] = true;
+                }
+
+                q_process.push({left, false});
+                q_process.push({right, true});
+                left = right;
+            }
+        }
+
+        if (!stable[0] && !stable[n - 1] && chip_colors[0] == chip_colors[n - 1])
+        {
+            stable[0] = stable[n - 1] = true;
+            q_process.push({n - 1, false});
+            q_process.push({0, true});
+        }
+
+        bool flip = false;
+        std::queue<std::pair<int, bool> > q_temp;
+        for (int iter = 0; iter < total_iterations; iter++, flip = !flip)
+        {
+            if (q_process.empty())
+            {
+                break;
+            }
+
+            while (!q_process.empty())
+            {
+                std::pair<int, bool> cur_stable = q_process.front();
+                q_process.pop();
+
+                if (!cur_stable.second) // not the right side
+                {
+                    q_process.push(cur_stable);
+                    continue;
+                }
+
+                std::pair<int, bool> right_bound = cur_stable;
+                std::pair<int, bool> left_bound = q_process.front();
+                q_process.pop();
+
+                int left_stable = left_bound.first;
+                int next_left = get_left_idx(n, left_stable);
+                int next_next_left = get_left_idx(n, next_left);
+                int right_stable = right_bound.first;
+                int next_right = get_right_idx(n, right_stable);
+
+                if (next_left != right_stable && next_next_left != right_stable)
+                {
+                    chip_colors[next_right] = chip_colors[right_stable];
+                    q_temp.push({next_right, true});
+                    stable[next_right] = true;
+
+                    chip_colors[next_left] = chip_colors[left_stable];
+                    q_temp.push({next_left, false});
+                    stable[next_left] = true;
+                }
+                else if (next_next_left == right_stable)
+                {
+                    int mid_unstable = next_left;
+                    stable[mid_unstable] = true;
+                    if (chip_colors[left_stable] == chip_colors[right_stable])
+                    {
+                        chip_colors[mid_unstable] = chip_colors[left_stable];
+                    }
+                    else if (flip)
+                    {
+                        chip_colors[mid_unstable] = (chip_colors[mid_unstable] == 'B' ? 'W' : 'B');
+                    }
+                }
+            }
+
+            std::swap(q_process, q_temp);
+        }
+
+        if (flip)
+        {
+            for (int i = 0; i < n; i++)
+            {
+                if (!stable[i])
+                {
+                    chip_colors[i] = (chip_colors[i] == 'B' ? 'W' : 'B');
+                }
+            }
+        }
+
+        return chip_colors;
+    }
+private:
+    int get_left_idx(int n, int idx)
+    {
+        return ((idx - 1) + n) % n;
+    }
+
+    int get_right_idx(int n, int idx)
+    {
+        return (idx + 1) % n;
+    }
+};
 
 int main()
 {
     int n, k;
     std::cin >> n >> k;
-
     std::string s;
     std::cin >> s;
 
-    std::string next_state(n, 'B');
-    int count_iter = 0;
-    int cycle_start_idx = -1;
-    std::unordered_map<std::string, int> cycle_detection;
-    std::unordered_map<int, std::unordered_map<std::string, int>::const_iterator> indexing;
-    while (cycle_detection.find(s) == cycle_detection.end())
-    {
-        auto rc = cycle_detection.insert({s, count_iter});
-        indexing[count_iter] = rc.first;
-        count_iter++;
-
-        // build next state
-        for (int i = 0; i < n; i++)
-        {
-            int prev_idx = ((i - 1) + n) % n;
-            int next_idx = (i + 1) % n;
-            next_state[i] = (s[prev_idx] == s[next_idx] ? s[prev_idx] : s[i]);
-        }
-        s.swap(next_state);
-    }
-
-    cycle_start_idx = cycle_detection[s];
-
-    if (k < cycle_start_idx)
-    {
-        std::cout << indexing[k]->first << std::endl;
-    }
-    else
-    {
-        int cycle_length = count_iter - cycle_start_idx;
-        int remaining_iterations = (k - cycle_start_idx) % cycle_length;
-        std::cout << indexing[cycle_start_idx + remaining_iterations]->first << std::endl;
-    }
+    Solution sol;
+    std::string res = sol.simulateIterations(s, n, k);
+    std::cout << res << std::endl;
 
     return 0;
 }
