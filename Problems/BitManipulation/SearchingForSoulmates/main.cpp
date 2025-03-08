@@ -5,50 +5,40 @@ https://usaco.org/index.php?page=viewproblem2&cpid=1182
 
 #include <iostream>
 #include <vector>
-#include <queue>
-#include <unordered_set>
+#include <cmath>
+#include <algorithm>
 
 using namespace std;
 
 class Solution
 {
 public:
-    int min_operations(long long a, long long b)
+    long long min_operations(long long a, long long b)
     {
-        if (a == b) return 0;
-    
-        std::queue<pair<long long, int>> q;
-        std::unordered_set<long long> visited;
-        
-        q.push({a, 0});
-        visited.insert(a);
-        
-        while (!q.empty())
+        if (a > b)
         {
-            std::pair<long long, int> cur = q.front();
-            q.pop();
-
-            long long current = cur.first;
-            int steps = cur.second;
-            
-            std::vector<long long> nextOps = {current * 2, current + 1};
-            if (current % 2 == 0)
+            if (a % 2LL == 1LL)
             {
-                nextOps.push_back(current / 2);
+                a++;
             }
-            
-            for (long long next : nextOps)
+            else
             {
-                if (next == b) return steps + 1;
-                if (next > 0 && visited.find(next) == visited.end())
-                {
-                    visited.insert(next);
-                    q.push({next, steps + 1});
-                }
+                a /= 2LL;
             }
+            return 1LL + min_operations(a, b);
         }
-        
-        return -1; // Should never reach here
+        else if (a < b)
+        {
+            long long add_flag = 0LL;
+            if (b % 2LL == 1LL)
+            {
+                add_flag = 1LL;
+            }
+
+            return std::min(b - a, 1LL + add_flag + min_operations(a, b / 2LL));
+        }
+
+        return 0LL; // a == b, no additional step
     }
 };
 
@@ -60,7 +50,7 @@ int main()
     Solution sol;
     for (int i = 0; i < n; i++)
     {
-        int a, b;
+        long long a, b;
         std::cin >> a >> b;
         std::cout << sol.min_operations(a, b) << std::endl;
     }
