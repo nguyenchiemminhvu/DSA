@@ -16,67 +16,73 @@ Please determine the maximum number of rooms Bessie can illuminate.
 
 using namespace std;
 
-int BFS(int n, 
-        std::map<std::pair<int, int>, std::vector<std::pair<int, int>>>& adj_rooms, 
-        std::vector<std::vector<bool>>& visited)
+int count_lit = 1;
+int N, M;
+std::vector<std::vector<bool>> visited(100, std::vector<bool>(100, false));
+std::vector<std::vector<bool>> lit(100, std::vector<bool>(100, false));
+std::map<std::pair<int, int>, std::set<std::pair<int, int>>> connections;
+
+int dir_r[] = {-1, 0, 1, 0};
+int dir_c[] = {0, 1, 0, -1};
+
+void DFS(int r, int c)
 {
-    std::vector<int> dir_r = {-1, 1, 0, 0};
-    std::vector<int> dir_c = {0, 0, -1, 1};
-
-    std::queue<std::pair<int, int>> Q;
-    Q.push({0, 0});
-
-    std::set<std::pair<int, int>> activated;
-    activated.insert({0, 0});
-    visited[0][0] = true;
-
-    while (!Q.empty())
+    if (r < 0 || r >= N || c < 0 || c >= N)
     {
-        std::pair<int, int> cur = Q.front();
-        Q.pop();
+        return;
+    }
 
-        int r = cur.first;
-        int c = cur.second;
+    if (visited[r][c])
+    {
+        return;
+    }
 
-        for (const std::pair<int, int>& adj_room : adj_rooms[{r, c}])
+    if (!lit[r][c])
+    {
+        return;
+    }
+
+    bool connected = false;
+    for (int i = 0; i < 4; i++)
+    {
+        int next_r = r + dir_r[i];
+        int next_c = c + dir_c[i];
+        if (next_r >= 0 && next_r < N && next_c >= 0 && next_c < N)
         {
-            if (activated.find(adj_room) == activated.end())
+            if (visited[next_r][next_c])
             {
-                activated.insert(adj_room);
-
-                // if surrounding rooms are already visited, then push this adj_room to Q because it is accessible
-                for (int i = 0; i < 4; i++)
-                {
-                    int adj_r = adj_room.first + dir_r[i];
-                    int adj_c = adj_room.second + dir_c[i];
-                    if (adj_r >= 0 && adj_r < n && adj_c >= 0 && adj_c < n)
-                    {
-                        if (visited[adj_r][adj_c])
-                        {
-                            Q.push(adj_room);
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-
-        for (int i = 0; i < 4; i++)
-        {
-            int next_r = r + dir_r[i];
-            int next_c = c + dir_c[i];
-            if (next_r >= 0 && next_r < n && next_c >= 0 && next_c < n)
-            {
-                if (!visited[next_r][next_c] && activated.find({next_r, next_c}) != activated.end())
-                {
-                    visited[next_r][next_c] = true;
-                    Q.push({next_r, next_c});
-                }
+                connected = true;
+                break;
             }
         }
     }
 
-    return activated.size();
+    if (!connected && !(r == 0 && c == 0))
+    {
+        return;
+    }
+
+    visited[r][c] = true;
+
+    for (int i = 0; i < 4; i++)
+    {
+        int next_r = r + dir_r[i];
+        int next_c = c + dir_c[i];
+        DFS(next_r, next_c);
+    }
+
+    for (const std::pair<int, int>& room : connections[{r, c}])
+    {
+        int room_r = room.first;
+        int room_c = room.second;
+        if (!lit[room_r][room_c])
+        {
+            count_lit++;
+        }
+
+        lit[room_r][room_c] = true;
+        DFS(room_r, room_c);
+    }
 }
 
 int main()
@@ -84,21 +90,18 @@ int main()
     freopen("lightson.in", "r", stdin);
     freopen("lightson.out", "w", stdout);
 
-    int n, m;
-    std::cin >> n >> m;
-
-    std::map<std::pair<int, int>, std::vector<std::pair<int, int>>> adj_rooms;
-    for (int i = 0; i < m; i++)
+    std::cin >> N >> M;
+    for (int i = 0; i < M; i++)
     {
         int x, y;
         int a, b;
         std::cin >> x >> y >> a >> b;
-        adj_rooms[{x - 1, y - 1}].push_back({a - 1, b - 1});
+        connections[{x - 1, y - 1}].insert({a - 1, b - 1});
     }
 
-    std::vector<std::vector<bool>> visited(n, std::vector<bool>(n, false));
-    int max_access = BFS(n, adj_rooms, visited);
-    std::cout << max_access << std::endl;
+    lit[0][0] = true;
+    DFS(0, 0);
+    std::cout << count_lit << std::endl;
 
     return 0;
 }
