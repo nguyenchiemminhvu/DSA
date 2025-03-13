@@ -29,75 +29,78 @@ Given the image returned by FJ's camera, please count the number of PCLs.
 
 using namespace std;
 
-bool is_PCL(const std::vector<std::string>& grid)
+void BFS(const std::vector<std::string>& grid, int start_r, int start_c, char color, std::vector<std::vector<bool>>& visited)
 {
+    std::vector<int> dir_r = {-1, 1, 0, 0};
+    std::vector<int> dir_c = {0, 0, -1, 1};
+
     int m = grid.size();
     int n = grid[0].size();
 
-    // this subgrid must have exactly 2 colors
-    std::unordered_set<char> set_colors;
-    for (int i = 0; i < m; i++)
+    std::queue<std::pair<int, int>> Q;
+    Q.push({start_r, start_c});
+    visited[start_r][start_c] = true;
+    while (!Q.empty())
     {
-        for (int j = 0; j < n; j++)
+        std::pair<int, int> cur = Q.front();
+        Q.pop();
+
+        int r = cur.first;
+        int c = cur.second;
+
+        for (int i = 0; i < 4; i++)
         {
-            set_colors.insert(grid[i][j]);
+            int next_r = r + dir_r[i];
+            int next_c = c + dir_c[i];
+
+            if (next_r >= 0 && next_r < m && next_c >= 0 && next_c < n && !visited[next_r][next_c] && grid[next_r][next_c] == color)
+            {
+                visited[next_r][next_c] = true;
+                Q.push({next_r, next_c});
+            }
         }
     }
+}
 
-    if (set_colors.size() != 2)
-    {
-        return false;
-    }
+int count_region(const std::vector<std::string>& grid, char color)
+{
+    int count = 0;
 
-    std::unordered_map<char, int> count_region;
+    int m = grid.size();
+    int n = grid[0].size();
+
     std::vector<std::vector<bool>> visited(m, std::vector<bool>(n, false));
-    std::vector<int> dir_r = {-1, 1, 0, 0};
-    std::vector<int> dir_c = {0, 0, -1, 1};
     for (int i = 0; i < m; i++)
     {
         for (int j = 0; j < n; j++)
         {
-            if (!visited[i][j])
+            if (!visited[i][j] && grid[i][j] == color)
             {
-                count_region[grid[i][j]]++;
-
-                std::queue<std::pair<int, int>> Q;
-                Q.push({i, j});
-                visited[i][j] = true;
-                while (!Q.empty())
-                {
-                    std::pair<int, int> cur = Q.front();
-                    Q.pop();
-
-                    int r = cur.first;
-                    int c = cur.second;
-
-                    for (int i = 0; i < 4; i++)
-                    {
-                        int next_r = r + dir_r[i];
-                        int next_c = c + dir_c[i];
-                        if (next_r >= 0 && next_r < m && next_c >= 0 && next_c < n
-                        && !visited[next_r][next_c] 
-                        && grid[next_r][next_c] == grid[i][j])
-                        {
-                            Q.push({next_r, next_c});
-                            visited[next_r][next_c] = true;
-                        }
-                    }
-                }
+                BFS(grid, i, j, color, visited);
+                count++;
             }
         }
     }
 
-    std::vector<char> colors(set_colors.begin(), set_colors.end());
-    return (count_region[colors[0]] == 1 && count_region[colors[1]] > 1)
-        || (count_region[colors[1]] == 1 && count_region[colors[0]] > 1);
+    return count;
+}
+
+bool is_subgrid(int start_r, int end_r, int start_c, int end_c, const std::tuple<int, int, int, int>& pcl)
+{
+    int sr, er, sc, ec;
+    std::tie(sr, er, sc, ec) = pcl;
+    if (start_r >= sr && end_r <= er && start_c >= sc && end_c <= ec)
+    {
+        return true;
+    }
+
+    return false;
 }
 
 int main()
 {
-    // freopen("where.in", "r", stdin);
-    // freopen("where.out", "w", stdout);
+    freopen("where.in", "r", stdin);
+    freopen("where.out", "w", stdout);
 
     int n;
     std::cin >> n;
@@ -108,9 +111,7 @@ int main()
         std::cin >> grid[i];
     }
 
-    int count_pcl = 0;
-
-    std::set<tuple<int, int, int, int>> unique_pcls; // Store (start_r, end_r, start_c, end_c)
+    std::vector<std::tuple<int, int, int, int>> pcl_set;
 
     // Consider all possible subgrid sizes
     for (int start_r = 0; start_r < n; start_r++)
@@ -127,20 +128,58 @@ int main()
                         subgrid.push_back(grid[i].substr(start_c, end_c - start_c + 1));
                     }
 
-                    if (is_PCL(subgrid))
+                    std::unordered_set<char> set_colors;
+                    for (const std::string row : subgrid)
                     {
-                        auto pcl = make_tuple(start_r, end_r, start_c, end_c);
-                        if (unique_pcls.find(pcl) == unique_pcls.end())
+                        for (char c : row)
                         {
-                            unique_pcls.insert(pcl);
-                            count_pcl++;
+                            set_colors.insert(c);
                         }
+                    }
+
+                    if (set_colors.size() != 2)
+                    {
+                        continue;
+                    }
+
+                    char color1;
+                    char color2;
+                    auto it = set_colors.begin();
+                    color1 = *it;
+                    ++it;
+                    color2 = *it;
+
+                    int count_region_1 = count_region(subgrid, color1);
+                    int count_region_2 = count_region(subgrid, color2);
+
+                    if ((count_region_1 == 1 && count_region_2 >= 2) || (count_region_1 >= 2 && count_region_2 == 1))
+                    {
+                        pcl_set.push_back({start_r, end_r, start_c, end_c});
                     }
                 }
             }
         }
     }
 
+    int count_pcl = 0;
+    for (int i = 0; i < pcl_set.size(); i++)
+    {
+        bool valid_pcl = true;
+        for(int j = 0; j < pcl_set.size(); j++)
+        {
+            if (i == j)
+            {
+                continue;
+            }
+
+            if (is_subgrid(std::get<0>(pcl_set[i]), std::get<1>(pcl_set[i]), std::get<2>(pcl_set[i]), std::get<3>(pcl_set[i]), pcl_set[j]))
+            {
+                valid_pcl = false;
+            }
+        }
+
+        count_pcl += valid_pcl;
+    }
     std::cout << count_pcl << std::endl;
 
     return 0;
