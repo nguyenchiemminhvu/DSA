@@ -3,18 +3,25 @@ cmake_minimum_required(VERSION 3.10)
 # Project name
 project(DSA_Tests)
 
+# FetchContent to download GoogleTest
+include(FetchContent)
+FetchContent_Declare(
+    googletest
+    GIT_REPOSITORY https://github.com/google/googletest.git
+    GIT_TAG        main
+)
+FetchContent_MakeAvailable(googletest)
+
 # Set C++ standard
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # GoogleTest requires at least C++11
 set(gtest_disable_pthreads on)
-add_subdirectory(googletest)
 
 # Include directories
 include_directories(
-    ${gtest_SOURCE_DIR}
-    ${gtest_SOURCE_DIR}/include
+    ${googletest_SOURCE_DIR}/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../Algorithms/
     ${CMAKE_CURRENT_SOURCE_DIR}/../DataStructures/
 )
