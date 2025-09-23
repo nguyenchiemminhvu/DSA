@@ -161,3 +161,9 @@ Starting at index ```0```:
 **Output:**
 
 ```0```
+
+## Complexity
+
+**Time Complexity**: O(max(n, m)) where n and m are the number of revisions in version1 and version2.
+
+**Space Complexity**: O(max(n, m)) for storing padded lists.
