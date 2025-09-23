@@ -149,3 +149,7 @@ Combine: add left + right index-wise
   - `left[]` + `right[]` arrays: O(n)  
   → **O(n)** extra space.  
   - Could be optimized to O(1) if we directly compute in a single array.
+
+## Tags
+
+array, prefix sum
