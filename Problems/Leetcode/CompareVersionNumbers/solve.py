@@ -1,5 +1,3 @@
-# https://leetcode.com/problems/compare-version-numbers
-
 import unittest
 
 class Solution:
