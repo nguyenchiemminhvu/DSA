@@ -172,6 +172,12 @@ dp = [15, 11, 18, 16, 10001]
 
 Answer is min(dp) = 11.
 
+## Comlexity
+
+**Time:** O(n)
+
+**Space:** S(n)
+
 ## Tags
 
 array, dynamic programming
