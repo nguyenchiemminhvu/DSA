@@ -63,7 +63,44 @@ Merging the serialization of each level and removing trailing nulls we obtain:
 
 ## Observations
 
+We are given a multilevel doubly linked list where each node has:
+- next pointer (points to the next node in the same level)
+- prev pointer (points to the previous node in the same level)
+- child pointer (points to the head of another doubly linked list, which can have its own children)
+
+The goal is to flatten the list so that:
+- All nodes appear in a single-level doubly linked list.
+- The order is: current node → all nodes in its child list → next node in the original list.
+- All child pointers must be set to None after flattening.
+
+This is essentially a depth-first traversal problem:
+- When we encounter a node with a child, we need to process that child list before moving to the next node.
+- The problem size is small (≤ 1000 nodes), so recursion is safe and easy to implement.
+
 ## Solutions
+
+**Idea**: We can use recursion to flatten the list:
+
+(1) If the current node has no child, simply move to the next node.
+(2) If the current node has a child:
+- Recursively flatten the child list.
+- Insert the flattened child list between the current node and its next node.
+- Update all prev and next pointers correctly.
+- Set the child pointer to None to meet the requirement.
+
+## Example walkthrough:
+
+```head = [1,2,3,4,5,6,null,null,null,7,8,9,10,null,null,11,12]```
+
+Start at ```1 → 2 → 3 → 4 → ...```
+
+At node ```3```, find child list ```7 → 8 → 9 → 10```.
+
+At node ```8```, find child list ```11 → 12```.
+
+Flatten ```11 → 12``` first, attach to ```8```, then attach ```7 → 8 → 9 → 10``` to ```3```.
+
+Continue until all levels are merged.
 
 ## Tags
 
