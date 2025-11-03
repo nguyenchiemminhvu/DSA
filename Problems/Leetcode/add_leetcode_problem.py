@@ -8,14 +8,21 @@ if __name__ == "__main__":
     # https://leetcode.com/problems/sample-problem-name/
     problem_link = sys.argv[1]
     problem_name = problem_link.split("/")[4]
+    commit_message = f"leetcode problem: {problem_name.replace('-', ' ').title()}"
     # standardize the problem name by removing hyphens, Uppercase first letters
-    problem_name = problem_name.replace("-", " ").title().replace(" ", "")
-    if problem_name in problems:
-        print(f"Problem '{problem_name}' already exists.")
+    folder_name = problem_name.replace("-", " ").title().replace(" ", "")
+    if folder_name in problems:
+        print(f"Problem '{folder_name}' already exists.")
     else:
-        os.mkdir(problem_name)
-        with open(os.path.join(problem_name, "solve.py"), "w") as f:
+        os.mkdir(folder_name)
+        with open(os.path.join(folder_name, "solve.py"), "w") as f:
             f.write(f"# Solution for {problem_name}\n")
-        with open(os.path.join(problem_name, "explain.md"), "w") as f:
+        with open(os.path.join(folder_name, "explain.md"), "w") as f:
             f.write(f"## Problem\n\n{problem_link}\n\n```\n```\n\n## Observations\n\n## Solution\n\n# Tags\n\n")
-        print(f"Problem '{problem_name}' has been created.")
+        print(f"Problem '{folder_name}' has been created.")
+
+    chr = input("After finishing editing, Press Enter to continue pushing changes to git, or type 'n' to skip: ")
+    if chr.lower() != 'n':
+        os.system("git add --all")
+        os.system(f'git commit -m "{commit_message}"')
+        os.system("git push origin master")
