@@ -22,7 +22,7 @@ if __name__ == "__main__":
         print(f"Problem '{folder_name}' has been created.")
 
     chr = ''
-    while chr not in ['','n','N', 'y','Y']:
+    while chr not in ['n','N', 'y','Y']:
         chr = input("Enter 'y' to continue pushing changes to git, or type 'n' to skip: ")
         if chr.lower() == 'y':
             os.system("git add --all")
