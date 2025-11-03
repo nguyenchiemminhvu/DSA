@@ -21,8 +21,14 @@ if __name__ == "__main__":
             f.write(f"## Problem\n\n{problem_link}\n\n```\n```\n\n## Observations\n\n## Solution\n\n# Tags\n\n")
         print(f"Problem '{folder_name}' has been created.")
 
-    chr = input("After finishing editing, Press Enter to continue pushing changes to git, or type 'n' to skip: ")
-    if chr.lower() != 'n':
-        os.system("git add --all")
-        os.system(f'git commit -m "{commit_message}"')
-        os.system("git push origin master")
+    chr = ''
+    while chr not in ['','n','N', 'y','Y']:
+        chr = input("Enter 'y' to continue pushing changes to git, or type 'n' to skip: ")
+        if chr.lower() == 'y':
+            os.system("git add --all")
+            os.system(f'git commit -m "{commit_message}"')
+            os.system("git push origin master")
+            break
+        elif chr.lower() == 'n':
+            print("Skipping git push.")
+            break
