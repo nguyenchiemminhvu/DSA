@@ -18,7 +18,7 @@ if __name__ == "__main__":
         with open(os.path.join(folder_name, "solve.py"), "w") as f:
             f.write(f"# Solution for {problem_name}\n")
         with open(os.path.join(folder_name, "explain.md"), "w") as f:
-            f.write(f"## Problem\n\n{problem_link}\n\n```\n```\n\n## Observations\n\n## Solution\n\n# Tags\n\n")
+            f.write(f"## Problem\n\n{problem_link}\n\n```\n<problem_description>\n```\n\n## Observations\n\n## Solution\n\n# Tags\n\n")
         print(f"Problem '{folder_name}' has been created.")
 
     chr = ''
