@@ -9,34 +9,30 @@ class TreeNode:
 
 class Solution:
     def maxProduct(self, root: Optional[TreeNode]) -> int:
-        def sum_tree(root: Optional[TreeNode]) -> int:
-            if not root:
-                return 0
-            return root.val + sum_tree(root.left) + sum_tree(root.right)
-        
-        def refactor_tree(root: Optional[TreeNode]) -> None:
+        total = 0
+        res = 0
+
+        def traversal(root: Optional[TreeNode]) -> None:
+            nonlocal total
             if not root:
                 return
-            refactor_tree(root.left)
-            refactor_tree(root.right)
+            traversal(root.left)
+            total += root.val
+            traversal(root.right)
+
             if root.left:
                 root.val += root.left.val
             if root.right:
                 root.val += root.right.val
         
-        total = sum_tree(root)
-        refactor_tree(root)
-
-        max_prod = [0]
-        def traversal(root: Optional[TreeNode]) -> None:
-            nonlocal total
+        def traversal_2(root: Optional[TreeNode]) -> None:
+            nonlocal total, res
             if not root:
                 return
-            cur_sum = root.val
-            remain = total - cur_sum
-            max_prod[0] = max(max_prod[0], cur_sum * remain)
-
-            traversal(root.left)
-            traversal(root.right)
+            res = max(res, (total - root.val) * root.val)
+            traversal_2(root.left)
+            traversal_2(root.right)
+        
         traversal(root)
-        return max_prod[0] % (10**9 + 7)
+        traversal_2(root)
+        return res % (10**9 + 7)
