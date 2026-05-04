@@ -19,21 +19,21 @@ class Solution:
                 b = c
             return a
         
-        arr1 = []
-        p = head
-        while p:
-            arr1.append(p.val)
-            p = p.next
+        slow = head
+        fast = head.next
+        while fast and fast.next:
+            slow = slow.next
+            fast = fast.next.next
         
-        p = reverse_list(head)
+        head_head = slow.next
+        slow.next = None
 
-        arr2 = []
-        while p:
-            arr2.append(p.val)
-            p = p.next
-        
-        n = len(arr1) // 2
+        head_head = reverse_list(head_head)
+
         res = 0
-        for i in range(n):
-            res = max(res, arr1[i] + arr2[i])
+        while head and head_head:
+            val = head.val + head_head.val
+            res = max(res, val)
+            head = head.next
+            head_head = head_head.next
         return res
