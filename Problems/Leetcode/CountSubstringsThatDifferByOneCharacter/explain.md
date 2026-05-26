@@ -140,10 +140,3 @@ class Solution:
 
 `String` `Dynamic Programming` `Hash Function`
 ````
-
-## Observations
-
-## Solution
-
-# Tags
-
